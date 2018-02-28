@@ -380,6 +380,37 @@ plt.xticks(locations, labels)
 plt.legend()
 ```
 
+#### 1.7.1 zip
+```
+m = [[1,2,3], [4,5,6], [7,8,9]]
+n = [[2,2,2], [3,3,3], [4,4,4]]
+p = [[2,2,2], [3,3,3,]
+zip(m, n)将返回
+([1, 2, 3], [2, 2, 2]), 
+([4, 5, 6], [3, 3, 3]), 
+([7, 8, 9], [4, 4, 4])
+
+zip(m, p)将返回
+([1, 2, 3], [2, 2, 2]), 
+([4, 5, 6], [3, 3, 3])
+([7,8,9])
+```
+参考
+[Python中的zip()与*zip()函数详解](https://www.cnblogs.com/waltsmith/p/8029539.html)
+
+#### 1.7.2 保留小数
+```
+保留浮点数的小数点。
+
+     如保留小数点后两位。
+
+     num = 9.2174
+
+     new_num = round( num , 2 )
+
+     则new_num = 9.22    (四舍五入）
+```
+
 ----------
 ### 03 数据分析 案例研究2
 #### 03.01 丢弃多余的列
@@ -1361,6 +1392,7 @@ ylim	Y轴的界限
 grid	显示轴网格线
 ```
 #### 10.02 DataFrame
+DataFrame 是一个表格型的数据结构。它提供有序的列和不同类型的列值
 #### 10.02.01 DataFrame
 ```
 from pandas import *
@@ -1380,7 +1412,9 @@ df = pd.DataFrame(np.random.randn(20, 4).cumsum(0), columns=list('ABCD'), index=
 df.plot()
 plt.show()
 ```
-#### 10.02.01 DataFrame的方法参数
+
+
+#### 10.02.02 DataFrame的方法参数
 ```
 参数	说明
 subplots	将各个DataFrame列绘制到单独的subplot中
@@ -1391,8 +1425,241 @@ title	    表示图像标题的字符串
 legend	    添加一个subplot图例(默认为True)
 sort_columns以字母表顺序绘制各列，默认使用前列顺序
 ```
-#### 10.03 
+
+#### 10.02.03 DataFrame 取值
 ```
+import numpy as np
+import pandas as pd
+from pandas import Sereis, DataFrame
+
+ser = Series(np.arange(3.))
+
+data = DataFrame(np.arange(16).reshape(4,4),index=list('abcd'),columns=list('wxyz'))
+
+data['w']  #选择表格中的'w'列，使用类字典属性,返回的是Series类型
+
+data.w    #选择表格中的'w'列，使用点属性,返回的是Series类型
+
+data[['w']]  #选择表格中的'w'列，返回的是DataFrame类型
+
+data[['w','z']]  #选择表格中的'w'、'z'列
+
+data[0:2]  #返回第1行到第2行的所有行，前闭后开，包括前不包括后
+
+data[1:2]  #返回第2行，从0计，返回的是单行，通过有前后值的索引形式，
+       #如果采用data[1]则报错
+
+data.ix[1:2] #返回第2行的第三种方法，返回的是DataFrame，跟data[1:2]同
+
+data['a':'b']  #利用index值进行切片，返回的是**前闭后闭**的DataFrame, 
+        #即末端是包含的  
+
+data.head()  #返回data的前几行数据，默认为前五行，需要前十行则data.head(10)
+data.tail()  #返回data的后几行数据，默认为后五行，需要后十行则data.tail(10)
+
+data.iloc[-1]   #选取DataFrame最后一行，返回的是Series
+data.iloc[-1:]   #选取DataFrame最后一行，返回的是DataFrame
+
+data.loc['a',['w','x']]   #返回‘a’行'w'、'x'列，这种用于选取行索引列索引已知
+
+data.iat[1,1]   #选取第二行第二列，用于已知行、列位置的选取
+```
+
+#### 10.02.04 DataFrame取值例子
+**当用已知的行索引时为前闭后闭区间，这点与切片稍有不同**。
+```
+import pandas as pd
+from pandas import Series, DataFrame
+import numpy as np
+
+data = DataFrame(np.arange(15).reshape(3,5),index=['one','two','three'],columns=['a','b','c','d','e'])
+
+data
+Out[7]: 
+        a   b   c   d   e
+one     0   1   2   3   4
+two     5   6   7   8   9
+three  10  11  12  13  14
+
+#对列的操作方法有如下几种
+
+data.icol(0)   #选取第一列
+E:\Anaconda2\lib\site-packages\spyder\utils\ipython\start_kernel.py:1: FutureWarning: icol(i) is deprecated. Please use .iloc[:,i]
+  # -*- coding: utf-8 -*-
+Out[35]: 
+one       0
+two       5
+three    10
+Name: a, dtype: int32
+
+data['a']
+Out[8]: 
+one       0
+two       5
+three    10
+Name: a, dtype: int32
+
+data.a
+Out[9]: 
+one       0
+two       5
+three    10
+Name: a, dtype: int32
+
+data[['a']]
+Out[10]: 
+        a
+one     0
+two     5
+three  10
+
+data.ix[:,[0,1,2]]  #不知道列名只知道列的位置时
+Out[13]: 
+        a   b   c
+one     0   1   2
+two     5   6   7
+three  10  11  12
+
+data.ix[1,[0]]  #选择第2行第1列的值
+Out[14]: 
+a    5
+Name: two, dtype: int32
+
+data.ix[[1,2],[0]]   #选择第2,3行第1列的值
+Out[15]: 
+        a
+two     5
+three  10
+
+data.ix[1:3,[0,2]]  #选择第2-4行第1、3列的值
+Out[17]: 
+        a   c
+two     5   7
+three  10  12
+
+data.ix[1:2,2:4]  #选择第2-3行，3-5（不包括5）列的值
+Out[29]: 
+     c  d
+two  7  8
+
+data.ix[data.a>5,3]
+Out[30]: 
+three    13
+Name: d, dtype: int32
+
+data.ix[data.b>6,3:4]  #选择'b'列中大于6所在的行中的第4列，有点拗口
+Out[31]: 
+        d
+three  13
+
+data.ix[data.a>5,2:4]  #选择'a'列中大于5所在的行中的第3-5（不包括5）列
+Out[32]: 
+        c   d
+three  12  13
+
+data.ix[data.a>5,[2,2,2]]  #选择'a'列中大于5所在的行中的第2列并重复3次
+Out[33]: 
+        c   c   c
+three  12  12  12
+
+#还可以行数或列数跟行名列名混着用
+data.ix[1:3,['a','e']]
+Out[24]: 
+        a   e
+two     5   9
+three  10  14
+
+data.ix['one':'two',[2,1]]
+Out[25]: 
+     c  b
+one  2  1
+two  7  6
+
+data.ix[['one','three'],[2,2]]
+Out[26]: 
+        c   c
+one     2   2
+three  12  12
+
+data.ix['one':'three',['a','c']]
+Out[27]: 
+        a   c
+one     0   2
+two     5   7
+three  10  12
+
+data.ix[['one','one'],['a','e','d','d','d']]
+Out[28]: 
+     a  e  d  d  d
+one  0  4  3  3  3
+one  0  4  3  3  3
+
+#对行的操作有如下几种：
+data[1:2]  #（不知道列索引时）选择第2行，不能用data[1]，可以用data.ix[1]
+Out[18]: 
+     a  b  c  d  e
+two  5  6  7  8  9
+
+data.irow(1)   #选取第二行
+Out[36]: 
+a    5
+b    6
+c    7
+d    8
+e    9
+Name: two, dtype: int32
+
+data.ix[1]   #选择第2行
+Out[20]: 
+a    5
+b    6
+c    7
+d    8
+e    9
+Name: two, dtype: int32
+
+
+data['one':'two']  #当用已知的行索引时为前闭后闭区间，这点与切片稍有不同。
+Out[22]: 
+     a  b  c  d  e
+one  0  1  2  3  4
+two  5  6  7  8  9
+
+data.ix[1:3]  #选择第2到4行，不包括第4行，即前闭后开区间。
+Out[23]: 
+        a   b   c   d   e
+two     5   6   7   8   9
+three  10  11  12  13  14
+
+data.ix[-1:]  #取DataFrame中最后一行，返回的是DataFrame类型,**注意**这种取法是有使用条件的，只有当行索引不是数字索引时才可以使用，否则可以选用`data[-1:]`--返回DataFrame类型或`data.irow(-1)`--返回Series类型
+Out[11]: 
+        a   b   c   d   e
+three  10  11  12  13  14
+
+data[-1:]  #跟上面一样，取DataFrame中最后一行，返回的是DataFrame类型
+Out[12]: 
+        a   b   c   d   e
+three  10  11  12  13  14
+
+data.ix[-1] #取DataFrame中最后一行，返回的是Series类型，这个一样，行索引不能是数字时才可以使用
+Out[13]: 
+a    10
+b    11
+c    12
+d    13
+e    14
+Name: three, dtype: int32
+
+data.tail(1)   #返回DataFrame中的最后一行
+data.head(1)   #返回DataFrame中的第一行
+```
+[python中pandas库中DataFrame对行和列的操作使用方法](http://blog.csdn.net/xiaodongxiexie/article/details/53108959 "python中pandas库中DataFrame对行和列的操作使用方法")
+
+#### 10.03 同一坐标中多个hist 
+```
+# bins 设置分组的个数
+# normed 是否对y轴数据进行标准化（如果true，则是在本区间的点在所有的点中所占的概率，False，则是显示点的数量）
+
 fig, ax = plt.subplots(2, 2, sharex = True, sharey = True) # 2行2列的直方图 共享坐标
 for i in range(2):
      for j in range(2):
