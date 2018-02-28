@@ -1324,3 +1324,79 @@ limit 10;
 #### 09.04 COALESCE
 `COALESCE` 返回的是每行的**第一个非 NULL 值**。因此如果在此示例中，行中的值是 NULL，上述解决方案使用了 no_poc
 - count等函数将null当作0处理，将null赋予别的初值，可以计算null值数量
+
+### 10 绘图
+#### 10.01 Series
+#### 10.01.01 Series
+```
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+from pandas import Series, DataFrame
+
+fig, axes = plt.subplots(2, 2) # 两行两列
+s = pd.Series(np.random.randn(20).cumsum(), index=np.arange(0, 100, 5))
+s.plot(kind='bar', ax=axes[0][0])
+s.plot(kind='bar', ax=axes[0][1],stacked=True)
+s.plot(kind='barh', ax=axes[1][0],grid='True') # 显示网格线
+s.plot(kind='line', ax=axes[1][1], color='k')
+plt.show()
+```
+
+#### 10.01.02 Series.plot方法的函数
+```
+参数	说明
+label	用于图例的标签
+ax	    要在其上进行绘制的matplotlib subplot对象。如果没有设置，则使用当前matplotlib subplot
+style	将要传给matplotlib的风格字符串(for example: ‘ko–’)
+alpha	图表的填充不透明(0-1)
+kind	可以是’line’, ‘bar’, ‘barh’, ‘kde’
+logy	在Y轴上使用对数标尺
+use_index	将对象的索引用作刻度标签
+rot	    旋转刻度标签(0-360)
+xticks	用作X轴刻度的值
+yticks	用作Y轴刻度的值
+xlim	X轴的界限
+ylim	Y轴的界限
+grid	显示轴网格线
+```
+#### 10.02 DataFrame
+#### 10.02.01 DataFrame
+```
+from pandas import *
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+#随机生成6行4列
+df=DataFrame(np.random.rand(6,4),index=['one','two','three','four','five','six'],columns=['A','B','C','D'])
+df.columns.name = 'Genus'
+print(df)
+df.plot(kind='bar') # 4列为一组，共6组的直方图
+plt.show()
+
+# 4条连续的折线图
+df = pd.DataFrame(np.random.randn(20, 4).cumsum(0), columns=list('ABCD'), index=np.arange(0, 100, 5))
+df.plot()
+plt.show()
+```
+#### 10.02.01 DataFrame的方法参数
+```
+参数	说明
+subplots	将各个DataFrame列绘制到单独的subplot中
+sharex	    如果subplots=True，则共用同一个X轴，包括刻度和界限
+sharey	    类似于上
+figsize	    表示图像大小的元组
+title	    表示图像标题的字符串
+legend	    添加一个subplot图例(默认为True)
+sort_columns以字母表顺序绘制各列，默认使用前列顺序
+```
+#### 10.03 
+```
+fig, ax = plt.subplots(2, 2, sharex = True, sharey = True) # 2行2列的直方图 共享坐标
+for i in range(2):
+     for j in range(2):
+          ax[i, j].hist(np.random.randn(1000), bins = 50, color = 'k', alpha = 0.5)
+plt.subplots_adjust(wspace = 0.5, hspace = 0.5)
+plt.show()
+```
