@@ -548,13 +548,14 @@ mpg_change.describe()
 
 comb_df.query('cmb_mpg - cmb_mpg_2008 > 16')['model']
 ```
-other
+#### 03.09 other
+###### 03.09.01 dateframe in 
 ```
 f_08 = df_08.query('fuel in ["CNG", "ethanol"]')['model'].nunique() //值类型的数量
 f_08 
 ```
 
-###### apply
+###### 03.09.02 apply
 ```
 genres = []
 df_15['genres'].apply(lambda x: [genres.append(y) for y in x.split('|')])
@@ -562,13 +563,13 @@ genres_frq = pd.Series(genres).value_counts()
 genres_frq.plot(kind="bar", title="the most popular movie genre of 2015",color='green', legend=True, label="genres freq");
 ```
 
-###### sort_values
+###### 03.09.03 sort_values
 ```
 df_2015 = df.query("release_year=='2015'").sort_values("popularity", ascending=False)
 df_2015
 ```
 
-###### 获取满足特定条件列的行
+###### 03.09.04 获取满足特定条件列的行
 ```
 result = df[(df['neighbourhood'] == "UNIVERSITÁRIO") & (df['no_show'] == 1)]['no_show'].value_counts()
 result
@@ -576,6 +577,54 @@ out-> 1    32
 result.get_value(label=1)
 out-> 32
 ```
+###### 03.09.05 dataframe sum
+获取该行的值
+
+|是否幸存	 |幸存者	|遇难者  |
+| --------    | -----:   | :----: |
+|性别	     |	        |        |
+|女性	     |233	    |81      |
+|男性	     |109	    |468     |
+
+```
+df.sum(axis=0)
+out:
+性别
+女性    314
+男性    577
+dtype: int64
+```
+###### 03.09.06 insert 插入列
+```
+df_t.insert(2, '幸存者比例', groups_data_df_t['幸存者']/groups_data_df.sum(axis=0)) # 插入到第3列
+```
+
+###### 03.09.07 统计分析
+```
+groups_data = passengers_df.groupby(['船舱等级', '是否幸存']).size() #获取花括号形式的数据
+groups_data_uns = groups_data.unstack() # 转换为表格
+# groups_data_uns.T # 转置
+groups_data_uns
+
+
+groups_data_uns.insert(2, '幸存者比例', groups_data_uns['幸存者']/groups_data_uns.sum(axis=1))# 插入统计的列 幸存者比例
+groups_data_uns.columns.name = None  # 为了数据框数据显示明确，这里设为空
+
+
+# 可视化 x 轴坐标标签方向
+var_rot = 'horizontal'
+groups_data_uns[['幸存者','遇难者']].plot(kind='bar', stacked=True, alpha=0.6)
+plt.ylabel("number")
+# 幸存者比例折线图
+# groups_data_df_t['幸存者比例'].plot(secondary_y=True, kind='line', rot=var_rot)
+groups_data_uns['幸存者比例'].plot(secondary_y=True, kind='line', style='gd-', rot=var_rot)
+plt.ylabel("scale")
+
+plt.show()
+```
+[泰坦尼克号幸存者统计](https://github.com/tynbl/udacity_mls11_lingjian/blob/master/p4/investigate_titanic_data.ipynb "泰坦尼克号幸存者统计")
+
+
 ### 05 基本的SQL
 ----------
 
