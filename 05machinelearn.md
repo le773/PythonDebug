@@ -76,9 +76,14 @@ def performance_metric2(y_true, y_predict):
     score = 1- ssr/sst
     return score
 ```
+
 ![决定系数](https://i.imgur.com/Hq15eSP.png)
+
 [决定系数](https://en.wikipedia.org/wiki/Coefficient_of_determination)
 
-ssr:(训练模型得到的结果-平均值) *(训练模型得到的结果-平均值) 之和
-sst:(实际值-平均值) *(实际值-平均值) 之和
-sse:(实际值-训练模型得到的结果)*(实际值-训练模型得到的结果)
+
+ssr:(训练模型得到的结果-平均值) *(训练模型得到的结果-平均值)之和
+
+sst:(实际值-平均值) *(实际值-平均值)之和
+
+sse:(实际值-训练模型得到的结果)*(实际值-训练模型得到的结果)之和
