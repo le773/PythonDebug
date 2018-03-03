@@ -22,6 +22,8 @@ import pandas as pd
 df = pd.read_csv('cancer_data.csv')
 # 指定分隔符
 df = pd.read_csv('cancer_data.csv', sep=';')
+# 读取文本
+df = pd.read_table('smsspamcollection/SMSSpamCollection',header=None,names=columns,sep='\t')
 
 # 创建最大值数据框
 max_df_cancer_data_edited=df.loc[:,'radius_max':'fractal_dimension_max']
@@ -411,6 +413,11 @@ zip(m, p)将返回
      则new_num = 9.22    (四舍五入）
 ```
 
+#### 1.7.3 去除语句中的标点符号
+```
+line.translate(str.maketrans('', '', string.punctuation))
+```
+
 ----------
 ### 03 数据分析 案例研究2
 #### 03.01 丢弃多余的列
@@ -437,6 +444,7 @@ df_08.columns == df_18.columns
 
 # 修改列的取值范围
 df['No-show'].replace({'No':0, 'Yes':1}, inplace=True)
+df['label'] = df.label.map({'ham':0, 'spam':1})
 ```
 
 #### 03.03 确认空置
