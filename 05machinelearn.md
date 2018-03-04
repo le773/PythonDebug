@@ -40,10 +40,11 @@ K折交叉验证是在优化模型时，将数据分为K等份，其中K-1份作
 因为垃圾邮件可以接受，但正确邮件不能丢失。
 
 #### 06.05 精度和召回率 计算
-| ——— | Diagnosed sick | Diagnosed Healthy | 召回率recall |
+
+| - | Diagnosed sick | Diagnosed Healthy | 召回率recall |
 | ---------- | :---------- : | ----------: |
 | sick       | 正阳 | 假阴 | 正阳/(正阳+假阴)|
-| healthy    | 假阳 | 假阳 |   |
+| healthy    | 假阳 | 正阴 |   |
 |精确度precision| 正阳/(正阳+假阳)|            |
 
 
