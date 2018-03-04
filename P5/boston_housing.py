@@ -24,7 +24,7 @@
 # 
 # 运行下面区域的代码以载入波士顿房屋数据集，以及一些此项目所需的Python库。如果成功返回数据集的大小，表示数据集已载入成功。
 
-# In[163]:
+# In[238]:
 
 
 # 载入此项目所需要的库
@@ -44,7 +44,7 @@ if version_info.major != 2 and version_info.minor != 7:
 get_ipython().magic(u'matplotlib inline')
 
 
-# In[164]:
+# In[239]:
 
 
 # 载入波士顿房屋的数据集
@@ -52,21 +52,21 @@ data = pd.read_csv('housing.csv')
 data.head()
 
 
-# In[165]:
+# In[240]:
 
 
 prices = data['MEDV']
 prices.describe()
 
 
-# In[166]:
+# In[241]:
 
 
 features = data.drop('MEDV', axis = 1)
 data.head()
 
 
-# In[167]:
+# In[242]:
 
 
 # 完成
@@ -89,45 +89,33 @@ print "Boston housing dataset has {} data points with {} variables each.".format
 # - 计算`prices`中的`'MEDV'`的最小值、最大值、均值、中值和标准差；
 # - 将运算结果储存在相应的变量中。
 
-# In[168]:
+# In[243]:
 
 
 data['MEDV'].describe()
 
 
-# In[169]:
-
-
-data['MEDV'].describe()['50%']
-
-
-# In[170]:
-
-
-data['MEDV'].median()
-
-
-# In[171]:
+# In[244]:
 
 
 #TODO 1
 
 #目标：计算价值的最小值
 # minimum_price = min(data['MEDV'])
-minimum_price = data['MEDV'].min()
+minimum_price = np.min(data['MEDV'])
 
 #目标：计算价值的最大值
 # maximum_price = max(data['MEDV'])
-maximum_price = data['MEDV'].max()
+maximum_price = np.max(data['MEDV'])
 
 #目标：计算价值的平均值
-mean_price = data['MEDV'].mean()
+mean_price = np.mean(data['MEDV'])
 
 #目标：计算价值的中值
-median_price = data['MEDV'].median()
+median_price = np.median(data['MEDV'])
 
 #目标：计算价值的标准差
-std_price = data['MEDV'].std()
+std_price = np.std(data['MEDV'])
 
 #目标：输出计算的结果
 print "Statistics for Boston housing dataset:\n"
@@ -162,7 +150,7 @@ print "Standard deviation of prices: ${:,.2f}".format(std_price)
 #   - 分割比例为：80%的数据用于训练，20%用于测试；
 #   - 选定一个数值以设定 `train_test_split` 中的 `random_state` ，这会确保结果的一致性；
 
-# In[172]:
+# In[245]:
 
 
 # TODO 2
@@ -213,7 +201,7 @@ print len(y_test)
 # 
 # - (可选) 不使用任何外部库，参考[决定系数的定义](https://en.wikipedia.org/wiki/Coefficient_of_determination)进行计算，这也可以帮助你更好的理解决定系数在什么情况下等于0或等于1。
 
-# In[173]:
+# In[246]:
 
 
 # TODO 3
@@ -227,7 +215,7 @@ def performance_metric(y_true, y_predict):
     return score
 
 
-# In[174]:
+# In[247]:
 
 
 # TODO 3 可选
@@ -257,7 +245,7 @@ def performance_metric2(y_true, y_predict):
 # 
 # **提示**：运行下方的代码，使用`performance_metric`函数来计算模型的决定系数。
 
-# In[175]:
+# In[248]:
 
 
 # 计算这个模型的预测结果的决定系数
@@ -265,7 +253,7 @@ score = performance_metric([3, -0.5, 2, 7, 4.2], [2.5, 0.0, 2.1, 7.8, 5.3])
 print "Model has a coefficient of determination, R^2, of {:.3f}.".format(score)
 
 
-# In[176]:
+# In[249]:
 
 
 # 计算这个模型的预测结果的决定系数
@@ -285,7 +273,7 @@ print "Model has a coefficient of determination, R^2, of {:.3f}.".format(score)
 # 
 # 运行下方区域中的代码，并利用输出的图形回答下面的问题。
 
-# In[177]:
+# In[250]:
 
 
 # 根据不同的训练集大小，和最大深度，生成学习曲线
@@ -294,8 +282,10 @@ vs.ModelLearning(X_train, y_train)
 
 # ### 问题 4 - 学习曲线
 # *选择上述图像中的其中一个，并给出其最大深度。随着训练数据量的增加，训练集曲线的评分有怎样的变化？验证集曲线呢？如果有更多的训练数据，是否能有效提升模型的表现呢？*
-# 
 # **提示：**学习曲线的评分是否最终会收敛到特定的值？
+
+# ### 问题 4 - 回答:
+# max_depth=3
 # - 训练集曲线
 # 训练集曲线的评分呈缓慢下降然后保持稳定。
 # - 验证集曲线
@@ -303,14 +293,12 @@ vs.ModelLearning(X_train, y_train)
 # - 有效提升模型的表现
 # 从训练曲线和验证曲线随着训练数量的增加，曲线的阴影在收窄，更多的训练集合能有效提升模型的表现。
 
-# ### 问题 4 - 回答:
-
 # ### 复杂度曲线
 # 下列代码内的区域会输出一幅图像，它展示了一个已经经过训练和验证的决策树模型在不同最大深度条件下的表现。这个图形将包含两条曲线，一个是训练集的变化，一个是验证集的变化。跟**学习曲线**相似，阴影区域代表该曲线的不确定性，模型训练和测试部分的评分都用的 `performance_metric` 函数。
 # 
 # 运行下方区域中的代码，并利用输出的图形并回答下面的两个问题。
 
-# In[178]:
+# In[251]:
 
 
 # 根据不同的最大深度参数，生成复杂度曲线
@@ -326,12 +314,15 @@ vs.ModelComplexity(X_train, y_train)
 # 
 # 当模型以最大深度 1训练时，模型的预测是偏差、方差都比较小；
 # 当模型以最大深度10训练时，偏差增大，方差较1时增大，但是逐渐趋向于稳定。
+# 验证得分的阴影可以作为方差的参考；
+# 与训练得分的差距作为偏差的参考。
 
 # ### 问题 6- 最优模型的猜测
 # *结合问题 5 中的图，你认为最大深度是多少的模型能够最好地对未见过的数据进行预测？你得出这个答案的依据是什么？*
 
 # ### 问题 6 - 回答:
 # 当最大深度为4时，此时训练得分和验证得分偏差和方差比较小；验证得分此时最大。
+# 决定系数R2得分越小，偏差越大。训练得分阴影区域越窄则数据越集中，方差越小。
 
 # ---
 # ## 第五步. 选择最优参数
@@ -341,9 +332,9 @@ vs.ModelComplexity(X_train, y_train)
 # 
 
 # ### 问题 7 - 回答:
-# 制作一个表格，列出要修改参数的所有可能的组合以及训练所有需要的模型，然后使用交叉验证集计算这些模型的F1得分,并选择F1得分最高的模型。
+# 制作一个表格，列出要修改参数的所有可能的组合以及训练所有需要的模型，然后使用交叉验证集计算这些模型得分,并选择得分最高的模型。
 # 最后使用测试集检测模型效果。
-# 
+# 得分计算方法不同的问题使用不同的评估方法。
 
 # ### 问题 8 - 交叉验证
 # - 什么是K折交叉验证法（k-fold cross-validation）？
@@ -356,15 +347,49 @@ vs.ModelComplexity(X_train, y_train)
 # ### 问题 8 - 回答：
 # - K折交叉验证法
 # 
-# 将数据分为K个包，然后将模型训练K次，每次使用K-1个做测试集，剩下的做训练集，然后求结果的平均值。
+# 将训练数据分为K个包，然后将模型训练K次，每次使用K-1个做训练集，剩下的做验证集调优模型，用测试集评估模型的最终效果，最后求结果的平均值。
 # 
 # - GridSearchCV是如何结合交叉验证来完成对最佳参数组合的选择的？
 # 
-# 对网格中的每一个组合，做交叉验证求得平均分；然后在所有的平均分里选取得分最高的。
+# 对网格中的每一个组合，做K折交叉验证求得平均分；然后在所有的平均分里以评分标准选取适合的组合。
 # 
 # - GridSearchCV中的'cv_results_'属性能告诉我们什么？
 # 
-# 各个参数及其对应的取值
+# mean_fit_time：某kernel其中一次K折交叉验证法 平均训练时间
+# 
+# mean_score_time：某kernel其中一次K折交叉验证法 平均计算得分时间
+# 
+# mean_test_score：某kernel其中一次K折交叉验证法 测试集平均训练得分
+# 
+# mean_train_score：某kernel其中一次K折交叉验证法 训练集平均训练得分
+# 
+# param_max_depth：某kernel其中一次K折交叉验证法 模型最大训练深度
+# 
+# params：某kernel其中一次K折交叉验证法 模型最大训练深度的字典
+# 
+# rank_test_score：某kernel其中一次K折交叉验证法 测试集得分等级
+# 
+# split0_test_score：某kernel其中一次K折交叉验证法 第0次划分的测试集得分
+# 
+# split0_train_score：某kernel其中一次K折交叉验证法 第0次划分的训练集得分
+# 
+# split1_test_score：某kernel其中一次K折交叉验证法 第1次划分的测试集得分
+# 
+# split1_train_score：某kernel其中一次K折交叉验证法 第1次划分的训练集得分
+# 
+# split2_test_score：某kernel其中一次K折交叉验证法 第2次划分的测试集得分
+# 
+# split2_train_score：某kernel其中一次K折交叉验证法 第2次划分的训练集得分
+# 
+# std_fit_time：某kernel其中一次K折交叉验证法 训练时间的标准差
+# 
+# std_score_time：某kernel其中一次K折交叉验证法 计算得分时间的标准差
+# 
+# std_test_score：某kernel其中一次K折交叉验证法 测试集计算得分标准差
+# 
+# std_train_score：某kernel其中一次K折交叉验证法 训练集计算得分标准差
+# 
+# 
 # 
 # - 网格搜索时如果不使用交叉验证会有什么问题？交叉验证又是如何解决这个问题的？
 # 
@@ -384,7 +409,7 @@ vs.ModelComplexity(X_train, y_train)
 #   
 # 如果你对python函数的默认参数定义和传递不熟悉，可以参考这个MIT课程的[视频](http://cn-static.udacity.com/mlnd/videos/MIT600XXT114-V004200_DTH.mp4)。
 
-# In[179]:
+# In[252]:
 
 
 # TODO 4
@@ -398,7 +423,7 @@ from sklearn.model_selection import GridSearchCV
 def fit_model(X, y):
     """ 基于输入数据 [X,y]，利于网格搜索找到最优的决策树模型"""
     
-    cross_validator = KFold(n_splits=2)
+    cross_validator = KFold(n_splits=10)
     
     regressor = DecisionTreeRegressor(random_state=0)
 
@@ -417,7 +442,7 @@ def fit_model(X, y):
     return grid.best_estimator_
 
 
-# In[180]:
+# In[253]:
 
 
 def fit_model3(X, y):
@@ -436,7 +461,7 @@ def fit_model3(X, y):
 
     # 基于输入数据 [X,y]，进行网格搜索
     grid = grid.fit(X, y)
-    print pd.DataFrame(grid.cv_results_)
+#     print pd.DataFrame(grid.cv_results_)
 
     # 返回网格搜索后的最优模型
     return grid.best_estimator_
@@ -451,7 +476,7 @@ def fit_model3(X, y):
 # - 计算当前模型的交叉验证分数
 # - 返回最优交叉验证分数对应的模型
 
-# In[181]:
+# In[254]:
 
 
 # TODO 4 可选
@@ -480,7 +505,7 @@ def fit_model2(X, y):
 # 
 # 运行下方区域内的代码，将决策树回归函数代入训练数据的集合，以得到最优化的模型。
 
-# In[182]:
+# In[255]:
 
 
 # 基于训练数据，获得最优模型
@@ -491,7 +516,7 @@ optimal_reg = fit_model(X_train, y_train)
 print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg.get_params()['max_depth'])
 
 
-# In[183]:
+# In[256]:
 
 
 optimal_reg3 = fit_model3(X_train, y_train)
@@ -500,6 +525,7 @@ print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg3.g
 
 
 # ### 问题 9 - 回答：
+# 最优模型的最大深度为4，无论是采用10折或5折交叉验证
 
 # ## 第六步. 做出预测
 # 当我们用数据训练出一个模型，它现在就可用于对新的数据进行预测。在决策树回归函数中，模型已经学会对新输入的数据*提问*，并返回对**目标变量**的预测值。你可以用这个预测来获取数据未知目标变量的信息，这些数据必须是不包含在训练数据之内的。
@@ -519,7 +545,7 @@ print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg3.g
 # 
 # 运行下列的代码区域，使用你优化的模型来为每位客户的房屋价值做出预测。
 
-# In[184]:
+# In[257]:
 
 
 # 生成三个客户的数据
@@ -534,11 +560,24 @@ for i, price in enumerate(predicted_price):
 
 
 # ### 问题 10 - 回答：
+# Client 1's home: $417,144.00
+# 
+# Client 2's home: $236,212.50
+# 
+# Client 3's home: $892,850.00
+# 
+# 从房屋的特征来分析，是合理的；
+# 
+# 其中客户3 学生老师比例最低，社区贫困指数最低，房间数最多，售价最高。
+# 
+# 客户2 学生老师比例最高，社区贫困指数最高，房间数最少，因此售价最低。
+# 
+# 客户1 学生老师比例、社区贫困指数、房间数均处在居中的位置，因此售价居中。
 
 # ### 编程练习 5
 # 你刚刚预测了三个客户的房子的售价。在这个练习中，你将用你的最优模型在整个测试数据上进行预测, 并计算相对于目标变量的决定系数 R<sup>2</sup>的值**。
 
-# In[185]:
+# In[258]:
 
 
 #TODO 5
@@ -557,6 +596,7 @@ print "Optimal model has R^2 score {:,.2f} on test data".format(r2)
 # 你刚刚计算了最优模型在测试集上的决定系数，你会如何评价这个结果？
 
 # ### 问题11 - 回答
+# 0.82是一个不错的得分，但还有提升空间。
 
 # ### 模型健壮性
 # 
@@ -568,14 +608,15 @@ print "Optimal model has R^2 score {:,.2f} on test data".format(r2)
 # 
 # **提示**: 执行下方区域中的代码，采用不同的训练和测试集执行 `fit_model` 函数10次。注意观察对一个特定的客户来说，预测是如何随训练数据的变化而变化的。
 
-# In[186]:
+# In[259]:
 
 
 # 请先注释掉 fit_model 函数里的所有 print 语句
-vs.PredictTrials(features, prices, fit_model, client_data)
+vs.PredictTrials(features, prices, fit_model3, client_data)
 
 
 # ### 问题 12 - 回答：
+# 数据在399,663.16到428,316.00波动，差值为28,652.84，没有出现大的波动，总体上有足够的健壮性。
 
 # ### 问题 13 - 实用性探讨
 # *简单地讨论一下你建构的模型能否在现实世界中使用？* 
@@ -611,7 +652,7 @@ vs.PredictTrials(features, prices, fit_model, client_data)
 # 
 # 你可以参考上面学到的内容，拿这个数据集来练习数据分割与重排、定义衡量标准、训练模型、评价模型表现、使用网格搜索配合交叉验证对参数进行调优并选出最佳参数，比较两者的差别，最终得出最佳模型对验证集的预测分数。
 
-# In[187]:
+# In[260]:
 
 
 # TODO 6
@@ -620,7 +661,7 @@ data = pd.read_csv('bj_housing.csv')
 data.head()
 
 
-# In[188]:
+# In[261]:
 
 
 # 数据分割与重排
@@ -635,20 +676,20 @@ print len(y_train)
 print len(y_test)
 
 
-# In[189]:
+# In[266]:
 
 
 vs.ModelLearning(X_train, y_train)
 
 
-# In[190]:
+# In[267]:
 
 
 # 基于训练数据，获得最优模型
 bj_reg = fit_model3(X_train, y_train)
 
 
-# In[191]:
+# In[268]:
 
 
 y_predict = bj_reg.predict(X_test)
@@ -656,7 +697,7 @@ r2 = performance_metric2(y_test, y_predict)
 r2
 
 
-# In[192]:
+# In[269]:
 
 
 print "Parameter 'max_depth' is {} for the optimal model.".format(bj_reg.get_params()['max_depth'])
