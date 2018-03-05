@@ -55,3 +55,36 @@ t2, = ax2.plot(np.arange(len(l2)), l1, 'go-', label = 'parabola' ,color = 'gray'
 plt.legend(handles = [t1, t2,], labels=['t1', 't2'])
 plt.show()
 ```
+
+### 03 hist 柱形图 设置
+```
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import mlab
+from matplotlib import rcParams
+
+# 添加label
+fig1 = plt.figure(3)
+
+bar1 =plt.bar(left = 0.2, height = 1, color='r', width = 0.2, align="center",yerr=0.000001)
+bar2 =plt.bar(left = 0.6, height = 1.5, color='g', width = 0.2, align="center",yerr=0.000001)
+bar3 =plt.bar(left = 1, height = 0.2, color='b', width = 0.2, align="center",yerr=0.000001)
+
+plt.xticks((0.2, 0.6, 1),('first','second', 'three'))
+plt.yticks((0.2, 0.6, 1),('low','meida', 'high'))
+plt.title('f hist')
+
+# 为每个条形设置数字及其位置
+def autolabel(rects):
+    for rect in rects:
+        height = rect.get_height()
+        plt.text(rect.get_x()+rect.get_width()/2., 1.1 * height, 'v:%s' % float(height), color='black', rotation=90)
+
+autolabel(bar1)
+autolabel(bar2)
+autolabel(bar3)
+
+plt.legend(labels=['bar1', 'bar2', 'bar3'])
+
+plt.show()
+```
