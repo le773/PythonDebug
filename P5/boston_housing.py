@@ -24,7 +24,7 @@
 # 
 # 运行下面区域的代码以载入波士顿房屋数据集，以及一些此项目所需的Python库。如果成功返回数据集的大小，表示数据集已载入成功。
 
-# In[238]:
+# In[203]:
 
 
 # 载入此项目所需要的库
@@ -44,7 +44,7 @@ if version_info.major != 2 and version_info.minor != 7:
 get_ipython().magic(u'matplotlib inline')
 
 
-# In[239]:
+# In[204]:
 
 
 # 载入波士顿房屋的数据集
@@ -52,21 +52,21 @@ data = pd.read_csv('housing.csv')
 data.head()
 
 
-# In[240]:
+# In[205]:
 
 
 prices = data['MEDV']
 prices.describe()
 
 
-# In[241]:
+# In[206]:
 
 
 features = data.drop('MEDV', axis = 1)
 data.head()
 
 
-# In[242]:
+# In[207]:
 
 
 # 完成
@@ -89,13 +89,13 @@ print "Boston housing dataset has {} data points with {} variables each.".format
 # - 计算`prices`中的`'MEDV'`的最小值、最大值、均值、中值和标准差；
 # - 将运算结果储存在相应的变量中。
 
-# In[243]:
+# In[208]:
 
 
 data['MEDV'].describe()
 
 
-# In[244]:
+# In[209]:
 
 
 #TODO 1
@@ -150,13 +150,13 @@ print "Standard deviation of prices: ${:,.2f}".format(std_price)
 #   - 分割比例为：80%的数据用于训练，20%用于测试；
 #   - 选定一个数值以设定 `train_test_split` 中的 `random_state` ，这会确保结果的一致性；
 
-# In[245]:
+# In[210]:
 
 
 # TODO 2
 
 # 提示： 导入train_test_split
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(data[['RM','LSTAT','PTRATIO']], 
                                                     data['MEDV'], 
                                                     test_size=0.2)
@@ -201,7 +201,7 @@ print len(y_test)
 # 
 # - (可选) 不使用任何外部库，参考[决定系数的定义](https://en.wikipedia.org/wiki/Coefficient_of_determination)进行计算，这也可以帮助你更好的理解决定系数在什么情况下等于0或等于1。
 
-# In[246]:
+# In[211]:
 
 
 # TODO 3
@@ -215,7 +215,7 @@ def performance_metric(y_true, y_predict):
     return score
 
 
-# In[247]:
+# In[212]:
 
 
 # TODO 3 可选
@@ -245,7 +245,7 @@ def performance_metric2(y_true, y_predict):
 # 
 # **提示**：运行下方的代码，使用`performance_metric`函数来计算模型的决定系数。
 
-# In[248]:
+# In[213]:
 
 
 # 计算这个模型的预测结果的决定系数
@@ -253,7 +253,7 @@ score = performance_metric([3, -0.5, 2, 7, 4.2], [2.5, 0.0, 2.1, 7.8, 5.3])
 print "Model has a coefficient of determination, R^2, of {:.3f}.".format(score)
 
 
-# In[249]:
+# In[214]:
 
 
 # 计算这个模型的预测结果的决定系数
@@ -273,7 +273,7 @@ print "Model has a coefficient of determination, R^2, of {:.3f}.".format(score)
 # 
 # 运行下方区域中的代码，并利用输出的图形回答下面的问题。
 
-# In[250]:
+# In[215]:
 
 
 # 根据不同的训练集大小，和最大深度，生成学习曲线
@@ -298,7 +298,7 @@ vs.ModelLearning(X_train, y_train)
 # 
 # 运行下方区域中的代码，并利用输出的图形并回答下面的两个问题。
 
-# In[251]:
+# In[216]:
 
 
 # 根据不同的最大深度参数，生成复杂度曲线
@@ -365,8 +365,6 @@ vs.ModelComplexity(X_train, y_train)
 # 
 # param_max_depth：某kernel其中一次K折交叉验证法 模型最大训练深度
 # 
-# params：某kernel其中一次K折交叉验证法 模型最大训练深度的字典
-# 
 # rank_test_score：某kernel其中一次K折交叉验证法 测试集得分等级
 # 
 # split0_test_score：某kernel其中一次K折交叉验证法 第0次划分的测试集得分
@@ -409,7 +407,7 @@ vs.ModelComplexity(X_train, y_train)
 #   
 # 如果你对python函数的默认参数定义和传递不熟悉，可以参考这个MIT课程的[视频](http://cn-static.udacity.com/mlnd/videos/MIT600XXT114-V004200_DTH.mp4)。
 
-# In[252]:
+# In[217]:
 
 
 # TODO 4
@@ -425,39 +423,13 @@ def fit_model(X, y):
     
     cross_validator = KFold(n_splits=10)
     
-    regressor = DecisionTreeRegressor(random_state=0)
+    regressor = DecisionTreeRegressor(random_state=60)
 
     params = {'max_depth':list(range(1,11))}
 
     scoring_fnc = make_scorer(performance_metric)
 
-    parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]}
     grid = GridSearchCV(regressor, params, scoring=scoring_fnc, cv=cross_validator)
-
-    # 基于输入数据 [X,y]，进行网格搜索
-    grid = grid.fit(X, y)
-#     print pd.DataFrame(grid.cv_results_)
-
-    # 返回网格搜索后的最优模型
-    return grid.best_estimator_
-
-
-# In[253]:
-
-
-def fit_model3(X, y):
-    """ 基于输入数据 [X,y]，利于网格搜索找到最优的决策树模型"""
-    
-    cross_validator = KFold(n_splits=5)
-    
-    regressor = DecisionTreeRegressor(random_state=0)
-
-    params = {'max_depth':list(range(1,11))}
-
-    scoring_fnc = make_scorer(performance_metric)
-
-    parameters = {'kernel':('linear', 'rbf'), 'C':[1, 10]}
-    grid = GridSearchCV(regressor, params, scoring=scoring_fnc)
 
     # 基于输入数据 [X,y]，进行网格搜索
     grid = grid.fit(X, y)
@@ -476,7 +448,7 @@ def fit_model3(X, y):
 # - 计算当前模型的交叉验证分数
 # - 返回最优交叉验证分数对应的模型
 
-# In[254]:
+# In[218]:
 
 
 # TODO 4 可选
@@ -505,7 +477,7 @@ def fit_model2(X, y):
 # 
 # 运行下方区域内的代码，将决策树回归函数代入训练数据的集合，以得到最优化的模型。
 
-# In[255]:
+# In[219]:
 
 
 # 基于训练数据，获得最优模型
@@ -514,14 +486,6 @@ optimal_reg = fit_model(X_train, y_train)
 
 # 输出最优模型的 'max_depth' 参数
 print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg.get_params()['max_depth'])
-
-
-# In[256]:
-
-
-optimal_reg3 = fit_model3(X_train, y_train)
-# 输出最优模型的 'max_depth' 参数
-print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg3.get_params()['max_depth'])
 
 
 # ### 问题 9 - 回答：
@@ -545,7 +509,7 @@ print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg3.g
 # 
 # 运行下列的代码区域，使用你优化的模型来为每位客户的房屋价值做出预测。
 
-# In[257]:
+# In[269]:
 
 
 # 生成三个客户的数据
@@ -568,16 +532,16 @@ for i, price in enumerate(predicted_price):
 # 
 # 从房屋的特征来分析，是合理的；
 # 
-# 其中客户3 学生老师比例最低，社区贫困指数最低，房间数最多，售价最高。
+# 其中客户2 学生老师比例最高，社区贫困指数最高，房间数最少，因此售价最低。
 # 
-# 客户2 学生老师比例最高，社区贫困指数最高，房间数最少，因此售价最低。
+# 客户3 学生老师比例最低，社区贫困指数远低于客户2，房间数最多且是客户2的两倍，售价最高，且是客户2的4.1倍。
 # 
-# 客户1 学生老师比例、社区贫困指数、房间数均处在居中的位置，因此售价居中。
+# 客户1 学生老师比例、社区贫困指数处在客户2，3平均大小的位置，房间数略多于客户2，为客户3的0.625倍， 售价大约是客户2的1.7倍，客户3的0.438倍, 客户1，2，3的的比例为1.8：1：4.11是合理的。
 
 # ### 编程练习 5
 # 你刚刚预测了三个客户的房子的售价。在这个练习中，你将用你的最优模型在整个测试数据上进行预测, 并计算相对于目标变量的决定系数 R<sup>2</sup>的值**。
 
-# In[258]:
+# In[270]:
 
 
 #TODO 5
@@ -589,6 +553,7 @@ y_predict = optimal_reg.predict(X_test)
 r2 = performance_metric2(y_test, y_predict)
 
 print "Optimal model has R^2 score {:,.2f} on test data".format(r2)
+print r2
 
 
 # ### 问题11 - 分析决定系数
@@ -597,6 +562,45 @@ print "Optimal model has R^2 score {:,.2f} on test data".format(r2)
 
 # ### 问题11 - 回答
 # 0.82是一个不错的得分，但还有提升空间。
+
+# ### 不使用k折交叉验证预测房价
+
+# In[271]:
+
+
+# GridSearchCV交叉验证网格搜索获得的最好估计器,在训练验证集上没做交叉验证的得分
+regressor = DecisionTreeRegressor(random_state=40)
+scoring_fnc = make_scorer(performance_metric)
+params = {'max_depth':list(range(1,11))}
+grid_search = GridSearchCV(regressor, params, scoring=scoring_fnc, cv=None)
+grid_search_predict = grid_search.fit(X_train, y_train)
+# grid_search.score(X_train, y_train)
+
+
+# In[272]:
+
+
+# GridSearchCV交叉验证网格搜索获得的最好估计器,在**集上做交叉验证的平均得分
+grid_search_predict.best_score_
+
+
+# In[273]:
+
+
+# GridSearchCV交叉验证网格搜索获得的最好估计器,在测试集上的得分
+grid_search_predict.score(X_test, y_test)
+
+
+# In[274]:
+
+
+y_predict = grid_search_predict.predict(X_test)
+r3 = performance_metric2(y_test, y_predict)
+r3
+
+
+# # 问题：
+# 不使用KFold做交叉验证得分很接近，这是因为数据量已经够了吗？
 
 # ### 模型健壮性
 # 
@@ -608,11 +612,11 @@ print "Optimal model has R^2 score {:,.2f} on test data".format(r2)
 # 
 # **提示**: 执行下方区域中的代码，采用不同的训练和测试集执行 `fit_model` 函数10次。注意观察对一个特定的客户来说，预测是如何随训练数据的变化而变化的。
 
-# In[259]:
+# In[275]:
 
 
 # 请先注释掉 fit_model 函数里的所有 print 语句
-vs.PredictTrials(features, prices, fit_model3, client_data)
+vs.PredictTrials(features, prices, fit_model, client_data)
 
 
 # ### 问题 12 - 回答：
@@ -652,7 +656,7 @@ vs.PredictTrials(features, prices, fit_model3, client_data)
 # 
 # 你可以参考上面学到的内容，拿这个数据集来练习数据分割与重排、定义衡量标准、训练模型、评价模型表现、使用网格搜索配合交叉验证对参数进行调优并选出最佳参数，比较两者的差别，最终得出最佳模型对验证集的预测分数。
 
-# In[260]:
+# In[289]:
 
 
 # TODO 6
@@ -661,43 +665,43 @@ data = pd.read_csv('bj_housing.csv')
 data.head()
 
 
-# In[261]:
+# In[290]:
 
 
 # 数据分割与重排
 # 提示： 导入train_test_split
-from sklearn.cross_validation import train_test_split
-X_train, X_test, y_train, y_test = train_test_split(data[['Area','Room','School','Year']], 
+from sklearn.model_selection import train_test_split
+X_train_bj, X_test_bj, y_train_bj, y_test_bj = train_test_split(data[['Area','Room','School','Year']], 
                                                     data['Value'], 
-                                                    test_size=0.2)
-print len(X_train)
-print len(X_test)
-print len(y_train)
-print len(y_test)
+                                                    test_size=0.2, random_state=60)
+print len(X_train_bj)
+print len(X_test_bj)
+print len(y_train_bj)
+print len(y_test_bj)
 
 
-# In[266]:
+# In[291]:
 
 
-vs.ModelLearning(X_train, y_train)
+vs.ModelLearning(X_train_bj, y_train_bj)
 
 
-# In[267]:
+# In[292]:
 
 
 # 基于训练数据，获得最优模型
-bj_reg = fit_model3(X_train, y_train)
+bj_reg = fit_model(X_train_bj, y_train_bj)
 
 
-# In[268]:
+# In[293]:
 
 
-y_predict = bj_reg.predict(X_test)
-r2 = performance_metric2(y_test, y_predict)
+y_predict_bj = bj_reg.predict(X_test_bj)
+r2 = performance_metric2(y_test_bj, y_predict_bj)
 r2
 
 
-# In[269]:
+# In[294]:
 
 
 print "Parameter 'max_depth' is {} for the optimal model.".format(bj_reg.get_params()['max_depth'])
@@ -711,3 +715,15 @@ print "Parameter 'max_depth' is {} for the optimal model.".format(bj_reg.get_par
 # ### 问题14 - 回答
 
 # 选取Area，Room，School，Year作为训练模型的特征。测试集合为20%，训练集划分为5个子集，使用网格搜索加k折交叉验证，选取训练最优的模型。
+
+# In[296]:
+
+
+# 未使用交叉验证
+grid_search_predict_2 = grid_search.fit(X_train_bj, y_train_bj)
+y_predict_2 = grid_search_predict_2.predict(X_test_bj)
+r4 = performance_metric2(y_test_bj, y_predict_2)
+r4
+
+
+# 交叉验证并没有助于提升模型的表现。
