@@ -19,3 +19,39 @@ plt.show()
 
 
 ![pandas bar](https://udacity-reviews-uploads.s3.us-west-2.amazonaws.com/_attachments/67065/1514970688/TIM%E6%88%AA%E5%9B%BE20180103162043.png)
+
+### 02 2行1列折线图
+```
+from sklearn.datasets import load_boston
+from sklearn.model_selection import cross_val_score
+from sklearn.tree import DecisionTreeRegressor
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+boston = load_boston()
+regressor = DecisionTreeRegressor(random_state=5)
+l2 = cross_val_score(regressor, boston.data, boston.target, cv=10)
+
+max_depth = regressor.get_params()['max_depth']
+# print(max_depth)
+
+
+print(len(boston.data), len(boston.data[0]))
+
+print(l2)
+
+print(boston.data[0])
+l1 = [ x + 1 for x in l2]
+
+fig1 = plt.figure()
+ax1 = fig1.add_subplot(211)
+# plt.plot(np.arange(len(l2)), boston.data[0], 'go-', label='true value')
+t1, = ax1.plot(np.arange(len(l2)), l2, 'ro-', label = 'line')
+
+ax2 = fig1.add_subplot(212)
+t2, = ax2.plot(np.arange(len(l2)), l1, 'go-', label = 'parabola' ,color = 'gray', linewidth = 1.0, linestyle = '--')
+# plt.title('score: %f' % score)
+plt.legend(handles = [t1, t2,], labels=['t1', 't2'])
+plt.show()
+```
