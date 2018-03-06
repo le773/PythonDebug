@@ -24,7 +24,7 @@
 # 
 # 运行下面区域的代码以载入波士顿房屋数据集，以及一些此项目所需的Python库。如果成功返回数据集的大小，表示数据集已载入成功。
 
-# In[203]:
+# In[1]:
 
 
 # 载入此项目所需要的库
@@ -44,7 +44,7 @@ if version_info.major != 2 and version_info.minor != 7:
 get_ipython().magic(u'matplotlib inline')
 
 
-# In[204]:
+# In[2]:
 
 
 # 载入波士顿房屋的数据集
@@ -52,21 +52,21 @@ data = pd.read_csv('housing.csv')
 data.head()
 
 
-# In[205]:
+# In[3]:
 
 
 prices = data['MEDV']
 prices.describe()
 
 
-# In[206]:
+# In[4]:
 
 
 features = data.drop('MEDV', axis = 1)
 data.head()
 
 
-# In[207]:
+# In[5]:
 
 
 # 完成
@@ -89,13 +89,13 @@ print "Boston housing dataset has {} data points with {} variables each.".format
 # - 计算`prices`中的`'MEDV'`的最小值、最大值、均值、中值和标准差；
 # - 将运算结果储存在相应的变量中。
 
-# In[208]:
+# In[6]:
 
 
 data['MEDV'].describe()
 
 
-# In[209]:
+# In[12]:
 
 
 #TODO 1
@@ -150,7 +150,7 @@ print "Standard deviation of prices: ${:,.2f}".format(std_price)
 #   - 分割比例为：80%的数据用于训练，20%用于测试；
 #   - 选定一个数值以设定 `train_test_split` 中的 `random_state` ，这会确保结果的一致性；
 
-# In[210]:
+# In[13]:
 
 
 # TODO 2
@@ -159,7 +159,8 @@ print "Standard deviation of prices: ${:,.2f}".format(std_price)
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(data[['RM','LSTAT','PTRATIO']], 
                                                     data['MEDV'], 
-                                                    test_size=0.2)
+                                                    test_size=0.2,
+                                                    random_state=70)
 print len(X_train)
 print len(X_test)
 print len(y_train)
@@ -201,7 +202,7 @@ print len(y_test)
 # 
 # - (可选) 不使用任何外部库，参考[决定系数的定义](https://en.wikipedia.org/wiki/Coefficient_of_determination)进行计算，这也可以帮助你更好的理解决定系数在什么情况下等于0或等于1。
 
-# In[211]:
+# In[14]:
 
 
 # TODO 3
@@ -215,7 +216,7 @@ def performance_metric(y_true, y_predict):
     return score
 
 
-# In[212]:
+# In[15]:
 
 
 # TODO 3 可选
@@ -245,7 +246,7 @@ def performance_metric2(y_true, y_predict):
 # 
 # **提示**：运行下方的代码，使用`performance_metric`函数来计算模型的决定系数。
 
-# In[213]:
+# In[16]:
 
 
 # 计算这个模型的预测结果的决定系数
@@ -253,7 +254,7 @@ score = performance_metric([3, -0.5, 2, 7, 4.2], [2.5, 0.0, 2.1, 7.8, 5.3])
 print "Model has a coefficient of determination, R^2, of {:.3f}.".format(score)
 
 
-# In[214]:
+# In[17]:
 
 
 # 计算这个模型的预测结果的决定系数
@@ -273,7 +274,7 @@ print "Model has a coefficient of determination, R^2, of {:.3f}.".format(score)
 # 
 # 运行下方区域中的代码，并利用输出的图形回答下面的问题。
 
-# In[215]:
+# In[18]:
 
 
 # 根据不同的训练集大小，和最大深度，生成学习曲线
@@ -298,7 +299,7 @@ vs.ModelLearning(X_train, y_train)
 # 
 # 运行下方区域中的代码，并利用输出的图形并回答下面的两个问题。
 
-# In[216]:
+# In[19]:
 
 
 # 根据不同的最大深度参数，生成复杂度曲线
@@ -407,7 +408,7 @@ vs.ModelComplexity(X_train, y_train)
 #   
 # 如果你对python函数的默认参数定义和传递不熟悉，可以参考这个MIT课程的[视频](http://cn-static.udacity.com/mlnd/videos/MIT600XXT114-V004200_DTH.mp4)。
 
-# In[217]:
+# In[20]:
 
 
 # TODO 4
@@ -448,7 +449,7 @@ def fit_model(X, y):
 # - 计算当前模型的交叉验证分数
 # - 返回最优交叉验证分数对应的模型
 
-# In[218]:
+# In[21]:
 
 
 # TODO 4 可选
@@ -477,7 +478,7 @@ def fit_model2(X, y):
 # 
 # 运行下方区域内的代码，将决策树回归函数代入训练数据的集合，以得到最优化的模型。
 
-# In[219]:
+# In[22]:
 
 
 # 基于训练数据，获得最优模型
@@ -509,7 +510,7 @@ print "Parameter 'max_depth' is {} for the optimal model.".format(optimal_reg.ge
 # 
 # 运行下列的代码区域，使用你优化的模型来为每位客户的房屋价值做出预测。
 
-# In[269]:
+# In[23]:
 
 
 # 生成三个客户的数据
@@ -532,16 +533,22 @@ for i, price in enumerate(predicted_price):
 # 
 # 从房屋的特征来分析，是合理的；
 # 
-# 其中客户2 学生老师比例最高，社区贫困指数最高，房间数最少，因此售价最低。
+# 社区贫困指数越低，说明居住的人群较富裕，那么该地区的人支付能力越强，因此房子成本会高于贫困区。
 # 
-# 客户3 学生老师比例最低，社区贫困指数远低于客户2，房间数最多且是客户2的两倍，售价最高，且是客户2的4.1倍。
+# 同样的房价下，房间数量越多，面积越大，因此成本越高。
 # 
-# 客户1 学生老师比例、社区贫困指数处在客户2，3平均大小的位置，房间数略多于客户2，为客户3的0.625倍， 售价大约是客户2的1.7倍，客户3的0.438倍, 客户1，2，3的的比例为1.8：1：4.11是合理的。
+# 其中客户1和客户2相比，社区贫困指数比客户2低50\%，房间数量高25\%，售价是客户2两倍。
+# 
+# 客户3社区贫困指数比客户1低50\%，房间数最多且是接近客户1的1.6倍，售价是客户1两倍。
+# 
+# 客户1社区贫困指数处在客户2，3中位数的位置，房间数略多于客户1， 因此售价大约是客户2的1.7倍，客户3的0.44倍。
+# 
+# 邻近学校的学生-老师比例比例不如房间数和社区贫困指数产生明显影响，但是会在一定程度影响房价。
 
 # ### 编程练习 5
 # 你刚刚预测了三个客户的房子的售价。在这个练习中，你将用你的最优模型在整个测试数据上进行预测, 并计算相对于目标变量的决定系数 R<sup>2</sup>的值**。
 
-# In[270]:
+# In[24]:
 
 
 #TODO 5
@@ -565,7 +572,7 @@ print r2
 
 # ### 不使用k折交叉验证预测房价
 
-# In[271]:
+# In[25]:
 
 
 # GridSearchCV交叉验证网格搜索获得的最好估计器,在训练验证集上没做交叉验证的得分
@@ -577,21 +584,21 @@ grid_search_predict = grid_search.fit(X_train, y_train)
 # grid_search.score(X_train, y_train)
 
 
-# In[272]:
+# In[26]:
 
 
 # GridSearchCV交叉验证网格搜索获得的最好估计器,在**集上做交叉验证的平均得分
 grid_search_predict.best_score_
 
 
-# In[273]:
+# In[27]:
 
 
 # GridSearchCV交叉验证网格搜索获得的最好估计器,在测试集上的得分
 grid_search_predict.score(X_test, y_test)
 
 
-# In[274]:
+# In[28]:
 
 
 y_predict = grid_search_predict.predict(X_test)
@@ -612,7 +619,7 @@ r3
 # 
 # **提示**: 执行下方区域中的代码，采用不同的训练和测试集执行 `fit_model` 函数10次。注意观察对一个特定的客户来说，预测是如何随训练数据的变化而变化的。
 
-# In[275]:
+# In[29]:
 
 
 # 请先注释掉 fit_model 函数里的所有 print 语句
@@ -656,7 +663,7 @@ vs.PredictTrials(features, prices, fit_model, client_data)
 # 
 # 你可以参考上面学到的内容，拿这个数据集来练习数据分割与重排、定义衡量标准、训练模型、评价模型表现、使用网格搜索配合交叉验证对参数进行调优并选出最佳参数，比较两者的差别，最终得出最佳模型对验证集的预测分数。
 
-# In[289]:
+# In[30]:
 
 
 # TODO 6
@@ -665,7 +672,7 @@ data = pd.read_csv('bj_housing.csv')
 data.head()
 
 
-# In[290]:
+# In[31]:
 
 
 # 数据分割与重排
@@ -680,7 +687,7 @@ print len(y_train_bj)
 print len(y_test_bj)
 
 
-# In[291]:
+# In[32]:
 
 
 vs.ModelLearning(X_train_bj, y_train_bj)
