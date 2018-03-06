@@ -46,6 +46,10 @@ X Y相互独立时，存在某种关系，协方差就是用来表示这种关�
 **离散型**随机变量的概率分布
 二项分布是指统计变量中只有性质不同的两项群体的概率分布。所谓两项群体是按两种不同性质划分的统计变量，是二项试验的结果。即各个变量都可归为两个不同性质中的一个，两个观测值是对立的。因而两项分布又可说是两个对立事件的概率分布。
 
+期望：Eξ=np；
+方差：Dξ=npq；
+其中q=1-p
+
 #### 01.08 各种分布的比较
 
 #### 01.09 全概率公式
@@ -53,6 +57,22 @@ X Y相互独立时，存在某种关系，协方差就是用来表示这种关�
 
 ###### 例子
 射击选手选拔
+
+### 02.01 中心极限定理
+#### 02.01.01 独立同分布的中心极限定理
+设随机变量X1，X2，......Xn，......独立同分布，并且具有有限的数学期望和方差：E(Xi)=μ，D(Xi)=σ20(k=1,2....)，则对任意x，分布函数
+![中心极限定理](https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D448/sign=559d641a11d5ad6eaef965eeb9ca39a3/aec379310a55b3196c42ddab49a98226cefc17b0.jpg)
+该定理说明，当n很大时，随机变量![变量](https://gss2.bdstatic.com/-fo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D126/sign=81f78d20114c510faac4e61856582528/77094b36acaf2edda57f1a01861001e93801934f.jpg) 近似地服从标准正态分布N(0，1)。因此，当n很大时，  ![变形](https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D146/sign=be5e9e3d5d2c11dfdad1bb2755266255/d62a6059252dd42af4b35875093b5bb5c8eab8b2.jpg)近似地服从正态分布N(nμ，nσ2)．
+
+
+#### 02.01.02 棣莫佛－拉普拉斯定理
+设随机变量X(n=1,2,...,)服从参数为n，p(0<p<1)的二项分布，则对于任意有限区间(a，b)有
+![](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D324/sign=9859d880d7c451daf2f60ae982fc52a5/8326cffc1e178a823a8d3f7efc03738da877e8bf.jpg)
+该定理表明，正态分布是二项分布的极限分布，当数充分大时，我们可以利用上式来计算二项分布的概率。
+
+[中心极限定理](https://baike.baidu.com/item/%E4%B8%AD%E5%BF%83%E6%9E%81%E9%99%90%E5%AE%9A%E7%90%86/829451?fr=aladdin "中心极限定理")
+[wiki中心极限定理](http://wiki.mbalib.com/wiki/%E4%B8%AD%E5%BF%83%E6%9E%81%E9%99%90%E5%AE%9A%E7%90%86 "wiki中心极限定理")
+
 
 ###### 希腊字母
 ```
