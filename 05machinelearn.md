@@ -1,5 +1,8 @@
 ### 01 机器学习
 
+强化学习:延时反馈
+监督学习:函数逼近 泛化函数
+
 ### 02 测试集的好处
 1. 检查过拟合
 2. 评估分类器或回归在独立数据集上的性能
@@ -27,6 +30,11 @@ clf = grid_search.GridSearchCV(svr, parameters)
 clf.fit(iris.data, iris.target)
 ```
 `parameters`参数字典以及他们可取的值。在这种情况下，他们在尝试找到 kernel（可能的选择为 'linear' 和 'rbf' ）和 C（可能的选择为1和10）的最佳组合。这时，会自动生成一个不同（kernel、C）参数值组成的“网格”, 各组合均用于训练 SVM，并使用交叉验证对表现进行评估。
+
+
+**C类**似于正则化中1λ1λ的作用。C越大，拟合非线性的能力越强。 
+large C: High Variance
+small C: High Bias
 
 ```
 clf.fit(iris.data, iris.target)
