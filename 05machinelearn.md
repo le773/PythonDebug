@@ -162,3 +162,33 @@ gamma是你选择径向基函数作为kernel后，该函数自带的一个参数
 1. 能够实现非线性映射；（ 线性核函数可以证明是他的一个特例；SIGMOID核函数在某些参数上近似RBF的功能。）
 2. 参数的数量影响模型的复杂程度，多项式核函数参数较多。
 3. the RBF kernel has less numerical difficulties.
+
+#### 08.04 核函数总结
+Linear Kernel， Polynomial Kernel， Gaussian Kernel
+
+##### 08.04.01 Linear Kernel：K(x, x') = xTx'
+**优点**是：
+safe（一般不太会overfitting，所以线性的永远是我们的首选方案）；
+fast，可以直接使用General SVM的QP方法来求解，比较迅速；
+explainable，可解释性较好，我们可以直接得到w, b，它们直接对应每个feature的权重。
+**缺点**是：
+restrict：如果是线性不可分的资料就不太适用了！
+ 
+
+##### 08.04.02 Polynomial Kernel: K(x, x') = (ζ + γxTx')Q       
+**优点**是：
+我们可以通过控制Q的大小任意改变模型的复杂度，一定程度上解决线性不可分的问题；
+**缺点**是：
+含有三个参数，太多啦！
+
+##### 08.04.03 Gaussian Kernel：K(x, x') = exp(-γ ||x - x'||2) 
+**优点**是：
+powerful：比线性的kernel更powerful；
+bounded：比多项式核更好计算一点；
+one  parameter only：只有一个参数
+**缺点**是：
+mysterious：与线性核相反的是，可解释性比较差（先将原始数据映射到一个无限维度中，然后找一个胖胖的边界，将所有的数据点分隔开？）
+too powerful！如果选择了太大的γ，SVM希望将所有的数据都分开，将会导致产生太过复杂的模型而overfitting。
+###### 总结
+所以在实际应用中，一般是先使用线性的kernel，如果效果不好再使用gaussian kernel（小的γ）和多项式kernel(小的Q)。
+[svm详解](https://www.cnblogs.com/little-YTMM/p/5547642.html "svm详解")
