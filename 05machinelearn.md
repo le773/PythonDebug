@@ -138,8 +138,27 @@ sse:(实际值-训练模型得到的结果)*(实际值-训练模型得到的结�
 - **C越大**，相当于惩罚松弛变量，希望松弛变量接近0，即对误分类的惩罚增大，**趋向于对训练集全分对**的情况，这样对训练集测试时准确率很高，但泛化能力弱。**C值小**，对误分类的惩罚减小，允许容错，将他们当成噪声点，**泛化能力较强**;
 - `degree`:多项式`poly`函数的维度;
 - `kernel` ：核函数，默认是`rbf`，可以是‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’ 
+
 0 – 线性：u'v
+
 1 – 多项式：(gamma*u'*v + coef0)^degree
+
 2 – RBF函数：exp(-gamma|u-v|^2)
+也称高斯核函数
+
 3 –sigmoid：tanh(gamma*u'*v + coef0)
 
+#### 08.02 RBF公式里面的sigma和gamma的关系
+
+![rbf中的gamma](http://img.blog.csdn.net/20150606105930104?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+
+gamma是你选择径向基函数作为kernel后，该函数自带的一个参数。隐含地决定了数据**映射到新的特征空间后的分布**。
+
+如果gamma设的太大，![西格玛](http://img.blog.csdn.net/20150606110240260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)会很小，![西格玛](http://img.blog.csdn.net/20150606110240260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)很小的高斯分布长得又高又瘦，会造成只会作用于支持向量样本附近，对于未知样本分类效果很差，存在训练准确率可以很高，(如果让![西格玛](http://img.blog.csdn.net/20150606110240260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)无穷小，则理论上，高斯核的SVM可以拟合任何非线性数据，但容易过拟合)而测试准确率不高的可能，就是通常说的过训练；而如果设的过小，则会造成平滑效应太大，无法在训练集上得到特别高的准确率，也会影响测试集的准确率。
+
+#### 08.03 rbf的优势
+建议首选RBF核函数进行高维投影，因为：
+
+1. 能够实现非线性映射；（ 线性核函数可以证明是他的一个特例；SIGMOID核函数在某些参数上近似RBF的功能。）
+2. 参数的数量影响模型的复杂程度，多项式核函数参数较多。
+3. the RBF kernel has less numerical difficulties.
