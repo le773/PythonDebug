@@ -1,3 +1,6 @@
+### 贝叶斯
+缺陷：在多个单词组成的意义明显不同的词语中，分类不太好
+
 ### 02
 #### CountVectorizer + TfidfTransformer
 ```
