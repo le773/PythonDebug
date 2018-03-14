@@ -1,6 +1,6 @@
-# 0.0 UdaMachineLearn
+# 0.0 PythonDebug
 
-udacity machine learn term one record
+python debug record
 
 
 ### 1.0 如何将Anaconda更新到想要的python版本
