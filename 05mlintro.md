@@ -56,6 +56,11 @@ clf.fit(iris.data, iris.target)
 #### 04.05 模型复杂度
 与学习曲线图形不同，**模型复杂度**图形呈现的是模型复杂度如何改变训练曲线和测试曲线，而不是呈现用来训练模型的数据点数量。一般趋势是，**随着模型增大，模型对固定的一组数据表现出更高的变化性**。
 
+#### 04.06 使用RandomizeSearchCV来降低计算代价¶
+- RandomizeSearchCV用于解决多个参数的搜索过程中计算代价过高的问题
+- RandomizeSearchCV搜索参数中的一个子集，这样你可以控制计算代价 
+[网格搜索来进行高效的参数调优](http://blog.csdn.net/jasonding1354/article/details/50562522 "网格搜索来进行高效的参数调优")
+
 ### 06 评估指标
 #### 06.01 混淆矩阵
 ![混淆矩阵](https://i.imgur.com/K7TfktM.png)
