@@ -445,6 +445,7 @@ df_08.columns == df_18.columns
 # 修改列的取值范围
 df['No-show'].replace({'No':0, 'Yes':1}, inplace=True)
 df['label'] = df.label.map({'ham':0, 'spam':1})
+df['label'] = df[xxx].map({'ham':0, 'spam':1}).astype(int)
 ```
 
 #### 03.03 确认空置
