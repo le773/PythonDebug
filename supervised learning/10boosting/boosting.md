@@ -13,3 +13,40 @@
 
 ### 07 AdaBoost简介
 ![Adaboost](https://i.imgur.com/v4D4wg1.jpg)
+
+#### 07.01 AdaBoost算法
+![AdaBoost算法](http://img.blog.csdn.net/20171012101801651?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvYzQwNjQ5NTc2Mg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
+
+### AdaBoost总结
+###### AdaBoost的优缺点：
+
+- 优点：
+泛化错误率低，易编码，可以应用在大部分分类器上，无参数调整。
+
+- 缺点：
+对离群点敏感。
+
+- 其他
+多个分类器组合可能会进一步凸显出单分类器的不足，比如过拟合问题
+
+### 09 Bagging、Boosting二者之间的区别
+#### 09.01.01 样本选择上：
+- Bagging：训练集是在原始集中有放回选取的，从原始集中选出的各轮训练集之间是独立的。
+- Boosting：每一轮的训练集不变，只是训练集中每个样例在分类器中的权重发生变化。而权值是根据上一轮的分类结果进行调整。
+
+#### 09.01.02 样例权重：
+- Bagging：使用均匀取样，每个样例的权重相等。
+- Boosting：根据错误率不断调整样例的权值，错误率越大则权重越大。
+
+#### 09.01.03 预测函数：
+- Bagging：所有预测函数的权重相等。
+- Boosting：每个弱分类器都有相应的权重，对于分类误差小的分类器会有更大的权重。
+
+#### 09.01.04 并行计算：
+- Bagging：各个预测函数可以并行生成。
+- Boosting：各个预测函数只能顺序生成，因为后一个模型参数需要前一轮模型的结果。
+
+#### 09.02 算法组合
+Bagging + 决策树 = 随机森林
+AdaBoost + 决策树 = 提升树
+Gradient Boosting + 决策树 = GBDT
