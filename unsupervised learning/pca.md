@@ -2,6 +2,10 @@
 Principal Components Analysis:主成分分析
 主成分是由数据中具有最大方差的方向决定的，因为可以最大程度的保留信息量。
 
+随着你添加越来越多的主成分作为训练分类器的特征，它的性能会更高；
+更高的 F1 得分，这意味着分类器的性能更高；
+当使用大量 PCA 时，会看到任何过拟合迹象, 性能开始下降。
+
 #### 1.1 PCA的特点
 - PCA将输入特征转化为主成分的系统化方式
 - 这些主成分可以作为新特征使用
@@ -18,7 +22,22 @@ Principal Components Analysis:主成分分析
 1. 怀疑数据中存在噪声，可以帮助抛弃重要性小的特征，去除噪声
 1. 让算法在少量的特征上更有效，比如说人脸识别，可以将维度降低1/10，然后使用svm来进行训练，之后发现被拍摄人的身份
 
-### 2.0 pac代码实现
+
+#### 1.3 选择主成分
+通过增加主成分，观察f1得分(等)，如果出现停滞(下降)则停止增加。
+而不是特征选择；
+pca会找出一种方法，来将各种输入特征中的信息合并起来；所以，如果在进行PCA之前排除所有输入特征，某种程度上讲，也就排除PCA能够挽救的信息,(如果有很多不相关的特征，是可以舍弃的，但是要小心)；制作主成分之后对其进行特征选择是可以的。
+
+#### 1.4 最大方差与信息损失
+![信息损失](https://i.imgur.com/AeYD61A.png)
+当将方差最大化的同时，实际上将点与其在该线上的投影之间的距离最小化(信息丢失最小)。
+
+![信息损失2](https://i.imgur.com/2kcb8ki.png)
+上图中绿色点的损失大于黄色点。
+
+
+
+### 2.0 pca代码实现
 ```
 def pca(dataMat, topNfeat=9999999):
     """pca
@@ -84,18 +103,6 @@ def pca(dataMat, topNfeat=9999999):
     # reconMat= (1567L, 590L)
     print 'reconMat=', shape(reconMat)
     return lowDDataMat, reconMat
-
-
-def replaceNanWithMean():
-    datMat = loadDataSet(os.getcwd() + "\\codetwo\\" + 'input/13.PCA/secom.data', ' ')
-    numFeat = shape(datMat)[1]
-    for i in range(numFeat):
-        # 对value不为NaN的求均值
-        # .A 返回矩阵基于的数组
-        meanVal = mean(datMat[nonzero(~isnan(datMat[:, i].A))[0], i])
-        # 将value为NaN的值赋值为均值
-        datMat[nonzero(isnan(datMat[:, i].A))[0],i] = meanVal
-    return datMat
 ```
 
 ### 其他：pca效果
