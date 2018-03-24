@@ -7,7 +7,12 @@
 
 使用数据类型 : 数值型数据
 
-#### 1.1  K-means的局限
+#### 1.1 Random Initialization
+![K-means_random_initialization_1](https://i.imgur.com/mNSNn6i.png)
+1. 簇中心小于训练集个数
+2. 随机初始化簇中心
+
+#### 1.2  K-means的局限
 1. Kmeans是爬山算法,它非常**依赖于你的初始聚类中心所处的位置**，所以同一个训练集训练出的模型，可能预测出不一样的结果；
 
 2. 局部最小值(理由同上)
@@ -17,6 +22,10 @@
 3. 差的局部最小值
 
 ![kmeans差的局部最小值](https://i.imgur.com/CIZnV0A.png)
+
+#### 1.3 避免局部最优的方法
+![K-means_avoid_local_optimization_1](https://i.imgur.com/TIozItH.png)
+循环100次K-means方法，取最小的代价函数对应的分类
 
 
 ### 2.0 K-Means伪代码实现
@@ -29,6 +38,25 @@
         2.1.3 将数据点分配到距其最近的簇
     2.2 对每一个簇, 计算簇中所有点的均值并将均值作为质心
 ```
+#### 2.1 Choosing the Number of Clusters
+手动选择聚类的数目
+
+###### 肘部法则(Elbow Method)
+![K-means_elbow_method_1](https://i.imgur.com/DCjPL2Q.png)
+
+如果遇到5比3代价函数高，那么5可能陷入局部最优，应该重新初始化K=5的簇中心，然后计算代价函数；
+
+
+
+#### 2.2 K-means optimization object
+![K-means_optimization_objective_1](https://i.imgur.com/pQTG1Qd.png)
+
+- uc(i):表示x(i)分给的那个cluster的cluster centroid
+- K表示有K个cluster,k表示cluster centoid的index.
+- cost function为x(i)到属于它的cluster的cluster centroid的距离的平方的累加
+
+通过求cost function的最小值来求得参数c与u.
+这个cost function有时也称为distortion cost function(失真代价函数)
 
 ### 3.0 二分 K-Means 聚类算法
 背景：因为K-means可能偶尔会陷入局部最小值
