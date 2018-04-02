@@ -1,13 +1,33 @@
-﻿### 1.1 SVD 是矩阵分解的一种类型。
+### 1.0 矩阵A奇异值分解
+直观上，奇异值分解将矩阵分解为若干个秩一矩阵之和，用公式表示：
+![矩阵A奇异值分解](https://www.zhihu.com/equation?tex=%281%29+%5Cquad%5Cquad+%5Cqquad+A+%3D+%5Csigma_1+u_1v_1%5E%7B%5Crm+T%7D%2B%5Csigma_2+u_2v_2%5E%7B%5Crm+T%7D%2B...%2B%5Csigma_r+u_rv_r%5E%7B%5Crm+T%7D)
+其中等式右边每一项前的系数σ就是奇异值,μ和υ分别表示列向量，秩一矩阵的意思是矩阵秩为1，注意到每一项![uvt](https://www.zhihu.com/equation?tex=uv%5E%7B%5Crm+T%7D)都是秩为1的矩阵。假定奇异值满足![奇异值](https://www.zhihu.com/equation?tex=%5Csigma_1%5Cgeq%5Csigma_2%5Cgeq...%5Cgeq%5Csigma_r%3E0)。
+
+### 1.1 奇异值的物理意义
+奇异值往往对应着矩阵中隐含的重要信息，且重要性和奇异值大小正相关。每个矩阵A都可以表示为一系列秩为1的小矩阵之和，而奇异值则衡量了这些小矩阵对于A的权重。
+
+### 1.2 奇异值的应用
+在图像处理领域，奇异值不仅可以应用在**数据压缩**上，还可以对**图像去噪**。如果一副图像包含噪声，我们有理由相信那些较小的奇异值就是由于噪声引起的。当我们强行令这些较小的奇异值为0时，就可以去除图片中的噪声。
+
+### 1.3 矩阵M的奇异值分解
+![矩阵M奇异值分解](https://i.imgur.com/SJ3lm6r.png)
+
+奇异值分解把线性变换清晰地分解为**旋转**、**缩放**、**投影**这三种基本线性变换。
+
+![奇异值分解_旋转_缩放_投影](https://pic4.zhimg.com/v2-ea67bee7f332fa7bab9bb4ccf19f17e4_r.jpg)
+[奇异值的物理意义是什么？](https://www.zhihu.com/question/22237507 "奇异值的物理意义是什么？")
+
+
+### 2.1 SVD 是矩阵分解的一种类型。
 ![svd矩阵分解](https://raw.githubusercontent.com/apachecn/MachineLearning/master/images/14.SVD/%E4%BD%BF%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE-SVD%E5%85%AC%E5%BC%8F.jpg)
 
-### 1.2 SVD特点
+### 2.2 SVD特点
 
 优点：简化数据，去除噪声，优化算法的结果
 缺点：数据的转换可能难以理解
 使用的数据类型：数值型数据
 
-### 2.0 基于物品相似度的推荐引擎原理
+### 3.0 基于物品相似度的推荐引擎原理
 ```python
 u1未评分物品item
 循环u1中评分的列
@@ -19,7 +39,7 @@ u1未评分物品item
 步骤三：对预估的评分物品按照得分排序itemScores
 ```
 
-### 2.1 基于物品相似度的推荐引擎 代码实现
+### 3.1 基于物品相似度的推荐引擎 代码实现
 ```python
 # 基于物品相似度的推荐引擎
 def standEst(dataMat, user, simMeas, item):
@@ -66,7 +86,7 @@ def standEst(dataMat, user, simMeas, item):
         return ratSimTotal/simTotal
 ```
 
-### 2.2 基于SVD的评分估计
+### 3.2 基于SVD的评分估计
 ```python
 # 基于SVD的评分估计
 # 在recommend() 中，这个函数用于替换对standEst()的调用，该函数对给定用户给定物品构建了一个评分估计值
@@ -121,7 +141,7 @@ def svdEst(dataMat, user, simMeas, item):
         return ratSimTotal/simTotal
 ```
 
-### 机器学习中SVD和PCA一直没有搞的特别清楚，应该如何理解呢？
+### 4.0 机器学习中SVD和PCA一直没有搞的特别清楚，应该如何理解呢？
 
 PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的信息保留下来。那么关键就是【特征明显的，重要的信息】如何选择？  选择标准有两个：
 1. 同一个维度内的数据，方差大的比较明显，因为方差大表示自己和平均水平差异大，有个性，降维后也最可能分的开～
