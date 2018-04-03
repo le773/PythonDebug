@@ -57,6 +57,7 @@ Cij为余子式。
 ![matrix_6.png](https://i.imgur.com/mRYChs5.png)
 
 - 定理10：
+
 ![matrix_7.png](https://i.imgur.com/69qwF9M.png)
 
 ### 第六章 正交性和最小二乘法
@@ -72,6 +73,5 @@ Cij为余子式。
 
 - 定理1：如果A是对称矩阵，那么不同特征空间的任意两个特征向量是正交的。
 - 定理2：一个n*n矩阵A可正交对角化的充分必要条件是A是对角矩阵。
-
 
 
