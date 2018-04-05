@@ -1,4 +1,4 @@
-﻿### 1.0 PCA
+﻿﻿### 1.0 PCA
 Principal Components Analysis:主成分分析
 主成分是由数据中具有最大方差的方向决定的，因为可以最大程度的保留信息量。
 
@@ -109,6 +109,9 @@ print(X_new.shape)
 # select top 10% features
 X_new_percent = SelectPercentile(chi2, percentile=10).fit_transform(X, y)
 print(X_new_percent.shape)
+
+# TODO：反向转换中心点
+log_centers = pca.inverse_transform(X_new)
 ```
 #### 2.4 方法
 
@@ -214,10 +217,10 @@ print(clf.coef_)            #输出每个特征所占的比例，为0时说明�
 ```
 ### 5.1 Lasso回归的损失函数
 下图是Python中Lasso回归的损失函数，式中加号后面一项α||w||1即为L1正则化项。
-![Lasso](https://img-blog.csdn.net/20160904184228158)
+![Lasso.png](https://i.imgur.com/mnBUkTZ.png)
 
 下图是Python中Ridge回归的损失函数，式中加号后面一项![L2Reg](https://i.imgur.com/PhdhMdR.png)即为L2正则化项。
-![Ridge](https://img-blog.csdn.net/20160904184314333)
+![Ridge.png](https://i.imgur.com/IvfSwSP.png)
 
 L1正则化和L2正则化的说明如下：
 
@@ -227,7 +230,7 @@ L1正则化和L2正则化的说明如下：
 下面是L1正则化和L2正则化的作用
 
 - L1正则化可以产生稀疏权值矩阵，即产生一个稀疏模型，可以用于特征选择
-- L2正则化可以防止模型过拟合（overfitting）；一定程度上，L1也可以防止过拟合
+- L2正则化可以防止模型过拟合(`overfitting`)；一定程度上，L1也可以防止过拟合
 
 #### 5.2.1 L1正则化和特征选择
 假设有如下带L1正则化的损失函数： 
@@ -236,7 +239,7 @@ L1正则化和L2正则化的说明如下：
 
 其中J0是原始的损失函数，加号后面的一项是L1正则化项，α是正则化系数。注意到L1正则化是权值的绝对值之和，J是带有绝对值符号的函数，因此J是不完全可微的。机器学习的任务就是要通过一些方法（比如梯度下降）求出损失函数的最小值。当我们在原始损失函数J0后添加L1正则化项时，相当于对J0做了一个约束。令`L=α∑w|w|`，则`J=J0+L`，此时我们的任务变成在L约束下求出J0取最小值的解。考虑二维的情况，即只有两个权值w1和w2，此时`L=|w1|+|w2|`对于梯度下降法，求解J0的过程可以画出等值线，同时L1正则化的函数L也可以在w1w2的二维平面上画出来。如下图：
 
-![L1Reg_model_1](https://img-blog.csdn.net/20160904184428459)
+![L1Reg_model_1.png](https://i.imgur.com/sHE39w4.png)
 
 图中等值线是J0的等值线，黑色方形是L函数的图形。在图中，当J0等值线与L图形首次相交的地方就是最优解。上图中J0与L在L的一个顶点处相交，这个顶点就是最优解。注意到这个顶点的值是(w1,w2)=(0,w)。可以直观想象，因为L函数有很多『突出的角』（二维情况下四个，多维情况下更多），J0与这些角接触的机率会远大于与L其它部位接触的机率，而在这些角上，会有很多权值等于0，这就是为什么L1正则化可以产生稀疏模型，进而可以用于特征选择。
 
@@ -248,7 +251,7 @@ L1正则化和L2正则化的说明如下：
 
 同样可以画出他们在二维平面上的图形，如下：
 
-![L2Reg_model_2](https://img-blog.csdn.net/20160904184646963)
+![L2Reg_model_2.png](https://i.imgur.com/LFVWAkg.png)
 
 二维平面下L2正则化的函数图形是个圆，与方形相比，被磨去了棱角。因此J0与L相交时使得w1或w2等于零的机率小了许多，这就是为什么L2正则化不具有稀疏性的原因。
 

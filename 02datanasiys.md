@@ -1,4 +1,4 @@
-### 0.0	数据分析流程
+﻿### 0.0	数据分析流程
 提出数据
 整理数据
 探索数据
@@ -1470,6 +1470,11 @@ df = pd.DataFrame(np.random.randn(20, 4).cumsum(0), columns=list('ABCD'), index=
 df.plot()
 plt.show()
 ```
+###### 4列为一组，共6组的直方图
+![直方图_4.png](https://i.imgur.com/vKt0PPr.png)
+
+###### 4条连续的折线图
+![折线图_2.png](https://i.imgur.com/psMrJis.png)
 
 
 #### 10.02.02 DataFrame的方法参数
@@ -1521,6 +1526,12 @@ data.iloc[-1:]   #选取DataFrame最后一行，返回的是DataFrame
 data.loc['a',['w','x']]   #返回‘a’行'w'、'x'列，这种用于选取行索引列索引已知
 
 data.iat[1,1]   #选取第二行第二列，用于已知行、列位置的选取
+
+# 从数据集中选择三个你希望抽样的数据点的索引
+indices = [23,39,211]
+
+# 为选择的样本建立一个DataFrame，并且重新索引
+samples = pd.DataFrame(data.loc[indices], columns = data.keys()).reset_index(drop = True)
 ```
 
 #### 10.02.04 DataFrame取值例子
