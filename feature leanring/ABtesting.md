@@ -22,6 +22,19 @@ A/B 测试，顾名思义就是方案A和方案B的比较。为同一个目标�
 - 分析结果
 实验到这里也就完成了，下面就得开始分析一下结果。A/B测试软件会通过收集的数据分析告诉你两个版本运行过程中用户行为的差异，以及是否具有统计学的差异显著性。
 
+
+**A/B Testing Process**
+The correct way to run an A/B testing experiment is to follow a scientific process. It includes the following steps:
+
+1. Study your Website Data: Use a website analytics tool such as Google Analytics, and find the problem areas in your conversion funnel. For example, you can identify the pages with the highest bounce rate. Let's say, your homepage has an unusually high bounce rate.
+2. Observe User Behavior: Utilize visitor behavior analysis tools such as Heatmaps, Visitor Recordings, Form Analysis and On-page Surveys, and find what is stopping the visitors from converting. For example, “The CTA button is not prominent on the home page."
+3. Construct a Hypothesis: Per the insights from visitor behavior analysis tools, build a hypothesis aimed at increasing conversions. For example, “Increasing the size of the CTA button will make it more prominent and will increase conversions.”
+4. Test your Hypothesis: Create a variation per your hypothesis, and A/B test it against the original page. For example, “A/B test your original home page against a version that has a larger CTA button.” Calculate the test duration with respect to the number of your monthly visitors, current conversion rate, and the expected change in the conversion rate. (Use our Bayesian Calculator here.)
+5. Analyze Test Data and Draw Conclusions: Analyze the A/B test results, and see which variation delivered the highest conversions. If there is a clear winner among the variations, go ahead with its implementation. If the test remains inconclusive, go back to step number three and rework your hypothesis.
+6. Report results to all concerned: Let others in Marketing, IT, and UI/UX know of the test results and the insights generated.
+
+[ab-testing](https://vwo.com/ab-testing/ "ab-testing")
+
 ### 灰度发布
 ![灰度发布](https://pic3.zhimg.com/72cdd3a4d3bba3ba4a4f0be795be831f_r.jpg)
 

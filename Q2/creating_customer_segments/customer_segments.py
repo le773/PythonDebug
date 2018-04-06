@@ -17,7 +17,7 @@
 # 
 # 运行下面的的代码单元以载入整个客户数据集和一些这个项目需要的Python库。如果你的数据集载入成功，你将看到后面输出数据集的大小。
 
-# In[1]:
+# In[58]:
 
 
 # 检查你的Python版本
@@ -26,7 +26,7 @@ if version_info.major != 2 and version_info.minor != 7:
     raise Exception('请使用Python 2.7来完成此项目')
 
 
-# In[2]:
+# In[108]:
 
 
 # 引入这个项目需要的库
@@ -36,6 +36,7 @@ import visuals as vs
 import seaborn as sns
 import matplotlib.pyplot as plt
 from IPython.display import display # 使得我们可以对DataFrame使用display()函数
+from sklearn.decomposition import PCA
 
 # 设置以内联的形式显示matplotlib绘制的图片（在notebook中显示更美观）
 get_ipython().magic(u'matplotlib inline')
@@ -49,7 +50,7 @@ except:
     print "Dataset could not be loaded. Is the dataset missing?"
 
 
-# In[3]:
+# In[109]:
 
 
 data.head()
@@ -60,7 +61,7 @@ data.head()
 # 
 # 运行下面的代码单元给出数据集的一个统计描述。注意这个数据集包含了6个重要的产品类型：**'Fresh'**, **'Milk'**, **'Grocery'**, **'Frozen'**, **'Detergents_Paper'**和 **'Delicatessen'**。想一下这里每一个类型代表你会购买什么样的产品。
 
-# In[4]:
+# In[110]:
 
 
 # 显示数据集的一个描述
@@ -70,14 +71,14 @@ display(data.describe())
 # ### 练习: 选择样本
 # 为了对客户有一个更好的了解，并且了解代表他们的数据将会在这个分析过程中如何变换。最好是选择几个样本数据点，并且更为详细地分析它们。在下面的代码单元中，选择**三个**索引加入到索引列表`indices`中，这三个索引代表你要追踪的客户。我们建议你不断尝试，直到找到三个明显不同的客户。
 
-# In[64]:
+# In[111]:
 
 
 # 设置阈值，选择差异比较大的数据
 # data.query('Detergents_Paper >3900 and Delicatessen > 1800')
 
 
-# In[6]:
+# In[112]:
 
 
 # 选取指定列名的数据
@@ -85,14 +86,14 @@ indices = ['Fresh','Milk','Grocery']
 data.loc[:, indices].head()
 
 
-# In[7]:
+# In[113]:
 
 
 # 显示数据集的一个描述
 display(data.describe())
 
 
-# In[8]:
+# In[114]:
 
 
 # TODO：从数据集中选择三个你希望抽样的数据点的索引
@@ -131,155 +132,31 @@ sns.heatmap((samples-data.quantile(q=0.75))/data.std(ddof=0), annot=True, cbar=F
 #  - 导入一个DecisionTreeRegressor（决策树回归器），设置一个`random_state`，然后用训练集训练它。
 #  - 使用回归器的`score`函数输出模型在测试集上的预测得分。
 
-# In[9]:
-
-
-new_data = data.drop(['Grocery'], axis=1)
-new_data.head()
-
-
-# In[10]:
-
-
-target_data = data['Grocery']
-target_data.head()
-
-
-# In[11]:
+# In[115]:
 
 
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import r2_score
 
-# TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
-new_data = data.drop(['Grocery'], axis=1)
+for col in data.columns:
+    # TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
+    target_data = data[col]
+    new_data = data.drop([col], axis=1)
 
-# TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
+    # TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
+    X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
 
-# TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
-regressor = DecisionTreeRegressor(random_state=41)
+    # TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
+    regressor = DecisionTreeRegressor(random_state=41)
 
-regressor.fit(X_train,y_train)
+    regressor.fit(X_train,y_train)
 
-# TODO：输出在测试集上的预测得分
-score = regressor.score(X_test, y_test)
-score
-
-
-# In[12]:
-
-
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
-
-target_data = data['Detergents_Paper']
-# TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
-new_data = data.drop(['Detergents_Paper'], axis=1, inplace=False)
-
-# TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
-
-# TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
-regressor = DecisionTreeRegressor(random_state=42)
-
-regressor.fit(X_train,y_train)
-
-# TODO：输出在测试集上的预测得分
-score = regressor.score(X_test, y_test)
-score
-
-
-# In[13]:
-
-
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
-
-target_data = data['Fresh']
-# TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
-new_data = data.drop(['Fresh'], axis=1)
-
-# TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
-
-# TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
-regressor = DecisionTreeRegressor(random_state=41)
-
-regressor.fit(X_train,y_train)
-
-# TODO：输出在测试集上的预测得分
-score = regressor.score(X_test, y_test)
-score
-
-
-# In[14]:
-
-
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
-
-target_data = data['Milk']
-# TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
-new_data = data.drop(['Milk'], axis=1)
-
-# TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
-
-# TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
-regressor = DecisionTreeRegressor(random_state=41)
-
-regressor.fit(X_train,y_train)
-
-# TODO：输出在测试集上的预测得分
-score = regressor.score(X_test, y_test)
-score
-
-
-# In[15]:
-
-
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
-
-target_data = data['Frozen']
-# TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
-new_data = data.drop(['Frozen'], axis=1)
-
-# TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
-
-# TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
-regressor = DecisionTreeRegressor(random_state=41)
-
-regressor.fit(X_train,y_train)
-
-# TODO：输出在测试集上的预测得分
-score = regressor.score(X_test, y_test)
-score
-
-
-# In[16]:
-
-
-from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeRegressor
-
-target_data = data['Delicatessen']
-# TODO：为DataFrame创建一个副本，用'drop'函数丢弃一个特征
-new_data = data.drop(['Delicatessen'], axis=1)
-
-# TODO：使用给定的特征作为目标，将数据分割成训练集和测试集
-X_train, X_test, y_train, y_test = train_test_split(new_data, target_data, test_size=0.25, random_state=42)
-
-# TODO：创建一个DecisionTreeRegressor（决策树回归器）并在训练集上训练它
-regressor = DecisionTreeRegressor(random_state=41)
-
-regressor.fit(X_train,y_train)
-
-# TODO：输出在测试集上的预测得分
-score = regressor.score(X_test, y_test)
-score
+    # TODO：输出在测试集上的预测得分
+    score = regressor.score(X_test, y_test)
+#     y_predict = regressor.predict(X_test)
+#     score2 = r2_score(y_test, y_predict)  
+    print 'feature:', col, 'score', score
 
 
 # ### 问题 2
@@ -289,12 +166,12 @@ score
 # **回答:**
 # 尝试预测Grocery，预测得分0.6967283319766862
 # 
-# 是必要的，因为和剩下所有的商品相比，其预测得分最高，能提供的信息更有价值。
+# 对于区分用户的消费习惯不是必要的，因为R^2得分越高越接近完美拟合，那么这个特征的信息可以一定程度上从其他特征中得到，所以越不必要
 
 # ### 可视化特征分布
 # 为了能够对这个数据集有一个更好的理解，我们可以对数据集中的每一个产品特征构建一个散布矩阵（scatter matrix）。如果你发现你在上面尝试预测的特征对于区分一个特定的用户来说是必须的，那么这个特征和其它的特征可能不会在下面的散射矩阵中显示任何关系。相反的，如果你认为这个特征对于识别一个特定的客户是没有作用的，那么通过散布矩阵可以看出在这个数据特征和其它特征中有关联性。运行下面的代码以创建一个散布矩阵。
 
-# In[17]:
+# In[116]:
 
 
 # 对于数据中的每一对特征构造一个散布矩阵
@@ -312,7 +189,7 @@ pd.plotting.scatter_matrix(data, alpha = 0.3, figsize = (14,8), diagonal = 'kde'
 # 上图验证了预测的Grocery特征的相关性
 # 因为如果不呈现一定相关性，Detergents_Paper(0.27) Milk(0.25)的预测得分可能是负的。
 # 
-# 并呈现明显的正态分布，并且也无法观察出分布特点
+# 并未呈现明显的正态分布，大多数的数据点呈现右偏(正偏)的特点。
 
 # ## 数据预处理
 # 在这个部分，你将通过在数据上做一个合适的缩放，并检测异常点（你可以选择性移除）将数据预处理成一个更好的代表客户的形式。预处理数据是保证你在分析中能够得到显著且有意义的结果的重要环节。
@@ -324,7 +201,7 @@ pd.plotting.scatter_matrix(data, alpha = 0.3, figsize = (14,8), diagonal = 'kde'
 #  - 使用`np.log`函数在数据 `data` 上做一个对数缩放，然后将它的副本（不改变原始data的值）赋值给`log_data`。
 #  - 使用`np.log`函数在样本数据 `samples` 上做一个对数缩放，然后将它的副本赋值给`log_samples`。
 
-# In[18]:
+# In[117]:
 
 
 # TODO：使用自然对数缩放数据
@@ -342,14 +219,14 @@ pd.plotting.scatter_matrix(log_data, alpha = 0.3, figsize = (14,8), diagonal = '
 # 
 # 运行下面的代码以观察样本数据在进行了自然对数转换之后如何改变了。
 
-# In[19]:
+# In[118]:
 
 
 # 展示经过对数变换后的样本数据
 display(log_samples)
 
 
-# In[20]:
+# In[119]:
 
 
 log_data.head()
@@ -367,7 +244,7 @@ log_data.head()
 # **注意：** 如果你选择移除异常值，请保证你选择的样本点不在这些移除的点当中！
 # 一旦你完成了这些功能，数据集将存储在`good_data`中。
 
-# In[35]:
+# In[120]:
 
 
 # 可选：选择你希望移除的数据点的索引
@@ -393,11 +270,22 @@ for feature in log_data.keys():
 #     print tmp_beyond.index.values
 
 
-# In[36]:
+# In[121]:
 
 
+error_l1 = {}
 # 异常行
-print outliers
+for key in outliers:
+    if key in error_l1:
+        error_l1[key] = error_l1[key] + 1
+    else:
+        error_l1[key] = 1
+outliers = [ k for k, v in error_l1.items() if v > 1 ]
+outliers
+
+
+# In[122]:
+
 
 # 如果选择了的话，移除异常点 并重新索引
 good_data = log_data.drop(log_data.index[outliers]).reset_index(drop = True)
@@ -423,7 +311,7 @@ good_data.head()
 #  - 导入`sklearn.decomposition.PCA`并且将`good_data`用PCA并且使用6个维度进行拟合后的结果保存到`pca`中。
 #  - 使用`pca.transform`将`log_samples`进行转换，并将结果存储到`pca_samples`中。
 
-# In[37]:
+# In[123]:
 
 
 from sklearn.decomposition import PCA
@@ -460,7 +348,7 @@ pca_results = vs.pca_results(good_data, pca)
 # ### 观察
 # 运行下面的代码，查看经过对数转换的样本数据在进行一个6个维度的主成分分析（PCA）之后会如何改变。观察样本数据的前四个维度的数值。考虑这和你初始对样本点的解释是否一致。
 
-# In[38]:
+# In[124]:
 
 
 # 展示经过PCA转换的sample log-data
@@ -475,7 +363,7 @@ display(pd.DataFrame(np.round(pca_samples, 4), columns = pca_results.index.value
 #  - 使用`pca.transform`将`good_data`进行转换，并将结果存储在`reduced_data`中。
 #  - 使用`pca.transform`将`log_samples`进行转换，并将结果存储在`pca_samples`中。
 
-# In[39]:
+# In[125]:
 
 
 # TODO：通过在good data上进行PCA，将其转换成两个维度
@@ -497,7 +385,7 @@ reduced_data.head()
 # ### 观察
 # 运行以下代码观察当仅仅使用两个维度进行PCA转换后，这个对数样本数据将怎样变化。观察这里的结果与一个使用六个维度的PCA转换相比较时，前两维的数值是保持不变的。
 
-# In[40]:
+# In[126]:
 
 
 # 展示经过两个维度的PCA转换之后的样本log-data
@@ -509,7 +397,7 @@ display(pd.DataFrame(np.round(pca_samples, 4), columns = ['Dimension 1', 'Dimens
 # 
 # 运行下面的代码来创建一个降维后数据的双标图。
 
-# In[41]:
+# In[127]:
 
 
 # Create a biplot
@@ -567,7 +455,7 @@ vs.biplot(good_data, reduced_data, pca)
 #  - 导入sklearn.metrics.silhouette_score包并计算`reduced_data`相对于`preds`的轮廓系数。
 #    - 将轮廓系数赋值给`score`并输出结果。
 
-# In[42]:
+# In[128]:
 
 
 # K-means
@@ -602,7 +490,7 @@ plt.ylabel("score")  #Y轴标签
 plt.title("kmeans cluster") #图标题  
 
 
-# In[43]:
+# In[129]:
 
 
 # GMM
@@ -638,7 +526,7 @@ plt.ylabel("score")  #Y轴标签
 plt.title("GMM cluster") #图标题  
 
 
-# In[44]:
+# In[130]:
 
 
 # GaussianMixture
@@ -672,7 +560,7 @@ plt.ylabel("score")  #Y轴标签
 plt.title("GaussianMixture cluster") #图标题  
 
 
-# In[45]:
+# In[131]:
 
 
 plt.plot(n_range, result1, marker='o', linewidth=1)
@@ -695,7 +583,7 @@ plt.title("cluster") #图标题
 
 # ###  选择最好的聚类方法 与 簇数目
 
-# In[46]:
+# In[132]:
 
 
 # K-means
@@ -723,7 +611,7 @@ score
 # ### 聚类可视化
 # 一旦你选好了通过上面的评价函数得到的算法的最佳聚类数目，你就能够通过使用下面的代码块可视化来得到的结果。作为实验，你可以试着调整你的聚类算法的聚类的数量来看一下不同的可视化结果。但是你提供的最终的可视化图像必须和你选择的最优聚类数目一致。
 
-# In[47]:
+# In[133]:
 
 
 # 从已有的实现中展示聚类的结果
@@ -738,7 +626,7 @@ vs.cluster_results(reduced_data, preds, centers, pca_samples)
 #  - 使用`np.log`的反函数`np.exp`反向转换`log_centers`并将结果存储到`true_centers`中。
 # 
 
-# In[48]:
+# In[134]:
 
 
 # TODO：反向转换中心点
@@ -759,14 +647,14 @@ display(true_centers)
 # 
 # **提示：** 一个被分到`'Cluster X'`的客户最好被用 `'Segment X'`中的特征集来标识的企业类型表示。
 
-# In[60]:
+# In[135]:
 
 
 #segment 0
 true_centers.iloc[0].plot(kind='bar')
 
 
-# In[62]:
+# In[136]:
 
 
 #segment 1
@@ -783,7 +671,7 @@ true_centers.iloc[1].plot(kind='bar')
 # 
 # 运行下面的代码单元以找到每一个样本点被预测到哪一个簇中去。
 
-# In[62]:
+# In[137]:
 
 
 # 显示预测结果
@@ -803,16 +691,30 @@ for i, pred in enumerate(sample_preds):
 # **提示：** 我们能假设这个改变对所有的客户影响都一致吗？我们怎样才能够确定它对于哪个类型的客户影响最大？
 
 # **回答：**
-# 由以上聚类分析可知，Segment0 代表杂货店,Segment1 代表餐饮商店,对餐饮店要求食物、蔬菜保持新鲜，杂货店需求的物品，可以存储时间可以更久，因此餐饮派送服务可以缩短，杂货店派送可以保持当前状态。
+# 由以上聚类分析可猜测，Segment0 代表杂货店,Segment1 代表餐饮商店, 
 # 
-# 对于Segment0、1的客户划分多个样本，每个样本特征保持一致，收集Segment0、1每个样本的反馈数据对比分析，确定对那个客户影响更大，然后将更优的方法推到该类的全部客户。
+# 餐饮店要求食物、蔬菜保持新鲜，杂货店需求的物品，可以存储时间可以更久，因此餐饮派送服务可以缩短，杂货店派送可以保持当前状态。
+# 
+# 
+# 1. 数据收集：对于Segment0、1的客户分别划分K(K>1)个样本，每个样本特征保持一致，分别随机从Segment0选取样本S1，S2，Segment1选取样本S3,S4；
+# 
+# 2. 明确目标：客户评估派送服务周期改变对其影响，收集客户对此服务的打分作为评价的依据；
+# 
+# 3. 提出假设：餐饮店要求食物、蔬菜保持新鲜，需要派送周期短；杂货店需求的物品，可以存储时间可以更久，因此派送周期可以稍微比前者长一点；
+# 
+# 4. 架构调整：将对S1，S3的派送服务从每周5天变为每周3天,S2、S4保持当前的派送周期；
+# 
+# 5. 测试执行： 执行步骤4的策略，搜集S1,S2，S3,S4 对此策略的打分
+# 
+# 6. 分析结果：通过打分分析两个类的差异，然后将更优的方法推到该类的全部客户。
+# 
 
 # ### 问题 11
 # 通过聚类技术，我们能够将原有的没有标记的数据集中的附加结构分析出来。因为每一个客户都有一个最佳的划分（取决于你选择使用的聚类算法），我们可以把*用户分类*作为数据的一个[**工程特征**](https://en.wikipedia.org/wiki/Feature_learning#Unsupervised_feature_learning)。假设批发商最近迎来十位新顾客，并且他已经为每位顾客每个产品类别年度采购额进行了预估。进行了这些估算之后，批发商该如何运用它的预估和**非监督学习的结果**来对这十个新的客户进行更好的预测？
 # 
 # **提示：**在下面的代码单元中，我们提供了一个已经做好聚类的数据（聚类结果为数据中的cluster属性），我们将在这个数据集上做一个小实验。尝试运行下面的代码看看我们尝试预测‘Region’的时候，如果存在聚类特征'cluster'与不存在相比对最终的得分会有什么影响？这对你有什么启发？
 
-# In[65]:
+# In[138]:
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -848,7 +750,7 @@ print "不使用cluster特征的得分", clf.score(X_test, y_test)
 # 
 # 运行下面的代码单元以查看哪一个数据点在降维的空间中被标记为`'HoReCa'` (旅馆/餐馆/咖啡厅)或者`'Retail'`。另外，你将发现样本点在图中被圈了出来，用以显示他们的标签。
 
-# In[66]:
+# In[139]:
 
 
 # 根据‘Channel‘数据显示聚类的结果
@@ -865,5 +767,51 @@ vs.channel_results(reduced_data, outliers, pca_samples)
 # 通过观察上图可知，segment0,segment1存在部分相互重叠的区域，对于这部分的划分其实目前没有更好的聚类方法划分更好的簇。
 # 
 # 此分类和前面你对于用户分类基本一致，选取的3个样本数据基本划分正确。
+
+# ### 三维空间里面，观察聚类
+
+# In[142]:
+
+
+get_ipython().magic(u'matplotlib notebook')
+
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+
+# use a 3-component PCA
+reduced_data3 = PCA(n_components=3).fit_transform(good_data)
+reduced_data3 = pd.DataFrame(reduced_data3, 
+                columns = ['Dimension 1', 'Dimension 2', 'Dimension 3'])
+
+# get the labels
+channel = pd.read_csv("customers.csv")['Channel']
+channel = channel.drop(channel.index[outliers]).reset_index(drop = True)
+labeled = pd.concat([reduced_data3, channel], axis = 1)
+labels = ['Hotel/Restaurant/Cafe', 'Retailer']
+
+# group by labels
+grouped = labeled.groupby('Channel')
+
+# color stuff 
+cmap = cm.get_cmap('gist_rainbow')
+
+# let's plot!
+fig = plt.figure()
+axe3d = fig.gca(projection = '3d')
+for i, data3 in grouped:
+    axe3d.scatter(data3.iloc[:,0],data3.iloc[:,1],data3.iloc[:,2],
+                  c = cmap((i-1)*1.0/2),label = labels[int(i)-1], linewidth = 0)
+
+# ajust for sanity
+axe3d.set_xlabel('Dimension 1')
+axe3d.set_ylabel('Dimension 2')
+axe3d.set_zlabel('Dimension 3')
+axe3d.set_xlim(labeled.iloc[:,0].min(),labeled.iloc[:,0].max())
+axe3d.set_ylim(labeled.iloc[:,1].min(),labeled.iloc[:,1].max())
+axe3d.set_zlim(labeled.iloc[:,2].min(),labeled.iloc[:,2].max())   
+axe3d.legend()
+plt.show()
+
 
 # > **注意**: 当你写完了所有的代码，并且回答了所有的问题。你就可以把你的 iPython Notebook 导出成 HTML 文件。你可以在菜单栏，这样导出**File -> Download as -> HTML (.html)**把这个 HTML 和这个 iPython notebook 一起做为你的作业提交。  
