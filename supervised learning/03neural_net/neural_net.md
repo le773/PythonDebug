@@ -12,22 +12,29 @@
 3. 
 
 神经网络每个单元如下:
+
 ![神经网络](http://dataunion.org/wp-content/uploads/2015/03/115.png)
 其对应的公式如下：
+
 ![神经网络公式](http://dataunion.org/wp-content/uploads/2015/03/27.png)
 
 其中，该**单元**也可以被称作是**Logistic回归模型**。当将多个单元组合起来并具有分层结构时，就形成了神经网络模型。
+
 ![隐含层的神经网络](http://dataunion.org/wp-content/uploads/2015/03/342.png)
+
 其对应的公式如下:
+
 ![对应的公式](http://dataunion.org/wp-content/uploads/2015/03/42.png)
 
 #### 9 梯度下降
 ![梯度下降](http://img.blog.csdn.net/20131213085438093)
 
 代码实现
+
 ![代码实现](http://img.blog.csdn.net/20131113202512453?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZG9uZ3Rpbmd6aGl6aQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
 
 参考
+
 [Logistic回归总结](http://blog.csdn.net/achuo/article/details/51160101 "Logistic回归总结")
 
 度下降算法可以给我们提供一个求极值的方法。但是也会产生很多问题：
@@ -64,7 +71,9 @@
 **解决**:交叉验证。
 在神经网络训练中，开始迭代过程，随着迭代的运行，误差实际上会不断的减小, 它对训练数据建模做的越来越好。
 特别的，如果在某类留存测试集中或者在交叉验证集中看到这个误差，
+
 ![神经网络训练](https://i.imgur.com/mdtHObf.png)
+
 开始比较高，然后下降，在某个点折返上升。在下降的点应该停止训练。
 
 #### 15 喜好偏差 or 选择偏置
