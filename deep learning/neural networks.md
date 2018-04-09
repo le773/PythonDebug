@@ -71,3 +71,107 @@ E = (y - ŷ)**2,(使用平方较小误差的惩罚值较低，较大误差惩罚
 ![梯度下降_权重求导_3.png](https://i.imgur.com/u3nKKX1.png)
 
 ![梯度下降_权重求导_4.png](https://i.imgur.com/jUKA3ir.png)
+
+### 实例代码
+### 梯度下降来更新权重的算法概述
+![gradient_descent_weight_1.png](https://i.imgur.com/hqKuvVZ.png)
+
+也可以对每条记录更新权重，而不是把所有记录都训练过之后再取平均。
+使用sigmoid作为激活函数；
+
+代码
+```
+import numpy as np
+from data_prep import features, targets, features_test, targets_test
+
+def sigmoid(x):
+    """
+    Calculate sigmoid
+    """
+    return 1 / (1 + np.exp(-x))
+
+# TODO: We haven't provided the sigmoid_prime function like we did in
+#       the previous lesson to encourage you to come up with a more
+#       efficient solution. If you need a hint, check out the comments
+#       in solution.py from the previous lecture.
+
+# Use to same seed to make debugging easier
+np.random.seed(42)
+
+n_records, n_features = features.shape
+last_loss = None
+
+# Initialize weights
+weights = np.random.normal(scale=1 / n_features**.5, size=n_features)
+
+# Neural Network hyperparameters
+epochs = 1000
+learnrate = 0.5
+
+for e in range(epochs):
+    del_w = np.zeros(weights.shape)
+    for x, y in zip(features.values, targets):
+        # Loop through all records, x is the input, y is the target
+
+        # Note: We haven't included the h variable from the previous
+        #       lesson. You can add it if you want, or you can calculate
+        #       the h together with the output
+
+        # TODO: Calculate the output
+        output = sigmoid(np.dot(x, weights))
+
+        # TODO: Calculate the error
+        error = output - y
+
+        # TODO: Calculate the error term
+        error_term = error * output * (1 - output)
+
+        # TODO: Calculate the change in weights for this sample
+        #       and add it to the total weight change
+        del_w += learnrate * np.dot(error_term, x)
+
+    # TODO: Update weights using the learning rate and the average change in weights
+    weights += np.dot(error_term, x)
+
+    # Printing out the mean square error on the training set
+    if e % (epochs / 10) == 0:
+        out = sigmoid(np.dot(features, weights))
+        loss = np.mean((out - targets) ** 2)
+        if last_loss and last_loss < loss:
+            print("Train loss: ", loss, "  WARNING - Loss Increasing")
+        else:
+            print("Train loss: ", loss)
+        last_loss = loss
+
+
+# Calculate accuracy on test data
+tes_out = sigmoid(np.dot(features_test, weights))
+predictions = tes_out > 0.5
+accuracy = np.mean(predictions == targets_test)
+print("Prediction accuracy: {:.3f}".format(accuracy))
+```
+
+### 多层感知器
+![多层感知器_1.png](https://i.imgur.com/s8bvArC.png)
+
+权重被储存在矩阵中，由w{ij}来索引。矩阵中的每一行对应从同一个输入节点发出的权重，每一列对应传入同一个隐藏节点的权重。
+
+隐藏层的计算公式
+
+![多层感知器_2.png](https://i.imgur.com/BsbtKuz.png)
+
+### 反向转播
+要使用梯度下降法更新隐藏层的权重，你需要知道各隐藏层节点的误差对最终输出的影响。每层的输出是由两层间的权重决定的，两层之间产生的误差，按权重缩放后在网络中向前传播。既然我们知道输出误差，便可以用权重来反向传播到隐藏层。
+
+**例如**，输出层每个输出节点 k的误差是![多层感知器_3.png](https://i.imgur.com/CmJK5eu.png)，隐藏节点j的误差即为输出误差乘以输出层-隐藏层间的权重矩阵（以及梯度）。
+
+![反向传播_1.png](https://i.imgur.com/BUwPI21.gif)
+
+注释：j到k间映射的权重 `x` k层的误差项 `x` k层预测点导数值
+**然后**，梯度下降与之前相同，只是用新的误差(反向传播误差的权重更新步长)：
+
+![反向传播_2.png](https://i.imgur.com/Ua18QeS.gif)
+
+注释：j到k间映射的权重 `x` k层的误差项 `x` j层的值.
+
+
