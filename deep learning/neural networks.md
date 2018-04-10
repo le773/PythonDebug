@@ -1,4 +1,4 @@
-## 神经网络入门
+﻿## 神经网络入门
 ### neural networks
 ![neuralnetwords_1.png](https://i.imgur.com/VWldwr3.png)
 
@@ -170,7 +170,7 @@ print("Prediction accuracy: {:.3f}".format(accuracy))
 注释：j到k间映射的权重 `x` k层的误差项 `x` k层预测点导数值
 
 ```
-(y-ŷ) = 上层的误差项目 `x` 本层的输出
+(y-ŷ) = 上层的误差项 `x` 本层的输出
 ```
 
 **然后**，梯度下降与之前相同，只是用新的误差(反向传播误差的权重更新步长)：
@@ -231,3 +231,5 @@ print('Change in weights for input layer to hidden layer:')
 print(delta_w_i_h)
 ```
 
+### 初识别tensorflow
+一个 "`TensorFlow Session`" 是用来运行图的环境。这个 `session` 负责分配 `GPU(s)` `/` 或 `CPU(s)`，包括远程计算机的运算。

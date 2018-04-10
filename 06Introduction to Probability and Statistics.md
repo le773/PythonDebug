@@ -1,4 +1,4 @@
-﻿###### Introduction to Probability and Statistics
+﻿﻿###### Introduction to Probability and Statistics
 
 ### 01
 #### 01.01 方差
@@ -58,7 +58,9 @@ X Y相互独立时，存在某种关系，协方差就是用来表示这种关�
 ![位置参数μ固定,尺度参数σ变化时](http://img.my.csdn.net/uploads/201212/18/1355793440_3003.jpg)
 
 ##### 01.05.04 正偏 负偏
-![正偏 负偏](http://t11.baidu.com/it/u=1156779715,3978066770&fm=173&s=0826743219DBC0CC08FCADDB000080B1&w=312&h=328&img.JPEG)
+![正偏态](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=6d2f792bb2014a9095334eefc81e5277/5882b2b7d0a20cf4429538467d094b36acaf9926.jpg)
+
+![负偏态](https://gss2.bdstatic.com/-fo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike60%2C5%2C5%2C60%2C20/sign=59743db29616fdfacc61cebcd5e6e731/78310a55b319ebc449deb0008926cffc1f171681.jpg)
 
 #### 01.06 隐马尔可夫模型
 隐马尔可夫模型是统计模型，它用来描述一个含有隐含未知参数的马尔可夫过程。其难点是从可观察的参数中确定该过程的隐含参数，然后利用这些参数来作进一步的分析，例如模式识别。
@@ -78,6 +80,24 @@ X Y相互独立时，存在某种关系，协方差就是用来表示这种关�
 
 ###### 例子
 射击选手选拔
+
+#### 01.10 t分布
+![](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=e240ada2d2a20cf4529df68d17602053/80cb39dbb6fd52666bd41631a918972bd4073613.jpg)
+
+##### 01.10.01 特征
+- 以0为中心，左右对称的单峰分布；
+- t分布是一簇曲线，其形态变化与n（确切地说与自由度df）大小有关。自由度df越小，t分布曲线越低平；自由度df越大，t分布曲线越接近标准正态分布（u分布）曲线；
+- 随着自由度逐渐增大，t分布逐渐接近标准正态分布；
+
+##### 01.10.02 正态分布曲线与t曲线有何不同?
+t分布与正态分布一样，是一个单峰对称呈钟形的分布，其对称轴通过分布的平均，数t分布曲线在正负两个方向上也以横轴为它的渐近线。
+
+与正态分布相比，t分布曲线中间低而尖峭，两头高而平缓。t分布的最大特点是它实质上是一族分布，每一个t分布的形态受一个称为自由度的指标所制约。对应一个自由度就有一个t分布，随着自由度的增大，t分布曲线的中间就越来越高，两头却越来越低，整条曲线越来越趋近于正态分布，当自由度接近无穷大时，t分布就变成了正态分布。
+
+#### 01.11 gamma分布
+![gamma分布](https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=b4fcd4988db1cb132a643441bc3d3d2b/a8773912b31bb051784d0c5f367adab44aede058.jpg)
+
+指数分布是伽马分布的一种特殊形式;
 
 ### 02.01 中心极限定理
 #### 02.01.01 独立同分布的中心极限定理
