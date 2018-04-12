@@ -1,4 +1,4 @@
-﻿#### 1.0 如何将Anaconda更新到想要的python版本
+#### 1.0 如何将Anaconda更新到想要的python版本
 重要事项说明：用以上方法前，请测试一下你的机器是否可以用anaconda更新（原生的Python，用Pip装东西也是同理，是否可以连接那些pip源。）
 当确认可以后，做如下操作：
 1. 点击Anaconda Prompt
@@ -9,9 +9,20 @@
 3. that's all
 
 #### 1.1 注销该环境
-    deactivate
+```
+deactivate
+```
+#### 1.2 修改主题颜色
+```
+pip install jupyterthemes
+# 切换chesterish主题
+jt -t chesterish
+# 切换chesterish主题 + font
+jt -f inconsolata -t chesterish
+```
+[jupyter-themes](https://github.com/dunovank/jupyter-themes "jupyter-themes")
 
-#### 2.1 希腊字母表及读音
+#### 备注 希腊字母表及读音
 ```
 1 Α α alpha /a:lf/ 阿尔法 
 2 Β β beta /bet/ 贝塔 

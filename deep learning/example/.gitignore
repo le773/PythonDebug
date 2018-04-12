@@ -66,3 +66,9 @@ target/
 census.csv
 ./P2.zip
 ./report.html
+MNIST_data/
+*.meta
+*.index
+checkpoint
+model*
+train_mode*
