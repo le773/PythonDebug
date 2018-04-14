@@ -72,3 +72,4 @@ MNIST_data/
 checkpoint
 model*
 train_mode*
+*.gz

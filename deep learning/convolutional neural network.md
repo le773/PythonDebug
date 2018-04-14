@@ -55,6 +55,10 @@ CNN 的第一步是把图片分成小块。我们通过选取一个给定宽度�
 #### 4.2 滤波器深度 Filter Depth
 通常都会有多余一个滤波器，不同滤波器提取一个 `patch` 的不同特性。例如，一个滤波器寻找特定颜色，另一个寻找特定物体的特定形状。**卷积层滤波器的数量**被称为滤波器深度。
 
+###### 3x3滤波器
+
+![neural_net_7.png](https://i.imgur.com/DVATKCm.gif)
+
 ###### 每个 patch 连接多少神经元？
 
 这取决于滤波器的深度，如果深度是 `k`，我们把每个 `patch` 与下一层的 `k` 个神经元相连。这样下一层的高度就是 `k`，如下图所示。实际操作中，`k`是一个我们可以调节的超参数，大多数的 `CNNs` 倾向于选择相同的起始值。
@@ -66,3 +70,153 @@ CNN 的第一步是把图片分成小块。我们通过选取一个给定宽度�
 
 #### 4.3 卷积续
 全链接层是一个标准的，非卷积层。它的输入与所有的输出神经相连，也被称为 dense 层
+
+### 5.0 参数
+#### 5.1 参数共享
+![cov_neural_net_share_param_1.png](https://i.imgur.com/Jw7lNgU.png)
+
+当我们试图识别一个猫的图片的时候，我们并不在意猫出现在哪个位置。无论是左上角，右下角，它在你眼里都是一只猫。我们希望 CNNs 能够无差别的识别，这如何做到呢？
+
+如我们之前所见，一个给定的 `patch` 的分类，是由 `patch` 对应的**权重和偏置**项决定的。
+
+如果我们想让左上角的猫与右下角的猫以同样的方式被识别，他们的权重和偏置项需要一样，这样他们才能以同一种方法识别。
+
+这正是我们在 CNNs 中做的。**一个给定输出层学到的权重和偏置项会共享在输入层所有的 patch 里**。注意，当我们增大滤波器的深度的时候，我们需要学习的权重和偏置项的数量也会增加，因为权重并没有共享在所有输出的 channel 里。
+
+共享参数还有一个额外的好处。如果我们不在所有的 patch 里用相同的权重，我们必须对每一个 patch 和它对应的隐藏层神经元学习新的参数。这不利于规模化，特别对于高清图片。因此，共享权重不仅帮我们平移不变，还给我们一个更小，可以规模化的模型。
+
+#### 5.2 Padding
+![cov_neural_net_padding_1.png](https://i.imgur.com/TjrYN5u.png)
+
+一个 `5x5` 的网格附带一个 `3x3` 的滤波器
+
+假设现在有一个 `5x5` 网格 (如上图所示) 和一个尺寸为 `3x3 stride`值为 `1` 的滤波器(`filter`)。 下一层的 `width` 和 `height` 是多少呢？ 如图中所示，在水平和竖直方向都可以在`3`个不同的位置放置 `patch`， 下一层的维度即为 `3x3` 。下一层宽和高的尺寸就会按此规则缩放。
+
+在理想状态下，我们可以在层间保持相同的宽度和高度，以便继续添加图层，保持网络的一致性，而不用担心维度的缩小。如何实现这一构想？其中一种简单的办法是，在 `5x5` 原始图片的外层包裹一圈 `0` ，如下图所示。
+
+![cov_neural_net_padding_2.png](https://i.imgur.com/VI8j7ts.png)
+
+加了 0 padding的相同网格。
+
+这将会把原始图片扩展到 `7x7`。 现在我们知道如何让下一层图片的尺寸维持在 `5x5`，保持维度的一致性。
+
+#### 5.3 维度
+综合目前所学的知识，我们应该如何计算 `CNN` 中每一层神经元的数量呢？
+
+- 输入层（`input layer`）维度值为`W`， 滤波器（`filter`）的维度值为 `F` (`height * width * depth`)， `stride` 的数值为 `S`， `padding` 的数值为 `P`， 下一层的维度值可用如下公式表示: `(W−F+2P)/S+1`。
+
+- 新的深度就是滤波器的数量。
+
+我们可以通过每一层神经元的维度信息，得知模型的规模，并了解到我们设定的 `filter size` 和 `stride` 如何影响整个神经网络的尺寸。
+
+##### 5.3.1 SAME Padding
+```
+out_height = ceil(float(in_height) / float(strides1))
+out_width = ceil(float(in_width) / float(strides[2]))
+```
+##### 5.3.2 VALID Padding
+```
+out_height = ceil(float(in_height - filter_height + 1) / float(strides1))
+out_width = ceil(float(in_width - filter_width + 1) / float(strides[2]))
+```
+
+##### 5.3.3 代码实例
+```
+import tensorflow as tf
+input = tf.placeholder(tf.float32,(None, 32, 32, 3))
+# (height, width, input_depth, output_dep
+filter_weights = tf.Variable(tf.truncated_normal((8,8,3,20)))
+filter_bias = tf.Variable(tf.zeros(20))
+# (batch, height, width, depth)
+strides = [1,2,2,1]
+padding = 'SAME'
+conv = tf.nn.conv2d(input, filter_weights, strides, padding) + filter_bias
+print(conv)
+```
+#### 5.4 没有参数共享
+没有参数共享，每个输出层的神经元必须连接到滤波器的每个神经元。此外，每个输出层的神经元必须连接到一个偏置神经元。
+```
+输入数据，维度为 32x32x3 (HxWxD)
+20个滤波器，维度为 8x8x3 (HxWxD)
+stride（步长）高和宽的都为 2 (S)
+padding 大小为1 (P)
+输出层:14x14x20 (HxWxD)
+
+答：
+(8 * 8 * 3 + 1) * (14 * 14 * 20) = 756560
+8 * 8 * 3 是权值数量，加上1作为 bias。因为每一个权值都与输出的每一部分相连。
+```
+#### 5.5 参数共享
+有了参数共享，每个输出通道的神经元与相同通道的其它神经元共享权值。参数的数量与滤波器神经元的数量相同，加上偏置，再乘以输出层的通道数。
+```
+答：(8 * 8 * 3 + 1) * 20 = 3840 + 20 = 3860
+```
+
+### 6.0 CNNs可视化
+### 7.0 探索设计空间
+池化层的输出深度与输入的深度相同。另外池化操作是分别应用到每一个深度切片层。
+
+#### 7.1 最大池化
+**优点**
+1. 不会增加参数数量，所以不必担心导致容易过拟合
+2. 通常会提高模型的准确性，
+由于在非常小的步幅下进行卷积，模型必然需要更多的计算量，而且有更多的超参数需要调整，例如池区尺寸和池化步幅，它们不必完全相同。
+
+一种典型的卷积神经网络结构为卷积层和最大池化层，相互交替，然后在最末端连接几层全连接层。
+
+#### 7.2 平均池化
+使用特定位置周围的像素的平均值，它有点像提供了下层特征图的一个低分辨率的视图。
+
+##### 例子
+```
+input = tf.placeholder(tf.float32,(None,4,4,5))
+filter_shape = [1,2,2,1]
+strides = [1,2,2,1]
+padding = 'VALID'
+pool = tf.nn.avg_pool(
+    input,
+    filter_shape,
+    strides,
+    padding)
+print(pool)
+```
+### 8.0 TensofFlow 最大池化
+![max_pooling_1.png](https://i.imgur.com/eKB41R5.png)
+
+```
+# Apply Max Pooling
+conv_layer = tf.nn.max_pool(
+    conv_layer,
+    ksize=[1, 2, 2, 1], # 滤波器大小
+    strides=[1, 2, 2, 1], # 步长
+    padding='SAME')
+```
+`ksize` 和 `strides` 参数也被构建为四个元素的列表，每个元素对应 `input tensor` 的一个维度 `([batch, height, width, channels])`，对 `ksize` 和 `strides` 来说，`batch` 和 `channel` 通常都设置成 `1`。
+
+
+近期，池化层并不是很受青睐。部分原因是：
+- 现在的数据集又大又复杂，我们更关心欠拟合问题。
+- `Dropout` 是一个更好的正则化方法。
+- 池化导致信息损失。想想最大池化的例子，n 个数字中我们只保留最大的，把余下的 n-1 完全舍弃了。
+
+#### 8.1 例子
+![pooling_mechanics_quiz_1.png](https://i.imgur.com/3EppHdJ.jpg)
+
+这里，最大池化滤波器的大小是 `2x2`。当最大池化层在输入层滑动时，输出是这个 `2x2` 方块的最大值。
+
+### 9.0 1x1 卷积
+![cov_neural_net_6.png](https://i.imgur.com/kVTxpwt.png)
+
+##### 为什么会有人想用`1x1`卷积？
+
+因为它们关注的不是一块图像，而仅仅是一个像素。传统的的卷积，基本上是运行在一小块图像上的小分类器，但仅仅是个线性分类器，但如果在中间加一个`1x1`卷积，就用运行在一块图像上的神经网络代替了线性分类器，在卷积操作中散布一些`1x1`卷积，是一种使**模型变得更深的低耗高效**的方法，并且会有更多的参数，但未完全改变神经网络结构，它们非常简单，因为如果看数学公式，它们根本不是卷积，只是矩阵相乘并且仅有较少的参数。
+
+### 10.0 Inception 模块
+![neural_net_inception_1.png](https://i.imgur.com/2RmUksC.png)
+
+`Inception`不局限于单个卷积运算，而是将多个模块组合，如平均池化后接`1x1`卷积等，最后吧这些运算输出连成一串。看起来很复杂，根据选择参数的方式，模型中的参数总数可能非常少，但模型的性能比使用简单卷积时要好。
+
+### 11.0 tensorflow卷积层
+
+
+
