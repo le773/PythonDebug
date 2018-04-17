@@ -1,4 +1,6 @@
-﻿### 过拟合
+﻿### 4.0 过拟合
+过拟合（`overfitting`）是指在模型参数拟合过程中的问题，由于训练数据包含**抽样误差**，训练时，复杂的模型将抽样误差也考虑在内，将抽样误差也进行了很好的拟合。
+
 ![过拟合](https://pic4.zhimg.com/v2-62b74afd353d7fdaf9c8d6b20d38d3e1_r.jpg)
 
 针对过拟合问题，通常会考虑两种途径来解决：
@@ -9,6 +11,50 @@ a) 减少特征的数量：
 b) 正则化
 - 保留所有的特征，但是降低参数的量/值；
 - 正则化的好处是当特征很多时，每一个特征都会对预测y贡献一份合适的力量；
+
+c) 获取更多的数据
+- **从源头获取数据**(但是，在很多情况下，大幅增加数据本身就不容易；另外，我们不清楚获取多少数据才算够；)
+- **根据当前数据集估计数据分布参数，使用该分布产生更多数据**：这个一般不用，因为估计分布参数的过程也会代入抽样误差。
+- 数据增强(`Data Augmentation`):通过一定规则扩充数据。(可以通过图像平移、翻转、缩放、切割等手段将数据库成倍扩充；)
+
+![Data Augmentation](https://pic4.zhimg.com/v2-c350674aa4dbee1e375c0d3e68ff0e4d_r.jpg)
+
+d) 训练时间
+对于每个神经元而言，其激活函数在不同区间的性能是不同的：
+
+![sigmoid性能](https://pic3.zhimg.com/v2-f3121f5af646c8a5a1e239594557098e_r.jpg)
+
+当网络权值较小时，神经元的激活函数工作在线性区，此时神经元的拟合能力较弱（类似线性神经元）。
+
+有了上述共识之后，我们就可以解释为什么限制训练时间（`early stopping`）有用：因为我们在初始化网络的时候一般都是初始为较小的权值。**训练时间越长，部分网络权值可能越大**。如果我们在合适时间停止训练，就可以将网络的能力限制在一定范围内。
+
+e) 增加噪声
+
+- 在输入中加噪声
+- 在权值上加噪声
+- 对网络的响应加噪声
+
+f) 结合多种模型
+- Bagging
+
+简单理解，就是分段函数的概念：用不同的模型拟合不同部分的训练集。
+
+- Boosting
+
+既然训练复杂神经网络比较慢，那我们就可以只使用简单的神经网络(层数、神经元数限制等)。通过训练一系列简单的神经网络，加权平均其输出。
+
+![boosting_weight](https://pic1.zhimg.com/v2-a64fbfad58458c6321fa2dd75ed99fcd_r.jpg)
+
+- dropout
+
+在训练时，每次随机（如50%概率）忽略隐层的某些节点；这样，我们相当于随机从2^H个模型中采样选择模型；同时，由于每个网络只见过一个训练数据（每次都是随机的新网络），所以类似 bagging 的做法。
+
+g) 贝叶斯
+
+![bayes](https://pic3.zhimg.com/v2-88170130d8bac2f6f54998473ec99b95_r.jpg)
+
+### 4.1 解决过拟合总结
+![overfitting](https://pic2.zhimg.com/v2-1c0588c97d1302b0e7bc8c6d5eede473_r.jpg)
 
 ### 5.0 正则化
 该算法可以平衡特征的数量、精确度、泛化能力，牺牲一定的准确性，而增加一定的泛化性能，避免完美拟合。
@@ -76,8 +122,31 @@ L1正则是laplace先验，l2是高斯先验，分别由参数sigma确定。
 
 [机器学习中正则化项L1和L2的直观理解](https://blog.csdn.net/jinping_shi/article/details/52433975)
 
-#### L2正则化
-![L2正则化](http://52opencourse.com/?qa=blob&qa_blobid=14870802024620705686)
+#### 5.2.3 上述公式5的推导数过程
+- 在公式3添加L2正则化
+
+![gd_costfunction_4.jpg](https://i.imgur.com/gGLaAZe.jpg)
+
+- 对theta求导数
+
+![gd_costfunction_6.jpg](https://i.imgur.com/eGyAJng.jpg)
+
+- 梯度下降
+
+![gd_costfunction_7.jpg](https://i.imgur.com/i1o7bCw.jpg)
+
+- 没有正则化时 theta的权重为1，现在
+
+![gd_costfunction_8.jpg](https://i.imgur.com/VIDSOQu.jpg)
+
+即权重衰减
+
+#### 5.3 L2 正则化
+![gd_costfunction_9.jpg](https://i.imgur.com/QFrKjrL.jpg)
+
+![gd_costfunction_10.jpg](https://i.imgur.com/fx5wLTv.jpg)
 
 对参数添加一个系数，使施加的影响最小。
 
+参考
+[关于L2范数如何避免过拟合？](https://www.zhihu.com/question/30231749 "关于L2范数如何避免过拟合？")

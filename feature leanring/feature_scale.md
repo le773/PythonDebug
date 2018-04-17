@@ -46,3 +46,20 @@ log_data = np.log(data)
 #### 1.3.1 哪些机器学习算法会受到特征缩放的影响？
 - SVM(rbf)计算最大距离时就是这种情况。如果我们把某一点增大至其他点的两倍，那么它的数值也会扩大一倍
 - K-均值聚类也是。计算各数据点到集群中心的距离
+
+### 2.0 为什么 feature scaling 会使 gradient descent 的收敛更好?
+**如果不归一化**，各维特征的跨度差距很大，目标函数就会是“扁”的：
+
+![gd no scale](https://pic4.zhimg.com/8adda8341490329a5ffcfcd9dc808788_r.jpg)
+
+（图中椭圆表示目标函数的等高线，两个坐标轴代表两个特征）
+这样，在进行梯度下降的时候，梯度的方向就会偏离最小值的方向，走很多弯路。
+(梯度下降只是**向局部最优的趋近**，而且不能保证每步都是趋近)
+
+**如果归一化**了，那么目标函数就“圆”了：
+
+![gd scale](https://pic3.zhimg.com/80/43c33fb1801c3d35f94b06bd2bfd277c_hd.jpg)
+
+看，每一步梯度的方向都基本指向最小值，可以大踏步地前进。
+
+参考 [为什么 feature scaling 会使 gradient descent 的收敛更好?](https://www.zhihu.com/question/37129350 "为什么 feature scaling 会使 gradient descent 的收敛更好?")
