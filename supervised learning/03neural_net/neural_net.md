@@ -13,20 +13,27 @@
 
 神经网络每个单元如下:
 
-![神经网络](http://dataunion.org/wp-content/uploads/2015/03/115.png)
+![神经网络.png](https://i.imgur.com/c0zKlI5.png)
+
 其对应的公式如下：
 
-![神经网络公式](http://dataunion.org/wp-content/uploads/2015/03/27.png)
+![神经网络公式.png](https://i.imgur.com/GHgD7um.png)
 
 其中，该**单元**也可以被称作是**Logistic回归模型**。当将多个单元组合起来并具有分层结构时，就形成了神经网络模型。
 
-![隐含层的神经网络](http://dataunion.org/wp-content/uploads/2015/03/342.png)
+![隐含层的神经网络.png](https://i.imgur.com/ADxEOYE.png)
 
 其对应的公式如下:
 
 ![对应的公式](http://dataunion.org/wp-content/uploads/2015/03/42.png)
 
 #### 9 梯度下降
+在训练神经网络时，随机初始化参数很重要，不是初始化全为0
+
+![神经网络梯度下降_权重求导_5.png](https://i.imgur.com/zDbMMUz.png)
+
+梯度下降公式
+
 ![梯度下降](http://img.blog.csdn.net/20131213085438093)
 
 代码实现
