@@ -165,7 +165,7 @@ InvalidArgumentError (see above for traceback): Assign requires shapes of both t
 
 ![dropout_1.png](https://i.imgur.com/PqFTpOb.png)
 
-Dropout 是一个降低过拟合的正则化技术。它在网络中暂时的丢弃一些单元（神经元），以及与它们的前后相连的所有节点。
+Dropout 是一个**降低过拟合**的正则化技术。它在网络中暂时的丢弃一些单元（神经元），以及与它们的前后相连的所有节点。
 
 ![dropout_4.png](https://i.imgur.com/Btbw8UI.jpg)
 
