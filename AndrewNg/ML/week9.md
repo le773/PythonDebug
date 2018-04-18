@@ -12,6 +12,7 @@
 ### 2.1 Developing and Evaluating an Anomaly Detection System
 
 ![the_importance_of_real_number_evaluation_1](https://i.imgur.com/WniAm7I.png)
+
 为了更快地，开发出一个异常检测系统，那么最好能找到某种，评价异常检测系统的方法。
 
 - 交叉验证集和测试集所用的数据应当独立，切勿混用。
@@ -24,16 +25,18 @@
 
 ### 2.3 Choosing What Features to Use
 ![Non_gaussian_to_gaussian_1](https://i.imgur.com/kNeLUlY.png)
+
 1. 取对数log
 2. 求根
 
 #### 2.3.2 Error analysis for anomaly detectioin
 ![error_analysis_for_anomaly_detection_1](https://i.imgur.com/F6DepP7.png)
+
 误差分析过程
 寻找飞机引擎中不寻常的问题，然后建立一些新特征变量；通过这些新特征变量，从正常样本中区别异常。
 
 #### 2.3.3 Monitoring computers in a data center
-Choose features that might take on unusually large or small values in the event of an anomaly
+`Choose features that might take on unusually large or small values in the event of an anomaly`
 
 选择在异常情况下，选择出现异常出现不非常大或不小值的特征向量.
 
