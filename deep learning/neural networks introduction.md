@@ -67,6 +67,7 @@
 ![gd_costfunction_2.jpg](https://i.imgur.com/4t2yo3r.jpg)
 
 #### 4.4 mini-batch梯度下降
+#### 4.4.1 mini-batch梯度下降
 
 mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度下降就是一种折中的方法，他用了一些小样本来近似全部的，其本质就是我1个指不定不太准，那我用个30个50个样本那比随机的要准不少了吧，而且批量的话还是非常可以反映样本的一个分布情况的。在深度学习中，这种方法用的是最多的，因为这个方法收敛也不会很慢，收敛的局部最优也是更多的可以接受！
 
@@ -82,6 +83,22 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 梯度下降引向局部最低点
 
 ![gradient_descent_1.png](https://i.imgur.com/YJn6nyu.png)
+
+##### 4.4.2 Mini-batch gradient descent size
+在合理范围内，增大 Batch_Size 有何好处？
+
+- 内存利用率提高了，大矩阵乘法的并行化效率提高。
+- 跑完一次 epoch（全数据集）所需的迭代次数减少，对于相同数据量的处理速度进一步加快。
+- 在一定范围内，一般来说 Batch_Size 越大，其确定的下降方向越准，引起训练震荡越小。
+
+盲目增大 Batch_Size 有何坏处？
+- 内存利用率提高了，但是内存容量可能撑不住了。
+- 跑完一次 epoch（全数据集）所需的迭代次数减少，要想达到相同的精度，其所花费的时间大大增加了，从而对参数的修正也就显得更加缓慢。
+- Batch_Size 增大到一定程度，其确定的下降方向已经基本不再变化。
+
+参考：[深度机器学习中的batch的大小对学习效果有何影响？](https://www.zhihu.com/question/32673260 "深度机器学习中的batch的大小对学习效果有何影响？")
+
+
 
 ### 5.0 梯度下降：数学
 E = (y - ŷ)**2,(使用平方较小误差的惩罚值较低，较大误差惩罚值较大)
@@ -192,6 +209,43 @@ print("Prediction accuracy: {:.3f}".format(accuracy))
 
 参考：[梯度下降法是万能的模型训练算法吗？](https://www.zhihu.com/question/38677354/answer/85769046)
 
+#### 5.3 梯度消失与梯度下降
+![gd_exploding_1.png](https://i.imgur.com/Dv7uXuX.png)
+
+在神经网络中，与层数`L`相关的导数或梯度下降、，就是呈现指数增长或指数增长下降。
+
+如果作为`L`的函数的激活函数或梯度函数以指数级增长或递减，它们的值将变得很大，从而导致训练难度上升，尤其是梯度与`L`相差指数级，梯度下降算法的步长 会非常非常小，将会花费很长时间来学习
+
+- `ReLU`
+梯度消失和梯度爆炸，在`relu`下都存在，随着网络层数变深，`activations`倾向于越大和越小的方向前进，往大走梯度爆炸（回想在求梯度时，每反向传播一层，都要乘以这一层的`activations`），往小走进入死区，梯度消失。 这两个问题最大的影响是，**深层网络难于converge**。
+
+- `sigmoid`
+`sigmoid`不存在梯度爆炸，在`activations`往越大越小的方向上前进时，梯度变化太大，梯度都会消失。
+
+参考：[怎么理解梯度弥散和梯度爆炸呢？](https://www.zhihu.com/question/66027838/answer/237409864)
+
+#### 5.4 神经网络的权重初始化
+![neural network init 1](https://i.imgur.com/WYDxurh.png)
+
+- 对于`ReLU`激活函数选择 1
+- 对于`Tanh`激活函数选择 2
+
+#### 5.5 梯度的数值逼近
+单边误差
+
+![neural_network_error_1.png](https://i.imgur.com/8pH7iXe.png)
+
+双边误差
+
+![neural_network_error_2.png](https://i.imgur.com/pYo1TWg.png)
+
+由上对比可知，双边误差更接近与`f(θ)`的导数
+
+#### 5.6 梯度校验
+![gradient_checking_1.png](https://i.imgur.com/FKb51Vp.png)
+
+#### 5.7 关于梯度校验实现的建议
+![gradient_checking_2.png](https://i.imgur.com/ygHY9kt.png)
 
 ### 6.0 多层感知器
 ![多层感知器_1.png](https://i.imgur.com/s8bvArC.png)
