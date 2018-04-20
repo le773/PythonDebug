@@ -98,6 +98,40 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 
 参考：[深度机器学习中的batch的大小对学习效果有何影响？](https://www.zhihu.com/question/32673260 "深度机器学习中的batch的大小对学习效果有何影响？")
 
+#### 4.5 Gradient descent with momentum动量梯度下降法
+**基本思想**：计算梯度的指数加权平均数，并利用该梯度更新权重
+
+![gd_exponentially_weighted_average_1.png](https://i.imgur.com/ZdLcIUk.png)
+
+上图，蓝色为普通梯段下降，红色为momentum梯度下降
+
+动量梯度下降**目的**：纵向上减小摆动，横向上加快学习速度。
+
+![gd_exponentially_weighted_average_2.png](https://i.imgur.com/u37Sw4X.png)
+
+**关于偏差修正**：因为10次迭代后，移动平均已经过了初始阶段，不再是一个具有偏差的预测，所以`dw`、`db`不在受到偏差修正的困扰
+
+#### 4.6 RMSprop 加快梯度下降
+![RMSprop_1.png](https://i.imgur.com/NEIRrP9.png)
+
+`db`较大，`dw`较小，所以纵轴消除摆动，横轴加快速度。更大的`α`可以加快此速率。
+
+**核心算法**:
+
+![RMSprop_core.png](https://i.imgur.com/QKLvWsE.png)
+
+#### 4.7 Adam(Adaptive Moment Estimation) 自适应矩估计
+![Adam_1.png](https://i.imgur.com/Nxq1wvA.png)
+
+`Adam`是`momentum`和`RMSpro`p的结合，`β1`是第一阶矩，一般`0.9`，`β2`是第二阶矩，一般`0.999`，`ϵ`一般`10−8`。
+
+#### 4.8 学习衰减率
+学习衰减率的计算方法：
+
+![learning_attenuation_1.png](https://i.imgur.com/oOvVIYt.png)
+
+`decay_rate`:衰减率
+`epoch_num`:所有的训练样本完整训练一遍的次数。
 
 
 ### 5.0 梯度下降：数学
@@ -360,3 +394,12 @@ print(delta_w_i_h)
 学习曲率`α`、隐藏层数、`momentum`、`mini-batch`、正则化参数等能控制`w`、`b`的参数，称为超参数。某种程度能决定`w`和`b`。
 
 `w`和`b`，即为参数。
+### 9.3 参数调优
+![Coarse_to_fine_1.png](https://i.imgur.com/I1btnGp.png)
+
+先在整个区域随机的选取参数，找到较优的区间，然后在这个区间更密集的取点。通过实验超参数的不同取值，可以选择对于训练目标而言的最优值。
+
+### 9.4 Appropriate scale for hyperparameters
+![Appropriate_scale_for_hyperparameters_1.png](https://i.imgur.com/BnPCqFI.png)
+
+随机选参数，不是随机均匀的选择，而是在合理的标尺上选择。上图是学习衰减率`α`的实例，`β`同理。
