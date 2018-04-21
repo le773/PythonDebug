@@ -56,6 +56,11 @@ def run():
     return output
 ```
 
+#### 2.3.2 Softmax 损失函数
+![softmax_cost_1.png](https://i.imgur.com/4hkqU36.png)
+
+其中，`αk`表示第`k`个神经元的输出值，`yk`表示第`k`个神经元对应的真实值，取值为0或1。
+
 #### 2.4 双曲正切函数 tanh
 公式如下：
 
