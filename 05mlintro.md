@@ -20,13 +20,27 @@
 较低的训练误差，较高的测试误差
 **欠拟合**：较高的训练误差，测试误差
 
-#### 04.01.01 K折交叉验证
-K折交叉验证是在优化模型时，将数据分为K等份，其中K-1份作为训练数据，1份作为测试数据。随后做交叉验证的时候，每次采用数据的其中1份作为测试集，计算模型的准确率。最终可以计算出K个准确率，利用K各准确率的平均值作为模型的准确度衡量。
+#### 04.01.01 训练 开发 测试集划分
+数据集量比较小时的划分
+
+![splitting_data_1.png](https://i.imgur.com/QWRZdiQ.png)
+
+数据集量比较大时的划分
+
+![splitting_data_2.png](https://i.imgur.com/D0LwoA3.png)
+
+##### guidelines
+- 设置测试集的大小，以对系统的整体性能给予高度的信心。
+- 测试集有助于评估最终分类器的性能，该分类器可能占整体的`30%`。
+- 验证集必须足够大，可以评估不同的想法。
+
+#### 04.01.02 K折交叉验证
+`K`折交叉验证是在优化模型时，将数据分为`K`等份，其中`K-1`份作为训练数据，1份作为测试数据。随后做交叉验证的时候，每次采用数据的其中1份作为测试集，计算模型的准确率。最终可以计算出K个准确率，利用K各准确率的平均值作为模型的准确度衡量。
 
 ##### 注意
 1. 训练、测试集的划分尽可能保持数据的一致性，避免因数据划分过程引入额外的偏差而对最终结果产生影响。
 2. 不同的划分将导致不同的训练、测试集，相应的，模型评估的结果也会有差别，因此单次使用留出法得到的估计结果往往不够稳定可靠，在使用留出法时，一般要采用若干次随机划分、重复进行试验评估后取平均值作为留出法的评估结果。(使用网格搜索的依据)
-3. 分层划分的窘境：如果训练集S包含绝大多数的样本，则训练模型可能更接近于用D训练的模型，但T比较小，评估结果可能不够准确；若令测试集T多包含一些样本，则训练集S与D差别更大了，从而降低评估结果的保真性。(模型评估与选择中用于评估测试数据集为验证集)
+3. 分层划分的窘境：如果训练集`S`包含绝大多数的样本，则训练模型可能更接近于用`D`训练的模型，但`T`比较小，评估结果可能不够准确；若令测试集`T`多包含一些样本，则训练集`S`与`D`差别更大了，从而降低评估结果的保真性。(模型评估与选择中用于评估测试数据集为验证集)
 
 
 
@@ -37,19 +51,19 @@ svr = svm.SVC()
 clf = grid_search.GridSearchCV(svr, parameters)
 clf.fit(iris.data, iris.target)
 ```
-`parameters`参数字典以及他们可取的值。在这种情况下，他们在尝试找到 kernel（可能的选择为 'linear' 和 'rbf' ）和 C（可能的选择为1和10）的最佳组合。这时，会自动生成一个不同（kernel、C）参数值组成的“网格”, 各组合均用于训练 SVM，并使用交叉验证对表现进行评估。
+`parameters`参数字典以及他们可取的值。在这种情况下，他们在尝试找到 `kernel`（可能的选择为 '`linear`' 和 '`rbf`' ）和 `C`（可能的选择为1和10）的最佳组合。这时，会自动生成一个不同（`kernel`、`C`）参数值组成的“网格”, 各组合均用于训练 SVM，并使用交叉验证对表现进行评估。
 
 
-**C类**似于正则化中1λ1λ的作用。C越大，拟合非线性的能力越强。 
-large C: High Variance
-small C: High Bias
+**C类**似于正则化中`λ`的作用。`C`越大，拟合非线性的能力越强。 
+`large C`: `High Variance`
+`small C`: `High Bias`
 
 ```
 clf.fit(iris.data, iris.target)
 ```
 第二个不可思议之处。 拟合函数现在尝试了所有的参数组合，并返回一个合适的分类器，自动调整至最佳参数组合。现在您便可通过`clf.best_params_`来获得参数值。
 
-#### 04.01.02 留一法
+#### 04.01.03 留一法
 **留一法**其实就是样本量较小时使用的交叉验证，算是普通交叉验证的极端情况，即将所有N个样本分成N份，再进行交叉验证。
 
 #### 04.02 网格搜索
@@ -60,6 +74,7 @@ clf.fit(iris.data, iris.target)
 
 #### 04.04 学习曲线
 ![学习曲线](https://i.imgur.com/vFRX1dP.png)
+
 - 欠拟合，随着训练集增加，训练误差和测试误差接近。
 - 良好拟合，随着训练集增加，训练误差和测试误差接近，此时误差较欠拟合低。
 - 过拟合，随着训练集增加，训练误差和测试误差接近，但是训练误差和测试误差相差较欠拟合大一些。交叉误差始终不会太低。
@@ -70,34 +85,41 @@ clf.fit(iris.data, iris.target)
 #### 04.06 使用RandomizeSearchCV来降低计算代价¶
 - RandomizeSearchCV用于解决多个参数的搜索过程中计算代价过高的问题
 - RandomizeSearchCV搜索参数中的一个子集，这样你可以控制计算代价 
+
 [网格搜索来进行高效的参数调优](http://blog.csdn.net/jasonding1354/article/details/50562522 "网格搜索来进行高效的参数调优")
 
 ### 06 评估指标
 #### 06.01 混淆矩阵
 ![混淆矩阵](https://i.imgur.com/K7TfktM.png)
+
 #### 06.02 准确率
 分类正确的(真阳真阴)/总树木
+
 #### 06.03 准确率不适用的情形
 可能会忽略一些点。
+
 比如要找到信用卡不良的记录。
 
 #### 06.05.01 精度和召回率
 1. 对医疗来说，假阴不可接受，假阳可以。(高召回率)
+
 因为健康的人可以识别为有病，但有病不能识别为健康。
+
 2. 对垃圾邮件来说，假阴可以接受，假阳却不能。(高精度)
+
 因为垃圾邮件可以接受，但正确邮件不能丢失。
 
 #### 06.05.02 精度和召回率 计算
 ![分类结果混淆矩阵](https://i.imgur.com/rpsORrV.png)
 
 ###### 06.05.03 精确率
-实际上非常简单，**精确率(precision)**是针对我们预测结果而言的，它表示的是预测为正的样本中有多少是真正的正样本。那么预测为正就有两种可能了，一种就是把正类预测为正类(TP)，另一种就是把负类预测为正类(FP)，也就是
+实际上非常简单，**精确率(precision)**是针对我们预测结果而言的，它表示的是预测为正的样本中有多少是真正的正样本。那么预测为正就有两种可能了，一种就是把正类预测为正类(`TP`)，另一种就是把负类预测为正类(`FP`)，也就是
 
 ![精度率](https://www.zhihu.com/equation?tex=P++%3D+%5Cfrac%7BTP%7D%7BTP%2BFP%7D)
 
 ###### 06.05.04 召回率
 
-而**召回率(recall)**是针对我们原来的样本而言的，它表示的是样本中的正例有多少被预测正确了。那也有两种可能，一种是把原来的正类预测成正类(TP)，另一种就是把原来的正类预测为负类(FN)。
+而**召回率(recall)**是针对我们原来的样本而言的，它表示的是样本中的正例有多少被预测正确了。那也有两种可能，一种是把原来的正类预测成正类(`TP`)，另一种就是把原来的正类预测为负类(`FN`)。
 
 ![召回率](https://www.zhihu.com/equation?tex=R+%3D+%5Cfrac%7BTP%7D%7BTP%2BFN%7D)
 
@@ -117,6 +139,7 @@ clf.fit(iris.data, iris.target)
 
 #### 06.09 Fβ得分
 ![fβ得分](https://i.imgur.com/B0cj2yH.png)
+
 - β越小越偏向于精度，反之召回。
 ```
 1对于宇宙飞船，我们不允许出现任何故障零件，可以检查本身能正常运转的零件。因此，这是一个高召回率模型，因此 β = 2。
@@ -147,7 +170,7 @@ Gini=2*AUC-1
 
 
 #### 06.11 决定系数 R2 
-R2的数值范围从0至1，表示目标变量的预测值和实际值之间的相关程度平方的百分比。一个模型的R2 值为0还不如直接用平均值来预测效果好；而一个R2 值为1的模型则可以对目标变量进行完美的预测。从0至1之间的数值，则表示该模型中目标变量中有百分之多少能够用特征来解释。模型也可能出现负值的R2，这种情况下模型所做预测有时会比直接计算目标变量的平均值差很多。
+`R2`的数值范围从`0`至`1`，表示目标变量的预测值和实际值之间的相关程度平方的百分比。一个模型的`R2` 值为0还不如直接用平均值来预测效果好；而一个`R2` 值为1的模型则可以对目标变量进行完美的预测。从0至1之间的数值，则表示该模型中目标变量中有百分之多少能够用特征来解释。模型也可能出现负值的`R2`，这种情况下模型所做预测有时会比直接计算目标变量的平均值差很多。
 ```
 def performance_metric2(y_true, y_predict):
     """计算并返回预测值相比于预测值的分数"""
@@ -166,134 +189,51 @@ def performance_metric2(y_true, y_predict):
 - sst:(实际值-平均值) *(实际值-平均值)之和
 - sse:(实际值-训练模型得到的结果)*(实际值-训练模型得到的结果)之和
 
-### 08 svm
-- “伽玛”参数实际上对 SVM 的“线性”核函数没有影响。核函数的重要参数是“C”, 
-- **C越大**，相当于惩罚松弛变量，希望松弛变量接近0，即对误分类的惩罚增大，**趋向于对训练集全分对**的情况，这样对训练集测试时准确率很高，但泛化能力弱。**C值小**，对误分类的惩罚减小，允许容错，将他们当成噪声点，**泛化能力较强**;
-- `degree`:多项式`poly`函数的维度;
-- `kernel` ：核函数，默认是`rbf`，可以是‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’, ‘precomputed’ 
+#### 06.12 可避免偏差 方差
+训练集的误差和人类表现水平的误差的差值就称为可避免偏差（`Avoidable Bias`）。
 
-0 – 线性：u'v
+![human-level_training-error_dev-error.png](https://i.imgur.com/VZhA3hV.png)
 
-1 – 多项式：(gamma*u'*v + coef0)^degree
+1. 如果人类表现水平和训练误差 大于 验证集和训练集的误差，则降低可避免误差。
+2. 如果人类表现水平和训练误差 小于 验证集和训练集的误差，则降低方差。
 
-2 – RBF函数：exp(-gamma|u-v|^2)
-也称高斯核函数
+#### 07.01 进行误差分析
+如果希望让学习算法能够胜任人类能做的任务，但学习算法还没有达到人类的表现，那么人工检查一下算法犯的错误，可以了解接下来应该做什么，这个过程称为**误差分析**。
 
-3 –sigmoid：tanh(gamma*u'*v + coef0)
+![dev_evaluate_ideas_1.png](https://i.imgur.com/ogyltrk.png)
 
-#### 08.02 RBF公式里面的sigma和gamma的关系
+假设在猫狗分类中，存在10%的出错率，将一些看起来像猫的狗识别为猫，此时，可以人工选取100个样本，然后识别其中有多少个是狗，假设包含5只狗被识别为猫，那么可以推断，出错率可以降低至9.5%，所以为了降低出错率，重新构建一个项目训练是不合理的。这样，**通过少量的时间去分析问题，再决定后面要进行大方向**。
 
-![rbf中的gamma](http://img.blog.csdn.net/20150606105930104?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+![dev_evaluate_ideas_2.png](https://i.imgur.com/Rl7OB6P.png)
 
-gamma是你选择径向基函数作为kernel后，该函数自带的一个参数。隐含地决定了数据**映射到新的特征空间后的分布**。
+这个分析步骤的结果可以给出一个估计，是否值得去处理每个不用的错误类型，筛选出高优先级任务，并了解每种手段对性能能有多大的提升空间。
 
-如果gamma设的太大，![西格玛](http://img.blog.csdn.net/20150606110240260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)会很小，![西格玛](http://img.blog.csdn.net/20150606110240260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)很小的高斯分布长得又高又瘦，会造成只会作用于支持向量样本附近，对于未知样本分类效果很差，存在训练准确率可以很高，(如果让![西格玛](http://img.blog.csdn.net/20150606110240260?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbHVqaWFuZG9uZzE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)无穷小，则理论上，高斯核的SVM可以拟合任何非线性数据，但容易过拟合)而测试准确率不高的可能，就是通常说的过训练；而如果设的过小，则会造成平滑效应太大，无法在训练集上得到特别高的准确率，也会影响测试集的准确率。
+总结：进行误差分析，应该找一组错误例子，可能在验证集、测试集，观察错误标记的例子，看看假阳性和假阴性，统计属于不同错误类型的错误数量，在这个过程中，可能得到启发，归纳出新的错误类型。总之，通过统计不同错误标记类型占总数的百分比，可以帮你发现那些问题需要优先解决。
 
-#### 08.03 rbf的优势
-建议首选RBF核函数进行高维投影，因为：
+#### 07.02 清楚标注错误的数据
 
-1. 能够实现非线性映射；（ 线性核函数可以证明是他的一个特例；SIGMOID核函数在某些参数上近似RBF的功能。）
-2. 参数的数量影响模型的复杂程度，多项式核函数参数较多。
-3. the RBF kernel has less numerical difficulties.
+事实证明，深度学习算法对于**训练集中的随机误差是相当鲁棒**的，只要标记错误例子离随机误差不太远，有时可能做标记不小心等，只要误差够随机，那么这些误差不管也没有问题。
 
-#### 08.04 核函数总结
-Linear Kernel， Polynomial Kernel， Gaussian Kernel
+验证集、测试集：如果这些标记错误严重影响在开发集上评估算法的能力，那么就应该花时间修正错误的标签，如果没，则不。
 
-##### 08.04.01 Linear Kernel：K(x, x') = xTx'
-**优点**是：
-safe（一般不太会overfitting，所以线性的永远是我们的首选方案）；
-fast，可以直接使用General SVM的QP方法来求解，比较迅速；
-explainable，可解释性较好，我们可以直接得到w, b，它们直接对应每个feature的权重。
-**缺点**是：
-restrict：如果是线性不可分的资料就不太适用了！
- 
+![dev_evaluate_ideas_3.png](https://i.imgur.com/LaOqSI7.png)
 
-##### 08.04.02 Polynomial Kernel: K(x, x') = (ζ + γxTx')Q       
-**优点**是：
-我们可以通过控制Q的大小任意改变模型的复杂度，一定程度上解决线性不可分的问题；
-**缺点**是：
-含有三个参数，太多啦！
+- 确保测试集、验证集来自同一个分布，如果对测试集矫正，那么验证集也需要。
+- 同时检查算法训练正确和错误的样本。
+- 训练集可以来自和测试集、验证集稍微不同的分布。
 
-##### 08.04.03 Gaussian Kernel：K(x, x') = exp(-γ ||x - x'||2) 
-**优点**是：
-powerful：比线性的kernel更powerful；
-bounded：比多项式核更好计算一点；
-one  parameter only：只有一个参数
-**缺点**是：
-mysterious：与线性核相反的是，可解释性比较差（先将原始数据映射到一个无限维度中，然后找一个胖胖的边界，将所有的数据点分隔开？）
-too powerful！如果选择了太大的γ，SVM希望将所有的数据都分开，将会导致产生太过复杂的模型而overfitting。
-###### 总结
-所以在实际应用中，一般是先使用线性的kernel，如果效果不好再使用gaussian kernel（小的γ）和多项式kernel(小的Q)。
+#### 07.03 快速搭建第一个系统原型，然后快速迭代
+Guideline:
+`Build your first system quickly, then iterate`
+在构建一个机器学习系统时，尽可能按照以下几点来做：
+1. 设置好训练、开发、测试集及衡量指标，找准目标；
+2. 快速构建出一个初步的系统，用训练集来拟合参数，开发集调参，测试集评估；
+3. 采用方差/偏差分析或者错误分析等方法来决定下一步工作。
 
-[svm详解](https://www.cnblogs.com/little-YTMM/p/5547642.html "svm详解")
+#### 07.04 在不同的划分上进行训练并测试
+![dev_evaluate_ideas_4.png](https://i.imgur.com/hbgcu7y.png)
 
-### 09.01 RandomForestClassifier分类器
+对于`option1`，测试集包含少量来及`app`集合，那么其实训练的模型预测`web`集合更好，这与预测`app`集相悖。
 
-```
-# GridSearchCV + AdaBoostClassifier
-# TODO：导入'GridSearchCV', 'make_scorer'和其他一些需要的库
-from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import make_scorer
-from sklearn.ensemble import RandomForestClassifier
+对于`option2`，测试集、验证集全部来自`app`，那么训练的模型其实是预测来自`app`集的。
 
-# TODO：初始化分类器
-clf = RandomForestClassifier()
-print 'clf'
-
-# TODO：创建你希望调节的参数列表
-# parameters_adaboost = {'n_estimators': [10, 20, 30, 40, 60, 100], 'algorithm' : ['SAMME', 'SAMME.R'], 'random_state': [40]}
-parameter_grid = {
-    'max_features': [0.5, 1.],
-    'max_depth': [3., 5., 7.],
-    'n_estimators': [10, 20, 30, 40, 60, 100]
-}
-
-
-# TODO：创建一个fbeta_score打分对象
-scorer = make_scorer(fbeta_score, beta=0.5)
-
-# TODO：在分类器上使用网格搜索，使用'scorer'作为评价函数
-grid_obj = GridSearchCV(clf, parameter_grid, scoring=scorer,cv=None)
-print 'GridSearchCV'
-
-# TODO：用训练数据拟合网格搜索对象并找到最佳参数
-t0 = time()
-grid_obj.fit(X_train[:2000], y_train[:2000])
-print 'fit time:', time() - t0
-# 得到estimator
-best_clf = grid_obj.best_estimator_
-
-# 使用没有调优的模型做预测
-t1 = time()
-predictions = (clf.fit(X_train[:1000], y_train[:1000])).predict(X_val)
-print 'predict time:', time() - t1
-best_predictions = best_clf.predict(X_val)
-
-# 汇报调参前和调参后的分数
-print "Unoptimized model\n------"
-print "Accuracy score on validation data: {:.4f}".format(accuracy_score(y_val, predictions))
-print "F-score on validation data: {:.4f}".format(fbeta_score(y_val, predictions, beta = 0.5))
-print "\nOptimized Model\n------"
-print "Final accuracy score on the validation data: {:.4f}".format(accuracy_score(y_val, best_predictions))
-print "Final F-score on the validation data: {:.4f}".format(fbeta_score(y_val, best_predictions, beta = 0.5))
-```
-
-### 09.02 提取特征重要性
-```
-# TODO：导入一个有'feature_importances_'的监督学习模型
-from sklearn.ensemble import AdaBoostClassifier
-clf = AdaBoostClassifier()
-
-# TODO：在训练集上训练一个监督学习模型
-model = clf.fit(X_train, y_train)
-
-# TODO： 提取特征重要性
-importances = model.feature_importances_
-
-# 获取列名
-indices = np.argsort(importances)[::-1]
-columns = X_train.columns.values[indices[:5]]
-
-# 获取数据
-X_train[column_import].head(5)
-```
