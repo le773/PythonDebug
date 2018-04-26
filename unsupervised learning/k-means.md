@@ -52,21 +52,50 @@
 #### 2.1 Choosing the Number of Clusters
 手动选择聚类的数目
 
-###### 肘部法则(Elbow Method)
+##### 2.1.1 肘部法则(Elbow Method)
 ![K-means_elbow_method_1](https://i.imgur.com/DCjPL2Q.png)
 
-如果遇到5比3代价函数高，那么5可能陷入局部最优，应该重新初始化K=5的簇中心，然后计算代价函数；
+左图，当`K=3`时，类簇指标的下降趋势最快，所以应该取`K=3`；
+
+如果遇到5比3代价函数高，那么5可能陷入局部最优，应该重新初始化`K=5`的簇中心，然后计算代价函数；
+
+##### 2.1.2 轮廓系数
+![silhouette_coefficient_1.jpg](https://i.imgur.com/SxSKYCC.jpg)
+
+![silhouette_coefficient_2.jpg](https://i.imgur.com/8aoW8EF.jpg)
+
+1. `a(i)`表示 点`i`到当前簇其他点的平均距离。
+2. `b(i)`表示 点`i`到每一个非当前簇点的所有样本平均距离，再求这些平均距离的最小值。
+
+##### 判断
+1. `si`接近1，则说明样本`i`聚类合理；
+2. `si`接近-1，则说明样本``i更应该分类到另外的簇；
+3. 若`si`近似为0，则说明样本`i`在两个簇的边界上。
+
+##### 2.1.3 Calinski-Harabasz准则
+`Calinski-Harabasz`分数值`s`的数学计算公式：
+
+![Calinski-Harabasz_1.png](https://i.imgur.com/87WXlNj.png)
+
+其中`m`为训练集样本数，`k`为类别数。 `Bk`为类别之间的协方差矩阵，`Wk`为类别内部数据的协方差矩阵。`tr`为矩阵的迹。
+
+也就是说，类别内部数据的协方差越小越好，类别之间的协方差越大越好，这样的`Calinski-Harabasz`分数会高。在`scikit-learn`中，`Calinski-Harabasz Index`对应的方法是`metrics.calinski_harabaz_score`
 
 
 #### 2.2 K-means optimization object
 ![K-means_optimization_objective_1](https://i.imgur.com/pQTG1Qd.png)
 
-- uc(i):表示x(i)分给的那个cluster的cluster centroid
-- K表示有K个cluster,k表示cluster centoid的index.
-- cost function为x(i)到属于它的cluster的cluster centroid的距离的平方的累加
+- `uc(i)`:表示`x(i)`分给的那个`cluster`的`cluster centroid`
+- `K`表示有`K`个`cluster`, `k`表示`cluster centoid`的`index`
+- `cost function`为`x(i)`到属于它的`cluster`的`cluster centroid`的距离的平方的累加
 
-通过求cost function的最小值来求得参数c与u.
-这个cost function有时也称为distortion cost function(失真代价函数)
+通过求`cost function`的最小值来求得参数`c`与`u`，这个`cost function`有时也称为`distortion cost function`(失真代价函数)
+
+
+参考：
+
+1. [用scikit-learn学习K-Means聚类](http://www.cnblogs.com/pinard/p/6169370.html "用scikit-learn学习K-Means聚类")
+2. [k-means的k值该如何确定？](https://www.zhihu.com/question/29208148 "k-means的k值该如何确定？")
 
 ### 3.1 二分 K-Means 聚类算法
 背景：因为K-means可能偶尔会陷入局部最小值
@@ -93,6 +122,8 @@
 ![ISODATA分裂](https://images2015.cnblogs.com/blog/1024143/201701/1024143-20170111025954494-895315300.png)
 
 ### 3.3 K-Means++
+这个算法也只是对初始点的选择有改进而已，其他步骤都一样。初始质心选取的基本思路就是，**初始的聚类中心之间的相互距离要尽可能的远**。
+
 #### 3.3.0 K-Means++ 实现步骤
 ![K-Means++](https://images2015.cnblogs.com/blog/1024143/201701/1024143-20170111025934541-260409014.png)
 
@@ -108,4 +139,4 @@
 [K-means聚类算法的三种改进(K-means++,ISODATA,Kernel K-means)介绍与对比](https://www.cnblogs.com/yixuan-xu/p/6272208.html "K-means聚类算法的三种改进(K-means++,ISODATA,Kernel K-means)介绍与对比")
 
 
-### 3.0 单连锁聚类
+### 4.0 单连锁聚类
