@@ -1,4 +1,4 @@
-﻿﻿###### Introduction to Probability and Statistics
+﻿## Introduction to Probability and Statistics
 
 ### 01
 #### 01.01 方差
@@ -23,27 +23,30 @@ X Y相互独立时，存在某种关系，协方差就是用来表示这种关�
 ![协方差公式](http://img.my.csdn.net/uploads/201211/21/1353513364_9506.png)
 (其中，E为数学期望或均值，D为方差，D开根号为标准差，E{ [X-E(X)] [Y-E(Y)]}称为随机变量X与Y的协方差，记为Cov(X,Y)，即Cov(X,Y) = E{ [X-E(X)] [Y-E(Y)]}，而两个变量之间的协方差和标准差的商则称为随机变量X与Y的相关系数，记为ρxy)
 
-###### 结论
+#### 结论
 协方差为正，说明X,Y同向变化，协方差越大说明同向程度越高；如果协方差为负，说明X，Y反向运动，协方差越小说明反向程度越高。
 
 #### 01.04.02 相关系数
 相关系数也可以看成协方差：一种剔除了两个变量量纲影响、标准化后(归一化)的特殊协方差。
 
-###### 结论
+#### 结论
 它消除了两个变量变化幅度的影响，而只是单纯反应**两个变量**每单位变化时的**相似程度**。
 
 [如何通俗易懂地解释「协方差」与「相关系数」的概念？](https://www.zhihu.com/question/20852004)
 
 #### 01.04.03 协方差矩阵
 协方差矩阵计算的是不同维度之间的协方差。
+
 ![协方差矩阵1](https://i.imgur.com/SLDh3Dh.png)
 
-[对于概率论数字特征的理解](xueshu.baidu.com "对于概率论数字特征的理解")
+参考：[对于概率论数字特征的理解](xueshu.baidu.com "对于概率论数字特征的理解")
 
 #### 01.05 正态分布
 ![正太分布](https://gss2.bdstatic.com/9fo3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268/sign=91b83dc8b2119313c743f8b65d390c10/4ec2d5628535e5dd25ea56d576c6a7efcf1b62f2.jpg)
+
 ##### 01.05.01 图形特征
 ![正态分布图](https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike150%2C5%2C5%2C150%2C50/sign=884edb64b63eb13550cabfe9c777c3b6/a5c27d1ed21b0ef413916fd2d7c451da80cb3ec4.jpg)
+
 - 集中性：正态曲线的高峰位于正中央，即均数所在的位置。
 - 对称性：正态曲线以均数为中心，左右对称，曲线两端永远不与横轴相交。
 - 均匀变动性：正态曲线由均数所在处开始，分别向左右两侧逐渐均匀下降。
@@ -78,11 +81,11 @@ X Y相互独立时，存在某种关系，协方差就是用来表示这种关�
 #### 01.09 全概率公式
 ![全概率公式](https://i.imgur.com/lFpdB5j.png)
 
-###### 例子
+#### 例子
 射击选手选拔
 
 #### 01.10 t分布
-![](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=e240ada2d2a20cf4529df68d17602053/80cb39dbb6fd52666bd41631a918972bd4073613.jpg)
+![t分布](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=e240ada2d2a20cf4529df68d17602053/80cb39dbb6fd52666bd41631a918972bd4073613.jpg)
 
 ##### 01.10.01 特征
 - 以0为中心，左右对称的单峰分布；
@@ -131,16 +134,43 @@ t分布与正态分布一样，是一个单峰对称呈钟形的分布，其对�
 
 ![三角函数公式3](https://i.imgur.com/jNcYGik.png)
 
-###### 奇变偶不变，符号看象限
+#### 02.03.01 奇变偶不变，符号看象限
 ![奇变偶不变，符号看象限](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike72%2C5%2C5%2C72%2C24/sign=b24f03ab5566d0166a14967af642bf62/f31fbe096b63f624e0f4b9658044ebf81a4ca32f.jpg))
 
-###### 二角和差公式
+#### 02.03.02 二角和差公式
 ![二角和差公式1](https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D192/sign=e05915b649166d223c77119d74220945/faf2b2119313b07e7f22c27506d7912397dd8c34.jpg)
 
 ![二角和差公式2](https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D192/sign=e05915b649166d223c77119d74220945/faf2b2119313b07e7f22c27506d7912397dd8c34.jpg)
 
-###### 证明
+#### 02.03.03 证明
 
 ![证明1](https://gss3.bdstatic.com/-Po3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=d6a859052b34349b70066987f9eb1521/55e736d12f2eb93868d5c2edd6628535e5dd6f71.jpg)
 
 ![证明2](https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/s%3D220/sign=32b52ca484d6277fed12353a18391f63/7acb0a46f21fbe09ded77b0b68600c338744ad20.jpg)
+
+### 03 似然估计
+#### 03.01 极大似然估计
+极大似然估计，通俗理解来说，就是利用已知的样本结果信息，反推最具有可能（最大概率）导致这些样本结果出现的模型参数值！
+
+换句话说，极大似然估计提供了一种给定观察数据来评估模型参数的方法，即："模型已定，参数未知"。
+
+`p(x|θ)`输入有两个：`x`表示某一个具体的数据； `θ`表示模型的参数:
+1. 如果`θ`是已知确定的，`x`是变量，这个函数叫做概率函数(`probability function`)，它描述对于不同的样本点x，其出现概率是多少。
+
+2. 如果`x`是已知确定的，`θ`是变量，这个函数叫做似然函数(`likelihood function`), 它描述对于不同的模型参数，出现`x`这个样本点的概率是多少。
+
+极大似然估计中采样需满足一个重要的假设，就是**所有的采样都是独立同分布**的。
+
+参考：[一文搞懂极大似然估计](https://zhuanlan.zhihu.com/p/26614750 "一文搞懂极大似然估计")
+
+#### 03.02 对数化的似然函数
+似然函数的表达式通常出现连乘：
+
+![log_likelihood_1.png](https://i.imgur.com/ZE0gH1x.png)
+
+对多项乘积的求导往往比较复杂，但是对于多项求和的求导却要简单的多，**对数函数不改变原函数的单调性和极值位置**，而且根据对数函数的性质可以将乘积转换为加减式，这可以大大简化求导的过程：
+
+![log_likelihood_2.png](https://i.imgur.com/8xKb1UK.png)
+
+参考：[似然与极大似然估计](https://zhuanlan.zhihu.com/p/22092462 "似然与极大似然估计")
+
