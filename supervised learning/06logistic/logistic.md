@@ -1,4 +1,4 @@
-### 1.0 导论
+﻿### 1.0 导论
 #### 1.1 Logistic 优缺点
 
 优点: 计算代价不高，易于理解和实现。
@@ -57,7 +57,10 @@
 
 ![logistic_cost_7.png](https://i.imgur.com/5XWyZ7W.png)
 
-#### 2.2 Logistic回归正则化
+#### 2.2 补充：代价函数推导过程
+![logistic_cost_1.png](https://i.imgur.com/jKApTaG.png)
+
+#### 2.3 Logistic回归正则化
 
 ![linear_cost_regularization_3.png](https://i.imgur.com/ujSroz1.png)
 
