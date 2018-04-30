@@ -158,5 +158,7 @@ Blue std  |    2.227 |  2.195 |  0.032
 
 参考：
 [What is an intuitive explanation of the Expectation Maximization technique?](https://stackoverflow.com/questions/11808074/what-is-an-intuitive-explanation-of-the-expectation-maximization-technique "What is an intuitive explanation of the Expectation Maximization technique?")
+
 [怎么通俗易懂地解释EM算法并且举个例子?](https://www.zhihu.com/question/27976634/answer/153567695 "怎么通俗易懂地解释EM算法并且举个例子?")
+
 [什么是Expectation Maximization?](https://www.zhihu.com/question/23413925/answer/24502810 "什么是Expectation Maximization?")
