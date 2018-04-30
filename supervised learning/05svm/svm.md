@@ -190,6 +190,8 @@
 
 ![Larange_f_24.png](https://i.imgur.com/rDVHw24.png)
 
+----------
+
 ### 11 核函数
 现实任务中，原始样本空间内也许并不存在一个能正确划分两类样本的超平面；对这样的问题，可将样本映射到更高维的特征空间，使得样本在这个特征空间内线性可分。
 
@@ -268,6 +270,8 @@ restrict：如果是线性不可分的资料就不太适用了！
 
 [svm详解](https://www.cnblogs.com/little-YTMM/p/5547642.html "svm详解")
 
+----------
+
 
 ### 12 软间隔
 #### 12.01 软间隔
@@ -312,6 +316,8 @@ restrict：如果是线性不可分的资料就不太适用了！
 
 ![svm_replace_f_2.png](https://i.imgur.com/IpWWx3J.png)
 
+----------
+
 ### 13 补充
 
 支持向量与间隔的定义
@@ -340,4 +346,4 @@ restrict：如果是线性不可分的资料就不太适用了！
 #### 14.04 等式约束
 假设有自变量`x`和`y`，给定约束条件`g(x,y)=c`，要求`f(x,y)`在约束`g`下的极值；
 
-![等式约束](https://pic3.zhimg.com/v2-3cbdd04411f9b2f97e6d3939b45419ca_r.jpg)
+![standard_eq_1.jpg](https://i.imgur.com/XRJbQ61.jpg)
