@@ -347,3 +347,13 @@ restrict：如果是线性不可分的资料就不太适用了！
 假设有自变量`x`和`y`，给定约束条件`g(x,y)=c`，要求`f(x,y)`在约束`g`下的极值；
 
 ![standard_eq_1.jpg](https://i.imgur.com/XRJbQ61.jpg)
+
+参考：
+
+[零基础学SVM-Support Vector Machine(一)](https://zhuanlan.zhihu.com/p/24638007 "零基础学SVM-Support Vector Machine(一)")
+
+[零基础学SVM-Support Vector Machine(二)](https://zhuanlan.zhihu.com/p/29865057 "零基础学SVM-Support Vector Machine(二)")
+
+[支持向量机通俗导论（理解SVM的三层境界）](https://blog.csdn.net/v_july_v/article/details/7624837 "支持向量机通俗导论（理解SVM的三层境界）")
+
+[机器学习技法（林轩田）](https://www.bilibili.com/video/av12469267/?p=3 "机器学习技法（林轩田）")
