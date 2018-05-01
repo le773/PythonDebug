@@ -1,7 +1,19 @@
 ### 1.0 概念
 池化:把很多数据用最大值或者平均值代替。目的是降低数据量。
+
 卷积:把数据通过一个卷积核变化成特征，便于后面的分离。计算方式与信号系统中的相同。
-[如何理解卷积神经网络（CNN）中的卷积和池化？](https://www.zhihu.com/question/49376084)
+
+其连续的定义为：
+
+![cnn_1.png](https://i.imgur.com/bL3R8MR.png)
+
+其离散的定义为：
+
+![cnn_2.png](https://i.imgur.com/bm9sH7u.png)
+
+#### 卷积的物理意义
+一个函数（如：单位响应）在另一个函数（如：输入信号）上的加权叠加。
+
 ### 2.0 统计不变性
 即基本上不会随时间或空间改变的事物。
 
@@ -244,9 +256,8 @@ conv_layer = tf.nn.max_pool(
 #### 10.2 Inception 网络
 ![nn_inception_2.png](https://i.imgur.com/l5srf2w.png)
 
+参考：
 
+[如何理解卷积神经网络（CNN）中的卷积和池化？](https://www.zhihu.com/question/49376084)
 
-
-
-
-
+[卷积为什么叫「卷」积？](https://www.zhihu.com/question/54677157/answer/141245297 "卷积为什么叫「卷」积？")
