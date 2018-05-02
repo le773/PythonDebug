@@ -1,4 +1,4 @@
-﻿### 1.0 导论
+### 1.0 导论
 #### 1.1 Logistic 优缺点
 
 优点: 计算代价不高，易于理解和实现。
@@ -151,11 +151,21 @@ tanh(z) = 2σ(2z) − 1
 
 参考：[logistic回归属于线性模型还是非线性模型？](https://www.zhihu.com/question/30726036 "logistic回归属于线性模型还是非线性模型？")
 
-#### 4.6 bernoulli distribution
+#### 4.6 逻辑回归和SVM的区别是什么？各适用于解决什么问题？
+
+![9345794f944ea3de0f18f02867b86d3f_hd.jpg](https://i.imgur.com/o1M2acp.jpg)
+
+#### 4.7 bernoulli distribution
 `bernoulli distribution`即二项分布
 
 ![Bernoulli_Distribution_2.png](https://i.imgur.com/Bew6rjz.png)
 
 期望：`Eξ=np`； 方差：`Dξ=npq`； 其中`q=1-p`
 
-参考：[bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution "bernoulli distribution")
+参考：
+
+[bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution "bernoulli distribution")
+
+[Logistic Regression and SVM](http://charleshm.github.io/2016/03/LR-SVM/)
+
+[逻辑回归（Logistic Regression）和SVM的联系以及Kernel](https://blog.csdn.net/jackie_zhu/article/details/52331047)
