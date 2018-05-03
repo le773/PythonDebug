@@ -78,3 +78,22 @@ columns = X_train.columns.values[indices[:5]]
 # 获取数据
 X_train[column_import].head(5)
 ```
+
+### 3.0 RandomForest随机森林
+
+```
+for n_trees in [1, 10, 20]:  # 理论上树是越多越好
+    evaluate_algorithm(dataset, random_forest, n_folds=5, max_depth=20, min_size=1, sample_size=1.0, n_trees, n_features=15)
+    1. 将数据集进行抽重抽样 n_folds 份，每份数据大小fold_size
+    2. 每次循环从 folds 从取出一个 fold 作为测试集，其余作为训练集，遍历整个 folds ，实现交叉验证
+    3. random_forest
+        for i in range(n_trees):
+            1. # 随机抽样的训练样本， 随机采样保证了每棵决策树训练集的差异性
+            2. # 创建一个决策树
+                1. # 返回最优列和相关的信息
+                    1. 找出分割数据集的最优特征，得到最优的特征 index，特征值 row[index]，以及分割完的数据 groups（left, right）
+            3. bagging_predict # 每一行的预测结果，bagging 预测最后的分类结果
+                1. 遍历每棵树，测试集上预测此行
+                2. 返回最好的预测结果及其node
+    4. # 计算随机森林的预测结果的正确率
+```
