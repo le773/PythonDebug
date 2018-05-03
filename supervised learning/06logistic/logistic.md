@@ -1,4 +1,4 @@
-### 1.0 导论
+﻿### 1.0 导论
 #### 1.1 Logistic 优缺点
 
 优点: 计算代价不高，易于理解和实现。
@@ -26,8 +26,7 @@
 
 ### 2.0 Logistic代价函数推导过程
 #### 2.1 Logistic代价函数推导过程
-
-`sigmoid`函数
+`sigmoid`函数：
 
 ![logistic_cost_2.png](https://i.imgur.com/Z5WY55M.png)
 
@@ -37,7 +36,19 @@
 
 ![logistic_cost_1.png](https://i.imgur.com/t4T020p.png)
 
+h<sub>θ</sub>(x):表示结果取1的概率；
+
+1-h<sub>θ</sub>(x):表示结果取0的概率；
+
 由最大似然函数可知：
+
+![logistic_cost_10.png](https://i.imgur.com/890X41E.png)
+
+上述式子综合起来：
+
+![logistic_cost_11.png](https://i.imgur.com/C1o96BR.png)
+
+取似然函数为：
 
 ![logistic_cost_4.png](https://i.imgur.com/TgfFqRr.png)
 
@@ -45,17 +56,29 @@
 
 ![logistic_cost_5.png](https://i.imgur.com/VHT1HuN.png)
 
-`logistic`的代价函数：
+最大似然函数就是使l(θ)取最大时的θ，其实这里使用梯度上升求解，求得的θ就是要求的最佳参数。
 
-![logistic_cost_8.png](https://i.imgur.com/BucNDvH.png)
-
-因为求似然函数的最大值，所以采用梯度上升的方法：
+方法一，因为求似然函数的最大值，所以采用梯度上升的方法：
 
 ![logistic_cost_6.png](https://i.imgur.com/xhswgxA.png)
 
 由此可以看出最终的更新规则为：   
 
 ![logistic_cost_7.png](https://i.imgur.com/5XWyZ7W.png)
+
+方法二、对此`logistic`的代价函数变形：
+
+![logistic_cost_8.png](https://i.imgur.com/BucNDvH.png)
+
+梯度下降法求的最小值，θ更新过程
+
+![logistic_cost_13.png](https://i.imgur.com/5w5ommF.png)
+
+![logistic_cost_14.png](https://i.imgur.com/0KXBuwH.png)
+
+θ更新过程可以写成：
+
+![logistic_cost_15.png](https://i.imgur.com/mo2MU4F.png)
 
 #### 2.2 补充：代价函数推导过程
 ![logistic_cost_1.png](https://i.imgur.com/jKApTaG.png)
@@ -149,13 +172,8 @@ tanh(z) = 2σ(2z) − 1
 #### 4.5 logistic回归属于线性模型还是非线性模型？
 `logistic`回归本质上是线性回归，只是在特征到结果的映射中加入了一个`sigmoid`函数，即先把特征线性求和，然后使用非线性的函数将连续值映射到0与1之间。
 
-参考：[logistic回归属于线性模型还是非线性模型？](https://www.zhihu.com/question/30726036 "logistic回归属于线性模型还是非线性模型？")
 
-#### 4.6 逻辑回归和SVM的区别是什么？各适用于解决什么问题？
-
-![9345794f944ea3de0f18f02867b86d3f_hd.jpg](https://i.imgur.com/o1M2acp.jpg)
-
-#### 4.7 bernoulli distribution
+#### 4.6 bernoulli distribution
 `bernoulli distribution`即二项分布
 
 ![Bernoulli_Distribution_2.png](https://i.imgur.com/Bew6rjz.png)
@@ -164,8 +182,14 @@ tanh(z) = 2σ(2z) − 1
 
 参考：
 
-[bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution "bernoulli distribution")
+1. [bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution "bernoulli distribution")
 
-[Logistic Regression and SVM](http://charleshm.github.io/2016/03/LR-SVM/)
+1. [Logistic Regression and SVM](http://charleshm.github.io/2016/03/LR-SVM/)
 
-[逻辑回归（Logistic Regression）和SVM的联系以及Kernel](https://blog.csdn.net/jackie_zhu/article/details/52331047)
+1. [逻辑回归（Logistic Regression）和SVM的联系以及Kernel](https://blog.csdn.net/jackie_zhu/article/details/52331047)
+
+1. [逻辑回归和SVM的区别是什么？各适用于解决什么问题？](https://www.zhihu.com/question/24904422/answer/92164679)
+
+1. [logistic回归属于线性模型还是非线性模型？](https://www.zhihu.com/question/30726036 "logistic回归属于线性模型还是非线性模型？")
+
+1. [逻辑回归代价函数推导](https://blog.csdn.net/pakko/article/details/37878837)
