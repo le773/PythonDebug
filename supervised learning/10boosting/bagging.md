@@ -1,4 +1,4 @@
-### 01 随机森林
+﻿### 01 随机森林
 
 1. 数据的随机性化
 使得随机森林中的决策树更普遍化一点，适合更多的场景。
@@ -79,21 +79,27 @@ columns = X_train.columns.values[indices[:5]]
 X_train[column_import].head(5)
 ```
 
-### 3.0 RandomForest随机森林
+### 3.0 RandomForest 随机森林预测伪代码
 
 ```
-for n_trees in [1, 10, 20]:  # 理论上树是越多越好
+1.for n_trees in [1, 10, 20]:  # 理论上树是越多越好
     evaluate_algorithm(dataset, random_forest, n_folds=5, max_depth=20, min_size=1, sample_size=1.0, n_trees, n_features=15)
     1. 将数据集进行抽重抽样 n_folds 份，每份数据大小fold_size
     2. 每次循环从 folds 从取出一个 fold 作为测试集，其余作为训练集，遍历整个 folds ，实现交叉验证
     3. random_forest
-        for i in range(n_trees):
+        1. for i in range(n_trees):
             1. # 随机抽样的训练样本， 随机采样保证了每棵决策树训练集的差异性
             2. # 创建一个决策树
-                1. # 返回最优列和相关的信息
+                1. get_split # 返回最优列和相关的信息
                     1. 找出分割数据集的最优特征，得到最优的特征 index，特征值 row[index]，以及分割完的数据 groups（left, right）
-            3. bagging_predict # 每一行的预测结果，bagging 预测最后的分类结果
-                1. 遍历每棵树，测试集上预测此行
-                2. 返回最好的预测结果及其node
+                        1. 从dataset中随机选取n_features 个特征
+                        2. for index in features:
+                               for row in dataset:
+                                   1. # 根据特征和特征值分割，生成两个数据集
+                                   2. 计算gini系数，# 左右两边的数量越一样，说明数据区分度不高，gini系数越大
+                                   3. # 最后得到最优的分类特征 b_index,分类特征值 b_value,分类结果 b_groups。b_value 为分错的代价成本
+                2. split # 对左右2边的数据 进行递归的调用，由于最优特征使用过，所以在后面进行使用的时候，就没有意义了，接下来需要找左右子树最佳分类
+                    1. get_split ...
+        2. bagging_predict # 使用多个决策树trees对测试集test的第row行进行预测，再使用简单投票法判断出该行所属分类
     4. # 计算随机森林的预测结果的正确率
 ```
