@@ -1,4 +1,4 @@
-﻿### 1.0 ID3
+﻿﻿### 1.0 ID3
 
 #### 1.1.0 信息增益的算法
 
@@ -16,8 +16,6 @@
 (3) 计算信息增益
 
 ![tree_3.png](https://i.imgur.com/afB7oam.png)
-
-
 
 #### 1.1.1 ID3原理
 原理：每次选取当前最佳的特征来分割数据，并按照该特征的所有可能取值来切分。
@@ -42,6 +40,22 @@
 
 ![tree_4.png](https://i.imgur.com/Dfdg1Ct.png)
 
+### 1.3 Cart
+在分类问题中，假设有K个类别，第k个类别的概率为pk, 则基尼系数的表达式为：
+
+![gini_1.png](https://i.imgur.com/LEjAZbq.png)
+
+如果是二类分类问题，计算就更加简单了，如果属于第一个样本输出的概率是p，则基尼系数的表达式为：
+
+![gini_2.png](https://i.imgur.com/1bZUuhF.png)
+
+对于个给定的样本D,假设有K个类别, 第k个类别的数量为Ck,则样本D的基尼系数表达式为：
+
+![gini_3.png](https://i.imgur.com/9XIQU78.png)
+
+特别的，对于样本D,如果根据特征A的某个值a,把D分成D1和D2两部分，则在特征A的条件下，D的基尼系数表达式为：
+
+![gini_4.png](https://i.imgur.com/HEyb87y.png)
 
 ### 2.0 划分分支方式
 - ID3 是信息增益分支
@@ -56,3 +70,7 @@ CART 和 C4.5 之间主要差异在于分类结果上，CART 可以回归分析�
 [为什么说c45克服了ID3偏向选择取值较多的属性的这一问题？](https://www.zhihu.com/question/27109632 "为什么说c45克服了ID3偏向选择取值较多的属性的这一问题？")
 
 [C45为什么使用信息增益比来选择特征？](https://www.zhihu.com/question/22928442 "C45为什么使用信息增益比来选择特征？")
+
+[决策树算法原理(上)](http://www.cnblogs.com/pinard/p/6050306.html)
+
+[决策树算法原理(下)](https://www.cnblogs.com/pinard/p/6053344.html "决策树算法原理(下)")
