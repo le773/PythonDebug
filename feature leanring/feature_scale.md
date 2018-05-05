@@ -1,3 +1,7 @@
+## 特征工程
+
+![feature_1.jpg](https://i.imgur.com/poevApe.jpg)
+
 ## 1.0 特征缩放
 ###  1.1 调节比例
 ![调节比例](https://i.imgur.com/GfRSDjV.png)
