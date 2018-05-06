@@ -1,7 +1,9 @@
 ### 1.0 矩阵A奇异值分解
 直观上，奇异值分解将矩阵分解为若干个秩一矩阵之和，用公式表示：
+
 ![矩阵A奇异值分解](https://www.zhihu.com/equation?tex=%281%29+%5Cquad%5Cquad+%5Cqquad+A+%3D+%5Csigma_1+u_1v_1%5E%7B%5Crm+T%7D%2B%5Csigma_2+u_2v_2%5E%7B%5Crm+T%7D%2B...%2B%5Csigma_r+u_rv_r%5E%7B%5Crm+T%7D)
-其中等式右边每一项前的系数σ就是奇异值,μ和υ分别表示列向量，秩一矩阵的意思是矩阵秩为1，注意到每一项![uvt](https://www.zhihu.com/equation?tex=uv%5E%7B%5Crm+T%7D)都是秩为1的矩阵。假定奇异值满足![奇异值](https://www.zhihu.com/equation?tex=%5Csigma_1%5Cgeq%5Csigma_2%5Cgeq...%5Cgeq%5Csigma_r%3E0)。
+
+其中等式右边每一项前的系数σ就是奇异值,μ和υ分别表示列向量，秩一矩阵的意思是矩阵秩为1，注意到每一项uv<sup>T</sup>都是秩为1的矩阵。假定奇异值满足δ<sub>1</sub> >= δ<sub>2</sub> >= ... >= δ<sub>r</sub> > 0。
 
 ### 1.1 奇异值的物理意义
 奇异值往往对应着矩阵中隐含的重要信息，且重要性和奇异值大小正相关。每个矩阵A都可以表示为一系列秩为1的小矩阵之和，而奇异值则衡量了这些小矩阵对于A的权重。
@@ -15,11 +17,15 @@
 奇异值分解把线性变换清晰地分解为**旋转**、**缩放**、**投影**这三种基本线性变换。
 
 ![奇异值分解_旋转_缩放_投影](https://pic4.zhimg.com/v2-ea67bee7f332fa7bab9bb4ccf19f17e4_r.jpg)
-[奇异值的物理意义是什么？](https://www.zhihu.com/question/22237507 "奇异值的物理意义是什么？")
-
 
 ### 2.1 SVD 是矩阵分解的一种类型。
+![svd_1.png](https://i.imgur.com/y8DOF1O.png)
+
 ![svd矩阵分解](https://raw.githubusercontent.com/apachecn/MachineLearning/master/images/14.SVD/%E4%BD%BF%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE-SVD%E5%85%AC%E5%BC%8F.jpg)
+
+矩阵U和V都定义为正交矩阵，而矩阵D定义为对角矩阵。注意，矩阵D不一定是方阵。
+
+对角矩阵D对角线上的元素被称为矩阵A的奇异值。事实上，A的左奇异值U是AA<sup>T</sup>的特征向量。A的右奇异值V是A<sup>T</sup>A的特征向量。A的非零奇异值是A<sup>T</sup>A特征值的平方根，同时也是AA<sup>T</sup>特征值的平方根。
 
 ### 2.2 SVD特点
 
@@ -150,4 +156,9 @@ PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的�
 协方差矩阵的主对角线和其余元素正好可以分别表示方差和协方差，而根据两条标准又很容易想到求特征值和特征向量;
 
 下面说一下为啥还有SVD，上面我们说PCA针对的是协方差矩阵C，但你得知道协方差矩阵是个方阵啊，难道不是方阵我们就不资瓷么？？ 所以就有了SVD～～大概可以把SVD看作是对非方阵做PCA处理的一种方式啦，毕竟两者的套路都差不多，分解出特征值（SVD里是奇异值，数据XX‘的特征值的平方根），挑比较大的特征值对应的特征向量构成投影矩阵，然后做线性变换（将数据X投影到低维空间）
+
+参考：
+
+[奇异值的物理意义是什么？](https://www.zhihu.com/question/22237507 "奇异值的物理意义是什么？")
+
 [机器学习中SVD和PCA一直没有搞的特别清楚，应该如何理解呢？](https://www.zhihu.com/question/38319536/answer/131150925)
