@@ -1,4 +1,4 @@
-﻿### 背景
+### 背景
 在很多情况下数据中的一小段携带了数据集中大部分的信息，其他的信息要不就是噪声，要不就是毫不相干。
 
 ### 1.0 矩阵A奇异值分解
@@ -69,9 +69,10 @@ A<sub>m*n</sub> = U<sub>mxm</sub> * Σ<sub>mxn</sub> * V<sup>T</sup><sub>nxn</su
 对角矩阵Σ对角线上的元素被称为矩阵A的奇异值。事实上，A的左奇异值U是AA<sup>T</sup>的特征向量。A的右奇异值V是A<sup>T</sup>A的特征向量。A的非零奇异值是A<sup>T</sup>A特征值的平方根，同时也是AA<sup>T</sup>特征值的平方根。
 
 ### 2.2 SVD特点
-
 优点：简化数据，去除噪声，优化算法的结果
+
 缺点：数据的转换可能难以理解
+
 使用的数据类型：数值型数据
 
 ### 3.0 基于物品相似度的推荐引擎原理
@@ -80,7 +81,7 @@ u1未评分物品item
 循环u1中评分的列
     假设u1对f1评分userRating，item未评分；u2对f1评分，item评分；
     步骤一：计算u2评分中，f1,item的相似度similarity；
-    步骤二：计算总的相似度simTotal、, 对应评分值userRating*similarity求和ratSimTotal
+    步骤二：计算总的相似度simTotal, 对应评分值userRating*similarity求和ratSimTotal
 计算估计评分：ratSimTotal/simTotal
 
 步骤三：对预估的评分物品按照得分排序itemScores
@@ -188,6 +189,17 @@ def svdEst(dataMat, user, simMeas, item):
         return ratSimTotal/simTotal
 ```
 
+svd选出最重要的4个特征，步骤一、二、三和基于物品相似度的推荐引擎原理一致。
+
+此处svd的应用仍然是降维。
+
+### 3.3 基于SVD的推荐系统
+假设我们现在有评分矩阵 V∈R<sup>n×m</sup>，SVD实际上就是去找到两个矩阵： U∈R<sup>f×n</sup>，M∈R<sup>f×m</sup>，其中矩阵U表示User和feature之间的联系，矩阵V表示Item和feature之间的联系。
+
+V=U<sup>T</sup>M
+
+![svd_2.png](https://i.imgur.com/LKgxaes.png)
+
 ### 4.0 机器学习中SVD和PCA一直没有搞的特别清楚，应该如何理解呢？
 
 PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的信息保留下来。那么关键就是【特征明显的，重要的信息】：
@@ -207,3 +219,5 @@ PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的�
 [漫谈奇异值分解](http://charleshm.github.io/2016/03/Singularly-Valuable-Decomposition/)
 
 [奇异值分解(SVD) --- 几何意义](http://blog.sciencenet.cn/blog-696950-699432.html)
+
+[SVD在推荐系统中的应用](http://charleshm.github.io/2016/03/SVD-Recommendation-System/#)
