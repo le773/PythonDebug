@@ -1,4 +1,4 @@
-### 1.0 矩阵A奇异值分解
+﻿### 1.0 矩阵A奇异值分解
 直观上，奇异值分解将矩阵分解为若干个秩一矩阵之和，用公式表示：
 
 ![矩阵A奇异值分解](https://www.zhihu.com/equation?tex=%281%29+%5Cquad%5Cquad+%5Cqquad+A+%3D+%5Csigma_1+u_1v_1%5E%7B%5Crm+T%7D%2B%5Csigma_2+u_2v_2%5E%7B%5Crm+T%7D%2B...%2B%5Csigma_r+u_rv_r%5E%7B%5Crm+T%7D)
@@ -12,20 +12,32 @@
 在图像处理领域，奇异值不仅可以应用在**数据压缩**上，还可以对**图像去噪**。如果一副图像包含噪声，我们有理由相信那些较小的奇异值就是由于噪声引起的。当我们强行令这些较小的奇异值为0时，就可以去除图片中的噪声。
 
 ### 1.3 矩阵M的奇异值分解
-![矩阵M奇异值分解](https://i.imgur.com/SJ3lm6r.png)
+A<sub>m*n</sub> = U<sub>mxm</sub> * Σ<sub>mxn</sub> * V<sup>T</sup><sub>nxn</sub>
+
+当矩阵M作用在正交单位向量ν1和v2上之后，得到Mv1和Mv2也是正交的。令u1和u2分别是Mv1和Mv2方向上的单位向量，即：
+
+Mv1 = σ1u1
+
+Mv2 = σ2u2
+
+写在一起就是M[v1 v2]=[σ1u1 σ2u2]，整理得：
+
+![svd_2.png](https://i.imgur.com/cdXpiLB.png)
+
+这样就得到矩阵M的的奇异值分解。奇异值σ1、σ2分别是Mv1和Mv2的长度。很容易可以把结论推广到一般n维情形。
 
 奇异值分解把线性变换清晰地分解为**旋转**、**缩放**、**投影**这三种基本线性变换。
 
 ![奇异值分解_旋转_缩放_投影](https://pic4.zhimg.com/v2-ea67bee7f332fa7bab9bb4ccf19f17e4_r.jpg)
 
 ### 2.1 SVD 是矩阵分解的一种类型。
-![svd_1.png](https://i.imgur.com/y8DOF1O.png)
+A<sub>m*n</sub> = U<sub>mxm</sub> * Σ<sub>mxn</sub> * V<sup>T</sup><sub>nxn</sub>
 
-![svd矩阵分解](https://raw.githubusercontent.com/apachecn/MachineLearning/master/images/14.SVD/%E4%BD%BF%E7%94%A8SVD%E7%AE%80%E5%8C%96%E6%95%B0%E6%8D%AE-SVD%E5%85%AC%E5%BC%8F.jpg)
+![svd_1.png](https://i.imgur.com/wDz4Wqu.png)
 
-矩阵U和V都定义为正交矩阵，而矩阵D定义为对角矩阵。注意，矩阵D不一定是方阵。
+矩阵U和V都定义为正交矩阵，而矩阵Σ定义为对角矩阵。注意，矩阵Σ不一定是方阵。
 
-对角矩阵D对角线上的元素被称为矩阵A的奇异值。事实上，A的左奇异值U是AA<sup>T</sup>的特征向量。A的右奇异值V是A<sup>T</sup>A的特征向量。A的非零奇异值是A<sup>T</sup>A特征值的平方根，同时也是AA<sup>T</sup>特征值的平方根。
+对角矩阵Σ对角线上的元素被称为矩阵A的奇异值。事实上，A的左奇异值U是AA<sup>T</sup>的特征向量。A的右奇异值V是A<sup>T</sup>A的特征向量。A的非零奇异值是A<sup>T</sup>A特征值的平方根，同时也是AA<sup>T</sup>特征值的平方根。
 
 ### 2.2 SVD特点
 
