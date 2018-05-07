@@ -1,4 +1,7 @@
-﻿### 1.0 矩阵A奇异值分解
+﻿### 背景
+在很多情况下数据中的一小段携带了数据集中大部分的信息，其他的信息要不就是噪声，要不就是毫不相干。
+
+### 1.0 矩阵A奇异值分解
 直观上，奇异值分解将矩阵分解为若干个秩一矩阵之和，用公式表示：
 
 ![矩阵A奇异值分解](https://www.zhihu.com/equation?tex=%281%29+%5Cquad%5Cquad+%5Cqquad+A+%3D+%5Csigma_1+u_1v_1%5E%7B%5Crm+T%7D%2B%5Csigma_2+u_2v_2%5E%7B%5Crm+T%7D%2B...%2B%5Csigma_r+u_rv_r%5E%7B%5Crm+T%7D)
@@ -13,6 +16,13 @@
 
 ### 1.3 矩阵M的奇异值分解
 A<sub>m*n</sub> = U<sub>mxm</sub> * Σ<sub>mxn</sub> * V<sup>T</sup><sub>nxn</sub>
+
+U<sub>mxm</sub>:AxA<sup>T</sup>的正交的特征向量；
+
+Σ<sub>mxn</sub>:从大到小排列的奇异值；
+
+V<sup>T</sup><sub>nxn</sub>:A<sup>T</sup>xA的正交的特征向量；
+
 
 当矩阵M作用在正交单位向量ν1和v2上之后，得到Mv1和Mv2也是正交的。令u1和u2分别是Mv1和Mv2方向上的单位向量，即：
 
@@ -29,6 +39,25 @@ Mv2 = σ2u2
 奇异值分解把线性变换清晰地分解为**旋转**、**缩放**、**投影**这三种基本线性变换。
 
 ![奇异值分解_旋转_缩放_投影](https://pic4.zhimg.com/v2-ea67bee7f332fa7bab9bb4ccf19f17e4_r.jpg)
+
+图形解释
+
+![svd_14.png](https://i.imgur.com/ZciP6aT.png)
+
+### 1.4 奇异值分解的几何意义
+对于任何的一个矩阵，找到一组两两正交单位向量序列，使得矩阵作用在此向量序列上后得到新的向量序列保持两两正交。
+
+![svd_13.png](https://i.imgur.com/2FXPCpI.png)
+
+### 1.5 奇异值的几何意义
+这组变换后的新的向量序列的长度。
+
+
+![svd_12.png](https://i.imgur.com/KOX11WO.jpg)
+
+矩阵将二维平面中单位圆变化成椭圆，那么奇异值正好是椭圆两个半轴长。
+
+推广到一般情形：一般矩阵A将单位球||x||<sub>2</sub>=1变换为超球面，那么矩阵的每个奇异值就是超椭圆的每条半轴的长度。
 
 ### 2.1 SVD 是矩阵分解的一种类型。
 A<sub>m*n</sub> = U<sub>mxm</sub> * Σ<sub>mxn</sub> * V<sup>T</sup><sub>nxn</sub>
@@ -161,7 +190,7 @@ def svdEst(dataMat, user, simMeas, item):
 
 ### 4.0 机器学习中SVD和PCA一直没有搞的特别清楚，应该如何理解呢？
 
-PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的信息保留下来。那么关键就是【特征明显的，重要的信息】如何选择？  选择标准有两个：
+PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的信息保留下来。那么关键就是【特征明显的，重要的信息】：
 1. 同一个维度内的数据，方差大的比较明显，因为方差大表示自己和平均水平差异大，有个性，降维后也最可能分的开～
 2. 两个不同维度间关联度越小越好，因为关联度小表示这两个维度表征共同信息的量比较少，最理想就是两个维度不相关，相关度为0（相关度可以用协方差cov(a,b)表示），在线性空间内表现为两个维度正交
 
@@ -174,3 +203,7 @@ PCA降维的大致思想就是： 挑选特征明显的、显得比较重要的�
 [奇异值的物理意义是什么？](https://www.zhihu.com/question/22237507 "奇异值的物理意义是什么？")
 
 [机器学习中SVD和PCA一直没有搞的特别清楚，应该如何理解呢？](https://www.zhihu.com/question/38319536/answer/131150925)
+
+[漫谈奇异值分解](http://charleshm.github.io/2016/03/Singularly-Valuable-Decomposition/)
+
+[奇异值分解(SVD) --- 几何意义](http://blog.sciencenet.cn/blog-696950-699432.html)
