@@ -1,4 +1,4 @@
-﻿### 1.0 导论
+### 1.0 导论
 #### 1.1 Logistic 优缺点
 
 优点: 计算代价不高，易于理解和实现。
@@ -143,6 +143,10 @@ tanh(z) = 2σ(2z) − 1
 参考：[为什么LR模型要使用sigmoid函数，背后的数学原理是什么？](https://www.zhihu.com/question/35322351/answer/67193153)
 
 #### 4.3 Logistic回归做多分类和Softmax回归
+1. 如果类别之间互斥，就用softmax
+
+2. 如果类别之间有联系，使用K个LR更合适。
+
 ##### 4.3.1 第一种：根据每个类别，都建立一个二分类器
 
 直接根据每个类别，都建立一个二分类器，带有这个类别的样本标记为1，带有其他类别的样本标记为0。假如我们有个类别，最后我们就得到了个针对不同标记的普通的`logistic`分类器。
@@ -179,6 +183,49 @@ tanh(z) = 2σ(2z) − 1
 ![Bernoulli_Distribution_2.png](https://i.imgur.com/Bew6rjz.png)
 
 期望：`Eξ=np`； 方差：`Dξ=npq`； 其中`q=1-p`
+
+### 5.0 logistic过拟合
+![logistic_1.png](https://i.imgur.com/m7FfRDh.png)
+
+如果特征过多，在训练集上学到的模型参数可能很好，但是泛化不行。
+
+#### 5.1 logistic过拟合解决方法
+![logistic_2.png](https://i.imgur.com/u0U2bQp.png)
+
+1. 减少特征数量
+a. 人工选择特征
+b. 模型选择算法(pca、..)
+2. 正则化
+a. 保留所有特征，但是减小参数θ
+b. 当有很多特性时，模型表现很好，每一个都对预测有一定的贡献。
+
+#### 5.2 logistic 正则化 代价函数
+
+![logistic_3.png](https://i.imgur.com/vN4YzyT.png)
+
+λ是正则化系数
+
+1.如果它的值很大，说明对模型的复杂度惩罚大，对拟合数据的损失惩罚小，这样不会过分拟合数据，在训练数据上的偏差较大，在未知数据上的方差较小，但是可能出现欠拟合。
+
+![logistic_4.png](https://i.imgur.com/qUr7LWp.png)
+
+2.如果它的值很小，说明比较注重对训练数据的拟合，在训练集上偏差会小，但是可能过拟合。
+
+#### 5.3 logistic 梯度下降
+![logistic_5.png](https://i.imgur.com/OR0pGVc.png)
+
+![logistic_6.png](https://i.imgur.com/x0OdhVR.png)
+
+正则化后的线性回归的Normal Equation公式
+
+![logistic_7.png](https://i.imgur.com/oAhfHui.png)
+
+其他优化算法
+
+1. Conjugate gradient method(共轭梯度法)
+1. Quasi-Newton method(拟牛顿法)
+1. BFGS method
+1. L-BFGS(Limited-memory BFGS)
 
 参考：
 
