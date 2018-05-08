@@ -1,4 +1,4 @@
-### 1.0 PCA
+﻿### 1.0 PCA
 `Principal Components Analysis`:主成分分析
 
 主成分是由数据中具有最大方差的方向决定的，因为可以最大程度的保留信息量。
@@ -30,6 +30,16 @@ X<sup>T</sup> x X = (M<sup>T</sup>)<sup>-1</sup> x D x (X<sup>T</sup>)<sup>-1</s
 
 而X<sup>T</sup>X是一个对角阵，那么它的特征值分解X<sup>T</sup>X=VDV<sup>-1</sup>中的V是正交单位阵，那么有V<sup>T</sup>=V<sup>-1</sup>，那么这个V就满足对M的要求。
 
+X<sup>T</sup>X的特征值表示在特征向量上的方差。
+
+Cov(x,y) = E[(X-u<sub>x</sub>)(Y-u<sub>y</sub>)]
+
+如果协方差矩阵为正，说明X、Y同向变化，协方差越大说明同向程度越高；
+如果协方差矩阵为负，说明X、Y负向变化，协方差越大说明负向程度越高；
+
+参考：
+
+[如何理解主成分分析中的协方差矩阵的特征值的几何含义？](https://www.zhihu.com/question/36348219)
 #### 1.2.2 PCA算法伪代码
 ![svd_15.png](https://i.imgur.com/W7c21LY.png)
 

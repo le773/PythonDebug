@@ -1,8 +1,14 @@
-## 特征工程
+﻿## 特征工程
 
 ![feature_1.jpg](https://i.imgur.com/poevApe.jpg)
 
 ## 1.0 特征缩放
+### 1.0 反正切函数arctan
+![artan_1.jpg](https://i.imgur.com/Lobk1EL.jpg)
+
+```
+f(x) = arctan(x)*2/PI
+```
 ###  1.1 调节比例
 ![调节比例](https://i.imgur.com/GfRSDjV.png)
 

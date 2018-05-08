@@ -1,6 +1,4 @@
 ﻿### 01 贝叶斯
-缺陷：在多个单词组成的意义明显不同的词语中，分类不太好
-
 ##### 贝叶斯公式
 ![navies_bayes_1.jpg](https://i.imgur.com/ksOUOwJ.jpg)
 
@@ -25,6 +23,9 @@
 24个，计算机扫描统计还可以，但是现实生活中，往往有**非常多的特征，每一个特征的取值也是非常之多，那么通过统计来估计后面概率的值，变得几乎不可做**，这也是为什么需要假设特征之间独立的原因。
 
 #### 01.04 工作原理
+首先，统计去重后的词条在各个类别中的数量，各类别总数量；
+
+其次，计算概率：P(词条|类别)*P(类别)
 ```
 提取所有文档中的词条并进行去重
 获取文档的所有类别
@@ -38,10 +39,47 @@
         将该词条的数目除以总词条数目得到的条件概率（P(词条|类别)）
 返回该文档属于每个类别的条件概率（P(类别|文档的所有词条)）
 ```
+上述步骤，并未计算P(词条)的概率，因为需要比较P(类别|文档的所有词条)的大小，也就是比较P(词条|类别)*P(类别)的值。
 
-#### 01.05 优缺点
+#### 01.05 拉普拉斯校验
+由于训练量不足，某个类别下某个特征划分没有出现时，会令分类器质量大大降低。为了解决这个问题，引入Laplace校准（这就引出了我们的拉普拉斯平滑）。
+
+它的思想非常简单，就是对没类别下所有划分的计数加1，这样如果训练样本集数量充分大时，并不会对结果产生影响，并且解决了上述频率为0的尴尬局面。
+
+![laplace_1.png](https://i.imgur.com/3dmf5Aq.png)
+
+![laplace_2.png](https://i.imgur.com/h7Nw8Hd.png)
+
+其中a<sub>jl</sub>代表第j个特征的第l个选择，S<sub>j</sub>代表第j个特征的个数，K代表种类数
+
+λ=1，加入拉普拉斯平滑后，避免了出现概率为0的情况。
+#### 01.06 特征离散型
+当特征是离散型，则直接统计。
+
+#### 01.07 特征连续型
+#### 01.07.01 利用高斯分布
+假设连续变量服从某种概率分布，然后使用训练数据估计分布的参数，高斯分布通常被用来表示连续属性的类条件概率分布。
+
+高斯分布有两个参数，均值μ和方差σ<sup>2</sup>，对每个类y<sub>i</sub>，属性X<sub>i</sub>的类条件概率等于：
+
+![gaussian_1.png](https://i.imgur.com/aPBo2EK.png)
+
+参数μ<sub>ij</sub>可以用类y<sub>j</sub>的所有训练记录关于X<sub>i</sub>的样本均值来估计，同理，σ<sub>ij</sub><sup>2</sup>可以用这些训练记录样本方差来估计。
+
+#### 01.07.02 核密度估计
+核密度估计(Kernel density estimation)，是一种用于估计概率密度函数的非参数方法，x<sub>1</sub>,x<sub>2</sub>,...,x<sub>n</sub>为独立同分布F的n个样本点，设其概率密度函数为f，核密度估计为以下：
+
+![kernel_density_estimation_1.png](https://i.imgur.com/Qh7RBbK.png)
+
+K()为核函数，各种核函数如下：
+
+![kernel_density_estimation_2.png](https://i.imgur.com/ZPhKUwO.png)
+
+#### 01.08 朴素贝叶斯优缺点
 优点: 在数据较少的情况下仍然有效，可以处理多类别问题。
-缺点: 对于输入数据的准备方式较为敏感。
+
+缺陷：在多个单词组成的意义明显不同的词语中，分类不太好
+
 适用数据类型: 标称型数据。
 
 ### 02 CountVectorizer + TfidfTransformer
@@ -90,10 +128,6 @@ This was originally a term weighting scheme developed for information retrieval 
 `nd`:代表文章数量；
 `df(d,t)`:某词t在文章d中出现的次数；
 
-参考:
-[feature_extraction](http://scikit-learn.org/stable/modules/feature_extraction.html "feature_extraction")
-[使用scikit-learn工具计算文本TF-IDF值](http://blog.csdn.net/eastmount/article/details/50323063 "使用scikit-learn工具计算文本TF-IDF值")
-
 #### 03.02 词频
 
 ![词频](http://img.blog.csdn.net/20160808160728646)
@@ -105,3 +139,13 @@ This was originally a term weighting scheme developed for information retrieval 
 #### 03.04 tf-idf
 
 ![tf-idf](http://img.blog.csdn.net/20160808160817878)
+
+参考:
+[feature_extraction](http://scikit-learn.org/stable/modules/feature_extraction.html "feature_extraction")
+
+[使用scikit-learn工具计算文本TF-IDF值](http://blog.csdn.net/eastmount/article/details/50323063 "使用scikit-learn工具计算文本TF-IDF值")
+
+[核密度估计(Kernel density estimation)](https://blog.csdn.net/yuanxing14/article/details/41948485)
+
+
+[为什么朴素贝叶斯分类中引入的拉普拉斯修正是正确的？](https://www.zhihu.com/question/41043365)
