@@ -7,7 +7,7 @@
 
 `w`是平面 w<sup>T</sup>的垂直向量，由 (2) - (1) 得:
 <center>w<sup>T</sup>(x'' - x') = 0</center>
-那么，向量`(x'' - x')`于平面w<sup>T</sup>上；接下来计算向量`(x - x')`在向量`w`上的投影长度:
+那么，向量(x'' - x')于平面w<sup>T</sup>上；接下来计算向量(x - x')在向量w上的投影长度:
 
 ![standard_large-Margin_2.png](https://i.imgur.com/8cnTPld.png)
 
@@ -15,11 +15,11 @@
 
 ![standard_large-Margin_3.png](https://i.imgur.com/q1UL4cn.png)
 
-将上述公式，简写为一个公式：
+将上述公式，简写为一个公式，这个公式表示为函数间隔：
 
 ![standard_large-Margin_4.png](https://i.imgur.com/z2yGJkf.png)
 
-所有训练样本到超平面的距离可以表示为：
+所有训练样本到超平面的几何距离表示为：
 
 ![standard_large-Margin_5.png](https://i.imgur.com/5lxMsrD.png)
 
@@ -163,9 +163,63 @@
 ![Larange_f_16.png](https://i.imgur.com/Ar3TCI3.png)
 
 ### 09 Dual Formulation of Support Vector Machine
+#### 09.01 Dual Formulation of Support Vector Machine
 将`max`问题转化为`min`问题:
 
 ![Larange_f_19.png](https://i.imgur.com/pdk10do.png)
+
+令![lagelangri_1.jpg](https://i.imgur.com/v4sIqYG.jpg)
+
+当某个约束条件不满足时，例如y<sub>i</sub>(w<sup>T</sup>x<sub>i</sub> + b)<1，那么显然有θ(w)=∞(只要令α<sub>i</sub>=∞即可)。而当所有条件都满足时，则最优值为θ(w)= 0.5 x |w| x |w|，即最初要最小化的量。
+
+因此，在要求约束条件得到满足的情况下最小化 0.5 x |w| x |w|，实际上等价于直接最小化θ(w)(当然，这里也有条件约束，就是α<sub>i</sub>)，因为如果约束条件没有得到满足，θ(w)就会等于无穷大，自然不是我们要求的最小值。
+
+具体写出来，目标函数变成了：
+
+![lagelangri_2.jpg](https://i.imgur.com/Ygl4qLC.jpg)
+
+这里用p<sup>*</sup>表示这个问题的最优价，且和最初的问题是等价的。如果直接求解，那么一上来便是面对w和b两个参数，而α<sub>i</sub>又是不等式约束，这个求解过程不好做，于是：
+
+![lagelangri_3.jpg](https://i.imgur.com/uT7uuK1.jpg)
+
+交换以后的新问题是原始问题的对偶问题，这个新问题的最优值用d<sup>*</sup>来表示，在满足某些条件的情况下，这两者相等，这个时候就可以通过求解对偶问题来间接的求解原始问题。
+
+#### 09.02 上述目标函数转换的证明
+定理1：对于任意α,β和x有：
+
+![lagelangri_4.png](https://i.imgur.com/NMb7MZX.png)
+
+证明：
+
+![lagelangri_5.png](https://i.imgur.com/QMegMUI.png)
+
+即
+
+![lagelangri_6.png](https://i.imgur.com/HCW6VlZ.png)
+
+所以
+
+![lagelangri_7.png](https://i.imgur.com/9yuPkCy.png)
+
+即：d<sup>\*</sup> < q<sup>\*</sup>
+
+d<sup>\*</sup>、q<sup>\*</sup>分别是对偶问题和原始问题的最优值。
+
+#### 09.03 定理1的推论
+如果能够找到一组x<sup>\*</sup>，α<sup>\*</sup>、β<sup>\*</sup>，使得θ<sub>D</sub>(α<sup>\*</sup>,β<sup>\*</sup>)=θ<sub>P</sub>(x<sup>\*</sup>)，那么就应该有
+
+θ<sub>D</sub>(α<sup>\*</sup>,β<sup>\*</sup>) = d<sup>\*</sup>
+
+θ<sub>P</sub>(x<sup>\*</sup>) = q<sup>\*</sup>
+
+d<sup>\*</sup> = q<sup>\*</sup>
+
+当d<sup>\*</sup> < q<sup>\*</sup>时，称原始问题与对偶问题之间“弱对偶性”成立；
+
+当d<sup>\*</sup> = q<sup>\*</sup>时，则“强对偶性”成立；
+
+
+#### 09.04 对偶问题求解 第1步
 
 根据对`w`，`b`求导，得到`w`，`b`的值，代入上述公式
 
@@ -179,7 +233,18 @@
 
 ![Larange_f_20.png](https://i.imgur.com/TE6FCdw.png)
 
+#### 09.05 上述结论的详细推导公式
+![lagelangri_8.png](https://i.imgur.com/OU9AIQu.png)
+
+其中b=0，优化公式后即为 09.04 对偶问题求解 第1步 给出的结论。
+
+#### 09.06 对偶问题求解 第2步
+求对α的极大，即是关于对偶问题的最优化问题。经过上面的求w、b，得到拉格朗日式子已经没有变量w、b，只有α。从上面的式子得到：
+
+![lagelangri_9.png](https://i.imgur.com/mHMQP39.jpg)
+
 ### 10 Dual SVM with QP Solver
+#### 10.01 Dual SVM with QP Solver
 ![Larange_f_18.png](https://i.imgur.com/a7UrTjC.png)
 
 求`α`的值
@@ -189,6 +254,10 @@
 根据`α`求`w`，`b`
 
 ![Larange_f_24.png](https://i.imgur.com/rDVHw24.png)
+
+----------
+#### 10.02
+
 
 ----------
 
@@ -223,7 +292,6 @@
 
 - 缺点
 restrict：如果是线性不可分的资料就不太适用了！
- 
 
 #### 11.02 Polynomial Kernel
 `Polynomial Kernel: K(x, x') = (ζ + γxTx')Q`
@@ -235,10 +303,13 @@ restrict：如果是线性不可分的资料就不太适用了！
 含有三个参数，太多啦！
 
 #### 11.03 径向基核
-使用径向基核前，应对`feature`进行归一化
+径向基函数是一个采用向量作为自变量的函数，能够基于向量距离运算输出一个标量。
 
 ![径向基核](http://img.my.csdn.net/uploads/201304/03/1364958259_8460.jpg)
 
+其中，σ是用户定义的用于确定到达率或者说函数值跌落到0的速度参数。
+
+注：使用径向基核前，应对`feature`进行归一化
 #### 11.03.01 参数分析
 - `γ`参数实际上对 `SVM` 的“线性”核函数没有影响。核函数的重要参数是`C`, 
 - `C`参数
@@ -390,3 +461,5 @@ L2正则项就能代表模型的复杂度，根据奥卡姆，如果同样效果
 [机器学习技法（林轩田）](https://www.bilibili.com/video/av12469267/?p=3 "机器学习技法（林轩田）")
 
 [怎么样理解SVM中的hinge-loss？](https://www.zhihu.com/question/47746939/answer/154058298)
+
+[刘建平:支持向量机原理(一) 线性支持向量机](http://www.cnblogs.com/pinard/p/6097604.html)

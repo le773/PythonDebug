@@ -76,9 +76,13 @@ K()为核函数，各种核函数如下：
 ![kernel_density_estimation_2.png](https://i.imgur.com/ZPhKUwO.png)
 
 #### 01.08 朴素贝叶斯优缺点
-优点: 在数据较少的情况下仍然有效，可以处理多类别问题。
+优点:
 
-缺陷：在多个单词组成的意义明显不同的词语中，分类不太好
+1.在数据较少的情况下仍然有效，可以处理多类别问题。
+
+缺陷：
+
+1.在多个单词组成的意义明显不同的词语中，分类不太好
 
 适用数据类型: 标称型数据。
 
@@ -140,7 +144,50 @@ This was originally a term weighting scheme developed for information retrieval 
 
 ![tf-idf](http://img.blog.csdn.net/20160808160817878)
 
+----------
+
+### 04 Q&A
+#### 04.1 为什么特征独立型的模型遇到高度相关特征效果会不好？
+1. 若冗余特征过多，会造成特征数目过多，从而分析特征，训练模型所需要的时间就会越长；
+2. 冗余特征会使得并没有增加输入信息的前提下增加模型判别的置信度，这显然是不合理的。
+
+以贝叶斯为例，贝叶斯的推导公式：
+
+![navie_bays.png](https://i.imgur.com/3m2E2ya.png)
+
+其中，先验p(y)不会改变，也不会产生影响。所以只需要看右面部分，分母分为两项，其中一项包含分子,不妨记右边部分为ϕ(x,y)。
+
+以一个具体例子来说明，假设有这样一个二分类问题，特征是年龄和收入，分类标签是是否可以贷款，不妨设：
+
+先验概率：
+```
+P(贷) = 0.7，P(不贷) = 0.3
+```
+似然函数：
+```
+P(年龄<50|贷) = 0.7，P(年龄>50|贷) = 0.3
+P(收入>1w|贷) = 0.6，P(收入<1w|贷) = 0.3
+P(年龄<50|不贷) = 0.8，P(年龄>50|不贷) = 0.2
+P(收入>1w|不贷) = 0.1，P(收入<1w|贷) = 0.9
+````
+那么计算：
+
+![navie_bays_2.png](https://i.imgur.com/15rLPQV.png)
+
+其中分母两项的比值为 0.7x0.6/0.2x0.1=21
+
+当存在冗余特征的时候，不妨假设特征存在重复，此时计算：
+
+![navie_bays_3.png](https://i.imgur.com/8rIEH9M.png)
+
+其中分母两项的比值为441
+
+可以看到后者算出来的比值也变成了前者的平方，模型分类的置信度增加了很多，这实际上是不合理的，因为我们并没有增加数据上的额外信息在里面，只是单纯的特征重复，就使得分类置信度提高了很高，模型在分类的时候也会由于重复特征的影响造成分类效果的下降。
+
 参考:
+
+[为什么特征独立型的模型遇到高度相关特征效果会不好？](https://blog.csdn.net/shijing_0214/article/details/75864342)
+
 [feature_extraction](http://scikit-learn.org/stable/modules/feature_extraction.html "feature_extraction")
 
 [使用scikit-learn工具计算文本TF-IDF值](http://blog.csdn.net/eastmount/article/details/50323063 "使用scikit-learn工具计算文本TF-IDF值")

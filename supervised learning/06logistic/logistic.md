@@ -1,11 +1,6 @@
-### 1.0 导论
-#### 1.1 Logistic 优缺点
-
-优点: 计算代价不高，易于理解和实现。
-
-缺点: 容易欠拟合，分类精度可能不高。
-
-适用数据类型: 数值型和标称型数据。
+﻿### 1.0 导论
+#### 1.1 概括
+逻辑回归假设数据服从伯努利分布,通过极大化似然函数的方法，运用梯度下降来求解参数，来达到将数据二分类的目的。
 
 #### 1.2 信息熵
 
@@ -22,17 +17,37 @@
 
 1. 饱和的时候梯度太小。
 
+### 逻辑回归的优缺点
+优点：
+
+1.形式简单，模型的可解释性非常好。
+
+2.资源占用小，尤其是内存。因为只需要存储各个维度的特征值。
+
+3.训练速度较快。分类的时候，计算量仅仅只和特征的数目相关。并且逻辑回归的分布式优化sgd发展比较成熟，训练的速度可以通过堆机器进一步提高。
+
+缺点：
+
+1.很难处理数据不平衡的问题。
+
+2.逻辑回归本身无法筛选特征。
+
+3.处理非线性数据较麻烦。
+
+4.准确率并不是很高。因为形式非常的简单(非常类似线性模型)，很难去拟合数据的真实分布。
 ----------
 
 ### 2.0 Logistic代价函数推导过程
-#### 2.1 Logistic代价函数推导过程
-`sigmoid`函数：
+`sigmoid`函数很适合用作二分类：
 
 ![logistic_cost_2.png](https://i.imgur.com/Z5WY55M.png)
 
+#### 2.1 Logistic代价函数推导过程
+假设样本为正的概率是：
+
 ![logistic_cost_3.png](https://i.imgur.com/yIgXIA0.png)
 
-对于二元分类，符合伯努利分布（`the Bernoulli distribution`, 又称两点分布，0-1分布），因为二元分类的输出一定是0或1，典型的伯努利实验。所以：
+对于二元分类，符合伯努利分布（`the Bernoulli distribution`, 又称两点分布，0-1分布），因为二元分类的输出一定是0或1，典型的伯努利实验。所以假设样本预测为正负的概率：
 
 ![logistic_cost_1.png](https://i.imgur.com/t4T020p.png)
 
@@ -47,6 +62,8 @@ h<sub>θ</sub>(x):表示结果取1的概率；
 上述式子综合起来：
 
 ![logistic_cost_11.png](https://i.imgur.com/C1o96BR.png)
+
+注：上标表示第几个样本，下标表示这个样本的第几个特征
 
 取似然函数为：
 
@@ -123,6 +140,14 @@ weights = weights + alpha * error * dataMatrix[dataIndex[randIndex]]
 ```
 ![Ridge.png](https://i.imgur.com/Lob12i4.png)
 
+#### 3.4 Logistic 优缺点
+
+优点: 计算代价不高，易于理解和实现。
+
+缺点: 容易欠拟合，分类精度可能不高。
+
+适用数据类型: 数值型和标称型数据。
+
 ### 4.0 补充问题
 #### 4.1 `sigmoid`激活函数与双曲正切激活函数的关系
 ```
@@ -176,8 +201,17 @@ tanh(z) = 2σ(2z) − 1
 #### 4.5 logistic回归属于线性模型还是非线性模型？
 `logistic`回归本质上是线性回归，只是在特征到结果的映射中加入了一个`sigmoid`函数，即先把特征线性求和，然后使用非线性的函数将连续值映射到0与1之间。
 
+#### 4.6 逻辑回归的损失函数为什么要使用极大似然函数作为损失函数？
+损失函数一般有四种，平方损失函数，对数损失函数，HingeLoss0-1损失函数，绝对值损失函数。将极大似然函数取对数以后等同于对数损失函数。在逻辑回归这个模型下，对数损失函数的训练求解参数的速度是比较快的。至于原因大家可以求出这个式子的梯度更新
 
-#### 4.6 bernoulli distribution
+![logistic_gb_1.png](https://i.imgur.com/hPamDTM.png)
+
+个式子的更新速度只和x<sup>i</sup><sub>j</sub>，y<sup>i</sup><sub>j</sub>相关。和sigmod函数本身的梯度是无关的。这样更新的速度是可以自始至终都比较的稳定。
+
+#### 4.7 为什么不选平方损失函数的呢？
+其一是因为如果你使用平方损失函数，你会发现梯度更新的速度和sigmod函数本身的梯度是很相关的。sigmod函数在它在定义域内的梯度都不大于0.25。这样训练会非常的慢。
+
+#### 4.8 bernoulli distribution
 `bernoulli distribution`即二项分布
 
 ![Bernoulli_Distribution_2.png](https://i.imgur.com/Bew6rjz.png)
@@ -240,3 +274,5 @@ tanh(z) = 2σ(2z) − 1
 1. [logistic回归属于线性模型还是非线性模型？](https://www.zhihu.com/question/30726036 "logistic回归属于线性模型还是非线性模型？")
 
 1. [逻辑回归代价函数推导](https://blog.csdn.net/pakko/article/details/37878837)
+
+1. [逻辑回归知识点总结](https://www.cnblogs.com/ModifyRong/p/7739955.html)
