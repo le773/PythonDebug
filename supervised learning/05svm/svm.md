@@ -2,7 +2,7 @@
 ![standard_large-Margin_1.png](https://i.imgur.com/W4XaVnO.png)
 
 因为点`x'`和`x''`在超平面![超平面公式](http://img.blog.csdn.net/20131107201104906)上，则有：
-1. w<sup>T</sup> x' + b = 0       (1)
+1. w<sup>T</sup> x' + b = 0       (1)优化问题变成我们习惯的无约束优化问题
 2. w<sup>T</sup> x'' + b = 0      (2)
 
 `w`是平面 w<sup>T</sup>的垂直向量，由 (2) - (1) 得:
@@ -78,7 +78,15 @@
 
 ![Larange_f_1.png](https://i.imgur.com/FqAVMDI.png)
 
-`αn`是第`n`个训练样本的拉格朗日乘子。
+α<sub>n</sub>是第`n`个训练样本的拉格朗日乘子。
+
+上述的添加拉格朗日乘子后的不等式是合页损失函数(hinge loss)。
+
+![hinge_loss_1.png](https://i.imgur.com/CR1Mcqy.png)
+
+上图虚线显示的是感知机的损失函数[y<sub>i</sub>(w\*x<sub>i</sub> + b)]。当样本点(x<sub>i</sub>,y<sub>i</sub>)被正确分类时，损失是0，否则损失是[-y<sub>i</sub>(w\*x<sub>i</sub> + b)]。
+
+相比之下，合页损失函数不仅要分类正确，而且确信度足够高时损失才是0。也就是说，合页损失函数对学习有更高的要求。
 
 #### 05.01 最小问题包含最大问题
 
@@ -256,8 +264,17 @@ d<sup>\*</sup> = q<sup>\*</sup>
 ![Larange_f_24.png](https://i.imgur.com/rDVHw24.png)
 
 ----------
-#### 10.02
+#### 10.02 此时a已经通过凸二次优化解出
 
+定理：设α<sup>\*</sup>=(α<sub>1</sub><sup>\*</sup>,α<sub>2</sub><sup>\*</sup>,...,α<sub>N</sub><sup>\*</sup>)<sup>T</sup>是对偶问题的(09.06)一个解。若存在α<sup>\*</sup>的一个分量α<sub>j</sub><sup>\*</sup>，0< α<sub>j</sub><sup>\*</sup> < C，则原始问题(03)的解可按下式求得：
+
+![lagelangri_10.png](https://i.imgur.com/COrpg3G.png)
+
+若存在α<sup>\*</sup>的一个分量α<sub>j</sub><sup>\*</sup>，0< α<sub>j</sub><sup>\*</sup> < C，则 [y<sub>i</sub>(w<sup>\*</sup>x<sub>i</sub> + b<sup>\*</sup>) - 1 = 0]
+
+由此定理可知，分离超平面可写成：
+
+![lagelangri_11.png](https://i.imgur.com/yJXpwMW.png)
 
 ----------
 
@@ -277,6 +294,10 @@ d<sup>\*</sup> = q<sup>\*</sup>
 ![svm_kernel_4.png](https://i.imgur.com/Lndal2a.png)
 
 ![svm_kernel_5.png](https://i.imgur.com/cYbOABq.png)
+
+分类决策函数式成为：
+
+![lagelangri_12.png](https://i.imgur.com/Sy8WYyP.png)
 
 常用核函数
 
@@ -382,6 +403,10 @@ restrict：如果是线性不可分的资料就不太适用了！
 
 ![svm_soft_margin_9.png](https://i.imgur.com/525yyVN.png)
 
+软间隔支持向量机，KKT条件要求：
+
+![lagelangri_13.png](https://i.imgur.com/DUnlAL4.png)
+
 #### 12.02 常用替代损失函数
 ![svm_replace_f_1.png](https://i.imgur.com/gdV8914.png)
 
@@ -436,19 +461,27 @@ LR和不带核函数的SVM比较类似。
 
 ![standard_eq_1.jpg](https://i.imgur.com/XRJbQ61.jpg)
 
-### 15.0 Qustion
+### 15.0 Q&A
 #### 15.1 怎么样理解SVM中的hinge-loss？
 1.  实现了软间隔分类（这个Loss函数都可以做到）
 2.  保持了支持向量机解的稀疏性换用其他的Loss函数的话，SVM就不再是SVM了。
 
 正是因为HingeLoss的零区域对应的正是非支持向量的普通样本，从而所有的普通样本都不参与最终超平面的决定，这才是支持向量机最大的优势所在，对训练样本数目的依赖大大减少，而且提高了训练效率。
 
-#### 15.2 SVM为什么不容易过拟合呢？
+#### 15.2 能否对代价函数使用其他的替代损失函数？
+如果使用对数损失函数来替代合页损失函数，则几乎得到了log回归模型。实际上，支持向量机与log回归的优化目标接近，通常情况下他们的性能也相当。
+
+log回归优势主要在于其输出具有自然的概率意义，即在给出预测标记的同时也给出了概率。支持向量机的输出不具有概率意义，欲得到概率输出需进行特殊处理。
+
+此外，log回归能直接用于多分类任务，支持向量机为此则需要进行推广。
+
+另一方面，hinge损失有一块“平坦”的零区域，这使得支持向量机的解具有稀疏性，而log损失是光滑的单调递减函数，因此log回归的解依赖于更多的训练样本，其预测开销更大。
+
+#### 15.3 SVM为什么不容易过拟合呢？
 1. 自带L2正则项(见：05 Lagrange Function)
 L2正则项就能代表模型的复杂度，根据奥卡姆，如果同样效果那么越简单的模型泛化效果越好。所以最优化过程中尽量追求小的L2的值就会提高泛化能力，也就抑制了过拟合的问题。
 
 2. 其次，会通过松弛变量的方法处理掉噪音。
-
 
 参考：
 

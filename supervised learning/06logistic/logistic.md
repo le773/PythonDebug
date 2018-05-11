@@ -1,4 +1,4 @@
-﻿### 1.0 导论
+﻿﻿### 1.0 导论
 #### 1.1 概括
 逻辑回归假设数据服从伯努利分布,通过极大化似然函数的方法，运用梯度下降来求解参数，来达到将数据二分类的目的。
 
@@ -35,6 +35,7 @@
 3.处理非线性数据较麻烦。
 
 4.准确率并不是很高。因为形式非常的简单(非常类似线性模型)，很难去拟合数据的真实分布。
+
 ----------
 
 ### 2.0 Logistic代价函数推导过程
@@ -61,7 +62,7 @@ h<sub>θ</sub>(x):表示结果取1的概率；
 
 上述式子综合起来：
 
-![logistic_cost_11.png](https://i.imgur.com/C1o96BR.png)
+P(y|x;θ)=(h<sub>θ</sub>(x))<sup>y</sup> \* (1- h<sub>θ</sub>(x))<sup>1-y</sup>
 
 注：上标表示第几个样本，下标表示这个样本的第几个特征
 
@@ -155,17 +156,57 @@ tanh(z) = 2σ(2z) − 1
 ```
 
 #### 4.2 为什么 LR 模型要使用 sigmoid 函数，背后的数学原理是什么？
-说到底源于`sigmoid`，或者说`exponential family`所具有的最佳性质，即`maximum entropy`的性质。
+#### 4.2.1 指数族分布(the exponential family distribution)
+若某概率分布满足:
+
+P(y;η)=b(y) \* exp(η<sub>T</sub> \* T(y) - α(η))
+
+就是指数分布。其中：
+
+η是自然参数，T(y)是充分统计量，exp(-α(η))起到归一化作用。
+
+统计学中，伯努利分布、高斯分布、多项式分布、泊松分布都是指数族分布。
+
+而<font color=red>指数家族所具有的最佳性质，即最大熵的性质</font>，这是LR 模型要使用 sigmoid 函数原因之一。
+
+#### 4.2.2 为什么 LR 模型要使用 sigmoid 函数？
+LR是二分类问题，自然选择p(y|x;θ)服从伯努利分布。通过(2.1 Logistic代价函数推导过程)可知，概率模型可以写为：
+
+P(y|x;θ)=(h<sub>θ</sub>(x))<sup>y</sup> \* (1- h<sub>θ</sub>(x))<sup>1-y</sup>
+
+令:φ=h<sub>θ</sub>(x)，那么上述式子有如下推导过程：
+
+P(y;η)
+= φ<sup>y</sup> \* (1-φ)<sup>(1-y)</sup>
+= exp(ylogφ + (1-y)log(1-φ))
+= exp(ylogφ - ylog(1-φ) + log(1-φ))
+= exp(ylog(φ/(1-φ)) + log(1-φ))
+
+把伯努利分布可以写成指数族分布的形式：
+
+(1) T(y) = y
+
+(2) η = log(φ/(1-φ))
+
+(3) α(η) = -log(1-φ) = log(1+e<sup>η</sup>)
+
+(4) b(y) = 1
+
+解(2)得，φ = 1/(1+e<sup>-η</sup>)，即`logistic sigmoid`形式。
+
+所以`sigmoid`，或者说指数族分布(包含伯努利)所具有的最大熵性质。
 
 回过来看`logistic regression`，这里假设了什么呢？
 
-首先，我们在建模预测 `Y|X`，并认为 `Y|X` 服从`bernoulli distribution`，所以我们只需要知道 `P(Y|X)`；
+首先，我们在建模预测 `Y|X`，并认为 `Y|X` 服从伯努利分布，所以我们只需要知道 `P(Y|X)`；
 
-其次我们需要一个线性模型，所以 `P(Y|X) = f(wx)`。接下来我们就只需要知道 `f`是什么就行了。而我们可以通过**最大熵**原则推出的这个`f`，就是`sigmoid`。
-
-其实前面也有人剧透了`bernoulli`的`exponential family`形式，也即是 `1/ (1 + e^-z)`
+其次我们需要一个线性模型，所以 `P(Y|X) = f(wx)`。通过<font color=red>最大熵</font>原则推出的这个`f`，就是`sigmoid`。
     
-参考：[为什么LR模型要使用sigmoid函数，背后的数学原理是什么？](https://www.zhihu.com/question/35322351/answer/67193153)
+参考：
+
+[为什么LR模型要使用sigmoid函数，背后的数学原理是什么？](https://www.zhihu.com/question/35322351/answer/67193153)
+
+[逻辑回归为什么使用Sigmod作为激活函数？](https://blog.csdn.net/cloud_xiaobai/article/details/72152480)
 
 #### 4.3 Logistic回归做多分类和Softmax回归
 1. 如果类别之间互斥，就用softmax
