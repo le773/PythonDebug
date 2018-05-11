@@ -1,8 +1,8 @@
-﻿### 01 Standard Large-Margin Problem
+### 01 Standard Large-Margin Problem
 ![standard_large-Margin_1.png](https://i.imgur.com/W4XaVnO.png)
 
 因为点`x'`和`x''`在超平面![超平面公式](http://img.blog.csdn.net/20131107201104906)上，则有：
-1. w<sup>T</sup> x' + b = 0       (1)优化问题变成我们习惯的无约束优化问题
+1. w<sup>T</sup> x' + b = 0       (1)
 2. w<sup>T</sup> x'' + b = 0      (2)
 
 `w`是平面 w<sup>T</sup>的垂直向量，由 (2) - (1) 得:
@@ -264,7 +264,7 @@ d<sup>\*</sup> = q<sup>\*</sup>
 ![Larange_f_24.png](https://i.imgur.com/rDVHw24.png)
 
 ----------
-#### 10.02 此时a已经通过凸二次优化解出
+#### 10.02 此时α已经通过凸二次优化解出
 
 定理：设α<sup>\*</sup>=(α<sub>1</sub><sup>\*</sup>,α<sub>2</sub><sup>\*</sup>,...,α<sub>N</sub><sup>\*</sup>)<sup>T</sup>是对偶问题的(09.06)一个解。若存在α<sup>\*</sup>的一个分量α<sub>j</sub><sup>\*</sup>，0< α<sub>j</sub><sup>\*</sup> < C，则原始问题(03)的解可按下式求得：
 

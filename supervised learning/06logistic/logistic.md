@@ -1,4 +1,4 @@
-﻿﻿### 1.0 导论
+### 1.0 导论
 #### 1.1 概括
 逻辑回归假设数据服从伯努利分布,通过极大化似然函数的方法，运用梯度下降来求解参数，来达到将数据二分类的目的。
 
@@ -159,7 +159,7 @@ tanh(z) = 2σ(2z) − 1
 #### 4.2.1 指数族分布(the exponential family distribution)
 若某概率分布满足:
 
-P(y;η)=b(y) \* exp(η<sub>T</sub> \* T(y) - α(η))
+P(y;η)=b(y) \* exp(η<sup>T</sup> \* T(y) - α(η))
 
 就是指数分布。其中：
 
@@ -176,10 +176,10 @@ P(y|x;θ)=(h<sub>θ</sub>(x))<sup>y</sup> \* (1- h<sub>θ</sub>(x))<sup>1-y</sup
 
 令:φ=h<sub>θ</sub>(x)，那么上述式子有如下推导过程：
 
-P(y;η)
-= φ<sup>y</sup> \* (1-φ)<sup>(1-y)</sup>
-= exp(ylogφ + (1-y)log(1-φ))
-= exp(ylogφ - ylog(1-φ) + log(1-φ))
+P(y;η)</br>
+= φ<sup>y</sup> \* (1-φ)<sup>(1-y)</sup></br>
+= exp(ylogφ + (1-y)log(1-φ))</br>
+= exp(ylogφ - ylog(1-φ) + log(1-φ))</br>
 = exp(ylog(φ/(1-φ)) + log(1-φ))
 
 把伯努利分布可以写成指数族分布的形式：
