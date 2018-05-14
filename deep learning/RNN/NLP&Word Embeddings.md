@@ -1,4 +1,4 @@
-﻿### 2.1 词汇表征(word representation)
+### 2.1 词汇表征(word representation)
 #### one-hot表示方法
 
 ![word_representation.png](https://i.imgur.com/XXunNwn.png)
@@ -74,3 +74,47 @@ E * o<sub>i</sub> = e<sub>i</sub>
 研究者发现，如果想建立一个语言模型，用目标词的前几个单词作为上下文是常见做法。
 
 如果目标是学习词嵌入，那么可以用这些其他类型的上下文，它们也能得到很好的词嵌入。
+
+### 2.6 Word2Vec
+Word2Vec算法，是一种简单而且计算时更加高效的词嵌入算法。
+#### 2.6.1 Skip-Gram
+Word2Vec中的Skip-Gram模型，所做的是在语料库中选定某个词（Context），随后在该词的正负10个词距内取一些目标词（Target）与之配对，构造一个用Context预测输出为Target的监督学习问题，训练一个如下图结构的网络：
+
+![word2vec_1.jpg](https://i.imgur.com/GTacllg.jpg)
+
+该网络仅有一个softmax单元，输出context下target出现的条件概率：
+
+![word2vec_2.jpg](https://i.imgur.com/wKIvh8H.jpg)
+
+θ<sub>t</sub>：是一个与输出Target有关的参数，即某个词和标签相符的概率是多少。
+
+e<sub>c</sub>=E \* O<sub>c</sub>
+
+损失函数：
+
+![word2vec_3.png](https://i.imgur.com/V33g7Qi.png)
+
+y是只有一个1其他都是0的one-hot向量
+
+#### 2.6.2 Softmax分类器
+实际上使用这个算法会遇到一些问题，首要的问题就是计算速度。改进方法是使用分级Softmax分类器(Hierarchical Softmax Classifier)，采用霍夫曼树（Huffman Tree）来代替隐藏层到输出Softmax层的映射。
+
+![word2vec_4.png](https://i.imgur.com/gyxnA3I.png)
+
+上图中，树上内部的每一个节点都可以是一个二分类器，比如逻辑回归分类器，所以不需要再为单次分类，对词汇表中所有的10,000个词求和了。实际上用这样的分类树，计算成本与词汇表大小的对数成正比，而不是词汇表大小的线性函数。
+
+实际上，softmax分类器不会使用一棵完美平衡的分类树或者说一棵左边和右边分支的词数相同的对称树(上图左侧)；
+
+通常分级的softmax分类器会被构造成常用词在顶部，然而不常用的词像durian会在树的更深处(上图右侧)。
+
+#### 2.6.3 怎么对上下文c进行采样？
+一种选择是你可以就对语料库均匀且随机地采样，但是像the、of、a、and、to诸如此类是出现得相当频繁的。实际上词p(c)的分布并不是单纯的在训练集语料库上均匀且随机的采样得到的，而是采用了不同的分级来平衡更常见的词和不那么常见的词。
+
+#### 2.6.4 Skip-Gram CBOW
+CBOW，它获得中间词两边的的上下文，然后用周围的词去预测中间的词。
+
+总结下：CBOW是从原始语句推测目标字词；而Skip-Gram正好相反，是从目标字词推测出原始语句。CBOW对小型数据库比较合适，而Skip-Gram在大型语料中表现更好。 （下图左边为CBOW，右边为Skip-Gram）
+
+![word2vec_5.png](https://i.imgur.com/5gyUkqN.jpg)
+
+### 2.7 负采样(Negative Sampling)
