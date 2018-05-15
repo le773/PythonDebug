@@ -76,7 +76,13 @@ E * o<sub>i</sub> = e<sub>i</sub>
 如果目标是学习词嵌入，那么可以用这些其他类型的上下文，它们也能得到很好的词嵌入。
 
 ### 2.6 Word2Vec
-Word2Vec算法，是一种简单而且计算时更加高效的词嵌入算法。
+Word2Vec算法，只有一个隐层的全连接神经网络, 用来预测给定单词的关联度大的单词，是一种简单而且计算时更加高效的词嵌入算法。
+
+![word2vec_7.png](https://i.imgur.com/GVChKDC.jpg)
+
+1. 在输入层，一个词被转化为One-Hot向量。
+2. 然后在第一个隐层，输入的是一个w \* x+b(x就是输入的词向量，w,b是参数)，做一个线性模型，注意已这里只是简单的映射，并没有非线性激活函数，当然一个神经元可以是线性的，这时就相当于一个线性回归函数。
+3. 第三层可以简单看成一个分类器，用的是Softmax回归，最后输出的是每个词对应的概率
 #### 2.6.1 Skip-Gram
 Word2Vec中的Skip-Gram模型，所做的是在语料库中选定某个词（Context），随后在该词的正负10个词距内取一些目标词（Target）与之配对，构造一个用Context预测输出为Target的监督学习问题，训练一个如下图结构的网络：
 
@@ -115,6 +121,83 @@ CBOW，它获得中间词两边的的上下文，然后用周围的词去预测�
 
 总结下：CBOW是从原始语句推测目标字词；而Skip-Gram正好相反，是从目标字词推测出原始语句。CBOW对小型数据库比较合适，而Skip-Gram在大型语料中表现更好。 （下图左边为CBOW，右边为Skip-Gram）
 
-![word2vec_5.png](https://i.imgur.com/5gyUkqN.jpg)
+![word2vec_6](https://i.imgur.com/oPjLhwn.png)
 
 ### 2.7 负采样(Negative Sampling)
+使用霍夫曼树来代替传统的神经网络，可以提高模型训练的效率。但是如果我们的训练样本里的中心词w是一个很生僻的词，那么就得在霍夫曼树中辛苦的向下走很久了。能不能不用搞这么复杂的一颗霍夫曼树，将模型变的更加简单呢？
+#### 2.7.1 负采样(Negative Sampling)步骤
+![word2vec_8.png](https://i.imgur.com/MpD1Fxj.jpg)
+
+生成一个正样本，先抽取一个上下文词，在一定词距内比如说正负10个词距内选一个目标词，标签设为1，这就是生成这个表的第一行；</br>
+然后为了生成一个负样本，使用相同的上下文词，再在字典中随机选一个词，标签设置为0；
+
+#### 那么如何选取K？
+Mikolov等人推荐小数据集的话，K从5到20比较好。如果数据集很大，K就选的小一点。对于更大的数据集K就等于2到5，数据集越小就越大。
+
+#### 负采样(Negative Sampling)
+接下来构造监督学习问题。原网络中的Softmax变成多个Sigmoid单元，给定输入的c,t对的条件下，y=1(正样本)的概率，即：
+
+![word2vec_10.png](https://i.imgur.com/Qo9t29j.png)
+
+这个模型基于逻辑回归模型，其中的θ<sub>t</sub>、e<sub>c</sub>分别代表Target及Context的词向量。
+通过这种方法将之前的一个复杂的多分类问题变成了多个简单的二分类问题，而降低计算成本。
+
+模型中采用以下公式来计算选择某个词作为负样本的概率：
+
+![word2vec_9.png](https://i.imgur.com/tQXAmKg.png)
+
+其中f(w<sub>i</sub>)代表语料库中单词w<sub>i</sub>出现的频率。
+
+总结：在softmax分类器能够学到词向量，但是计算成本很高。通过负采样将其转化为一系列二分类问题，因为不用计算所有单词的出现的概率，所以可以非常有效的学习词向量。
+
+[刘建平：word2vec原理(三) 基于Negative Sampling的模型](https://www.cnblogs.com/pinard/p/7249903.html)
+
+[Word2Vec介绍: 为什么使用负采样（negtive sample）？](https://zhuanlan.zhihu.com/p/29488930)
+
+### 2.8 GloVe 词向量(GloVe Word Vectors)
+代价函数：
+
+![glove_1.png](https://i.imgur.com/Zzg5UA5.png)
+
+X<sub>i,j</sub>:表示整个语料库中单词i和单词j彼此接近的频率，也就是它们共同出现在一个窗口中的次数。
+
+θ<sub>i</sub>,e<sub>j</sub>分别是单词i和单词j的词向量，b<sub>i</sub>,b<sub>j</sub>是两个偏差项，f()是一个用以防止X<sub>i,j</sub>=0时，log(X<sub>i,j</sub>)无解的权重函数，词汇表的大小为N。
+
+### 2.9 情感分类(Sentiment Classification)
+![sentiment_classification_1.png](https://i.imgur.com/owVpkPh.png)
+
+#### 简单的方法
+![sentiment_classification_2.png](https://i.imgur.com/8bSLhyi.png)
+
+对语句中每个词的特征向量求和或平均，然后得到一个表示300维的特征向量，然后把使用softmax计算。
+
+这个算法有一个问题就是没考虑词序，尤其是这样一个负面的评价，"Completely lacking in good taste, good service, and good ambiance."，但是good这个词出现了很多次，有3个good，如果算法跟这个一样，**忽略词序**，仅仅把所有单词的词嵌入加起来或者平均下来，最后的特征向量会有很多good的表示，分类器很可能认为这是一个好的评论，尽管事实上这是一个差评，只有一星的评价。
+
+#### 使用RNN做情感分类
+![sentiment_classification_3.png](https://i.imgur.com/UzFFMRS.png)
+
+用每一个one-hot向量乘以词嵌入矩阵E，得到词嵌入表达e，然后把它们送进RNN里。RNN的工作就是在最后一步计算一个特征表示，用来预测yhat。
+
+训练一个这样的算法，最后会得到一个很合适的情感分类的算法。由于词嵌入是在一个更大的数据集里训练的，这样效果会更好，更好的泛化一些没有见过的新的单词。
+
+### 2.10 词嵌入除偏(Debiasign word embeddings)
+对于性别歧视这种情况来说，“男性（Man）”对“程序员（Computer Programmer）”将得到类似“女性（Woman）”对“家务料理人（Homemaker）”的性别偏见结果。
+
+1.中和本身与性别无关词汇
+对某词向量，将50维空间分为两部分：与性别相关的方向g和与g正交的其他49个维度。
+
+![debiasing_word_embedding_1.jpg](https://i.imgur.com/EdIskWH.jpg)
+
+除偏的步骤，是将要除偏的词向量，左图中的e<sub>receptionist</sub>，在向量g方向上的值置为0，变成右图所示的e<sup>debiased</sup><sub>receptionist</sub>，公式如下：
+
+![debiasing_word_embedding_2.jpg](https://i.imgur.com/rZAcEhj.jpg)
+
+2.均衡本身与性别有关词汇
+
+![debiasing_word_embedding_3.jpg](https://i.imgur.com/s5FiKtt.jpg)
+
+均衡过程的核心思想是确保一对词（actor和actress）到g⊥的距离相等的同时，也确保了它们到除偏后的某个词（babysit）的距离相等，如上右图。
+
+对需要除偏的一对词w1、w2，选定与它们相关的某个未中和偏见的单词B之后，均衡偏见的过程如下公式：
+
+![debiasing_word_embedding_4.jpg](https://i.imgur.com/wdEoNwe.jpg)
