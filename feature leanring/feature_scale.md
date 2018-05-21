@@ -43,6 +43,9 @@ log_data = np.log(data)
 ----------
 
 ### 1.4 Batch Norm
+1. 把具有不同尺度的特征映射到同一个坐标系，具有相同的尺度(相似特征分布)
+2. 一定程度上消除了噪声、质量不佳等各种原因对模型权值更新的影响。
+
 含有batch-norm的神经网络计算步骤：
 
 ![mini-batch-norm_1.png](https://i.imgur.com/wFGzFb4.png)
@@ -104,4 +107,8 @@ log_data = np.log(data)
 
 看，每一步梯度的方向都基本指向最小值，可以大踏步地前进。
 
-参考 [为什么 feature scaling 会使 gradient descent 的收敛更好?](https://www.zhihu.com/question/37129350 "为什么 feature scaling 会使 gradient descent 的收敛更好?")
+参考 
+
+[为什么 feature scaling 会使 gradient descent 的收敛更好?](https://www.zhihu.com/question/37129350 "为什么 feature scaling 会使 gradient descent 的收敛更好?")
+
+[CNN 入门讲解：什么是标准化(Normalization)？](https://zhuanlan.zhihu.com/p/35597976)

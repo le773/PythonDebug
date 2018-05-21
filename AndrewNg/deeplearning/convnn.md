@@ -1,4 +1,4 @@
-## 第一周 卷积神经网络
+﻿## 第一周 卷积神经网络
 ### 1.6 卷积为什么有效？
 
 ![why_convolution_effective_1.png](https://i.imgur.com/S95bCXM.png)
@@ -55,22 +55,30 @@
 
 神经网络计算主要路径:
 
-![Residual_block_2.png](https://i.imgur.com/v38ul1o.png)
+z<sup>[l+1]</sup> = W<sup>[l+1]</sup> \* a<sup>[l]</sup> + b<sup>[l+1]</sup>
+
+a<sup>[l+1]</sup> = g(z<sup>[l+1]</sup>)
+
+z<sup>[l+2]</sup> = W<sup>[l+2]</sup> \* a<sup>[l+1]</sup> + b<sup>[l+2]</sup>
+
+a<sup>[l+2]</sup> = g(z<sup>[l+2]</sup>)
 
 a<sup>[l]</sup> 插入的时机是在线性激活之后，`ReLU`之前
-##### 捷径`short cut`
+##### 2.3.1.1 捷径`short cut`
 ![Residual Block](https://i.imgur.com/49dxUSJ.png)
 
 在残差网络中，通过捷径直接把a<sup>[l]</sup>插入到第二个`ReLU`前：
 
-![Residual_block_3.png](https://i.imgur.com/8RUxloT.png)
+a<sup>[l+2]</sup> = g(z<sup>[l+2]</sup> + W<sub>s</sub> \* a<sup>[l]</sup>)
 
-其中a<sup>[l]</sup>需要乘以权重w<sub>s</sub>使得它的的大小和z<sup>[l+2]</sup>匹配。
+其中a<sup>[l]</sup>需要乘以权重W<sub>s</sub>使得它的的大小和z<sup>[l+2]</sup>匹配。
 
-##### 跳远网络
+##### 2.3.1.2 跳远网络
 a<sup>[l]</sup>跳过好几层网络，从而将信息传递到神经网络的更深处。
 
 通过这种跳跃网络层的方式，获得更好的训练效果，这种结构构成残差块。
+
+![residual_network_1.png](https://i.imgur.com/alI66b1.png)
 
 #### 2.3.2 残差网络
 ![Residual_block_4.png](https://i.imgur.com/zM6SEJf.png)
@@ -79,6 +87,14 @@ a<sup>[l]</sup>跳过好几层网络，从而将信息传递到神经网络的�
 
 ![Residual_block_5.png](https://i.imgur.com/Wq4lgX5.png)
 
+#### 2.3.3 对ResNet的理解
+![residual_network_2.png](https://i.imgur.com/3WTjqXE.png)
+
+残差网络单元其中可以分解成右图的形式，从图中可以看出，残差网络其实是由多种路径组合的一个网络，直白了说，残差网络其实是很多并行子网络的组合，整个残差网络其实相当于一个多人投票系统。
+
+如果把残差网络理解成一个Ensambling系统，那么网络的一部分就相当于少一些投票的人，如果只是删除一个基本的残差单元，对最后的分类结果应该影响很小；而最后的分类错误率应该适合删除的残差单元的个数成正比的。
+
+其实ResNet只是表面上看起来很深，事实上网络却很浅。
 ### 2.4 残差网络为什么有用？
 一个网络深度越深，它在训练集上训练网络的效率会有所减弱，这是不希望加深网络的原因。但至少在训练`Residual Net`网络时，并不完全如此。
 
@@ -93,3 +109,36 @@ a<sup>[l]</sup>跳过好几层网络，从而将信息传递到神经网络的�
 ![Residual_block_7.png](https://i.imgur.com/3nRJi1a.png)
 
 这个网络有很多层3*3卷积，而且它们大多数都是相同的，这就是添加等维特征向量(w<sub>s</sub>)的原因，维度得以保留。
+
+### 2.5 残差网络为什么有用？ (数学上解释)
+对于神经网络来讲，通过反向传播来对网络的权重进行调整，就像这样：
+
+![residual_math_1.png](https://i.imgur.com/WP1yFzK.png)
+
+![residual_math_2.png](https://i.imgur.com/FViuVvY.png)
+
+但是这个时候，如果网络很深很深，就会出现这样的情况
+
+![residual_math_3.png](https://i.imgur.com/2pNuzEr.png)
+
+![residual_math_4.png](https://i.imgur.com/6YC9ywg.png)
+
+...
+
+![residual_math_5.png](https://i.imgur.com/nmzdCzJ.png)
+
+这个时候再做back propagation求偏导的话，就是
+
+![residual_math_6.png](https://i.imgur.com/OK3xAHe.png)
+
+如果使用残差网络，则有：
+
+![residual_math_7.png](https://i.imgur.com/y6XCo3Y.png)
+
+这样就算深度很深，梯度也不会消失了
+
+参考：
+
+[如何理解微软的深度残差学习？](https://www.zhihu.com/question/38499534 "如何理解微软的深度残差学习？")
+
+[对ResNet的理解](https://blog.csdn.net/buyi_shizi/article/details/53336192)
