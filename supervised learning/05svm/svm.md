@@ -88,15 +88,24 @@
 
 相比之下，合页损失函数不仅要分类正确，而且确信度足够高时损失才是0。也就是说，合页损失函数对学习有更高的要求。
 
-#### 05.01 最小问题包含最大问题
+----------
 
+#### 05.01 最小问题包含最大问题
 ![Larange_f_2.png](https://i.imgur.com/uc7mcv4.png)
 
-固定`b w`，增大或减小`α`，使拉格朗日函数最大。
+定义函数θ<sub>p</sub>(w,b)：
+
+![svm_lagelangri_14.png](https://i.imgur.com/DoC2Awy.png)
 
 如果`b w`不满足约束条件，则1 - y<sub>n</sub>(w<sup>T</sup> * z<sub>n</sub> + b ) > 0，如果要使使拉格朗日函数最大，则需要α更大，显然此时无法求得最小的SVM；
 
 反之`b w`满足约束条件，那么当`α=0`时，`svm`得到最小值。
+
+所以有，在`b w`满足原始问题约束的条件下，θ<sub>p</sub>(x)=0.5 \* w<sup>T</sup> \* w
+
+把原始问题中的s.t.条件去掉，得到原始问题的等价问题：
+
+![svm_lagelangri_15.png](https://i.imgur.com/WDf2Ewx.png)
 
 ----------
 
@@ -104,19 +113,21 @@
 
 ![Larange_f_3.png](https://i.imgur.com/7zVveOh.png)
 
-不等式右侧，固定`α'`改变`b w`取最小值，此时求得最小值时有`b1 w1`
+不等式右侧，固定α'<sub>n</sub>且α'<sub>n</sub>>=0，改变`b w`取最小值，此时求得最小值时有`b1 w1`
 
-那么对于不等式左侧，相当于固定`b1 w1`，更改`α`求得最大值，显然上述不等式成立。
+那么对于不等式左侧，相当于固定`b1 w1`，更改α'<sub>n</sub>求得最大值，显然上述不等式成立。
+
+那么，对于所有的α'<sub>n</sub>≥0，取最大化：
 
 ![Larange_f_4.png](https://i.imgur.com/ji6BB8L.png)
 
 上述不等式，右侧是svm问题的下界.
 
-右侧：固定`α'`调整`b w`，求最小拉格朗日函数中的最大值
+右侧：固定`α'`调整`b2 w2`，求最小拉格朗日函数中的最大值
 
-左侧：固定`b w`调整`α`，求最大拉格朗日函数中的最小值
+左侧：固定右侧得到的`b2 w2`调整`α`，求最大拉格朗日函数中的最小值
 
-对于不等式成立，右侧取得目标值时的`b w`，左侧取此参数下的取它的最大值
+显然，对于不等式成立；上述不等式两边可以看到 min和max交换，所以称为拉格朗日对偶问题。
 
 转化为对偶问题的优势：无约束条件
 
@@ -131,17 +142,15 @@
 那么，上述不等式关系就变成强对偶关系，`≥`变成`=`，即一定存在满足条件的解`(b,w,α)`，使等式左边和右边都成立，`SVM`的解就转化为右边的形式。
 
 ### 07 Solving Larange Dual:Simplifications
+转化为对偶问题后，max min(...)中min(...)无等式无约束条件，有利于求解，等式展开后：
+
 ![Larange_f_7.png](https://i.imgur.com/kVUmrCt.png)
 
-根据梯度下降算法思想：最小值位置满足梯度为零
-
-对`b`求导，令`L`对参数`b`的梯度为零：
+最小值是在谷底，即梯度为0的点，梯度为0(导数为0)，则有对`b`求导，令`L`对参数`b`的梯度为零：
 
 ![Larange_f_8.png](https://i.imgur.com/sMXMzVQ.png)
 
-得到：
-
-![Larange_f_15.png](https://i.imgur.com/6sSAZVK.png)
+求得sum(α<sub>n</sub>y<sub>n</sub>)=0，那么简化代价函数
 
 ![Larange_f_9.png](https://i.imgur.com/z7cOjT0.png)
 
@@ -176,23 +185,22 @@
 
 ![Larange_f_19.png](https://i.imgur.com/pdk10do.png)
 
-令![lagelangri_1.jpg](https://i.imgur.com/v4sIqYG.jpg)
+<!-- 令![lagelangri_1.jpg](https://i.imgur.com/v4sIqYG.jpg) -->
 
-当某个约束条件不满足时，例如y<sub>i</sub>(w<sup>T</sup>x<sub>i</sub> + b)<1，那么显然有θ(w)=∞(只要令α<sub>i</sub>=∞即可)。而当所有条件都满足时，则最优值为θ(w)= 0.5 x |w| x |w|，即最初要最小化的量。
+<!-- 当某个约束条件不满足时，例如y<sub>i</sub>(w<sup>T</sup>x<sub>i</sub> + b)<1，那么显然有θ(w)=∞(只要令α<sub>i</sub>=∞即可)。而当所有条件都满足时，则最优值为θ(w)= 0.5 x |w| x |w|，即最初要最小化的量。-->
 
-因此，在要求约束条件得到满足的情况下最小化 0.5 x |w| x |w|，实际上等价于直接最小化θ(w)(当然，这里也有条件约束，就是α<sub>i</sub>)，因为如果约束条件没有得到满足，θ(w)就会等于无穷大，自然不是我们要求的最小值。
+<!-- 因此，在要求约束条件得到满足的情况下最小化 0.5 x |w| x |w|，实际上等价于直接最小化θ(w)(当然，这里也有条件约束，就是α<sub>i</sub>)，因为如果约束条件没有得到满足，θ(w)就会等于无穷大，自然不是我们要求的最小值。-->
 
-具体写出来，目标函数变成了：
+<!-- 具体写出来，目标函数变成了：-->
 
-![lagelangri_2.jpg](https://i.imgur.com/Ygl4qLC.jpg)
+<!-- ![lagelangri_2.jpg](https://i.imgur.com/Ygl4qLC.jpg)-->
 
-这里用p<sup>*</sup>表示这个问题的最优价，且和最初的问题是等价的。如果直接求解，那么一上来便是面对w和b两个参数，而α<sub>i</sub>又是不等式约束，这个求解过程不好做，于是：
+<!-- 这里用p<sup>*</sup>表示这个问题的最优价，且和最初的问题是等价的。如果直接求解，那么一上来便是面对w和b两个参数，而α<sub>i</sub>又是不等式约束，这个求解过程不好做，于是：-->
 
-![lagelangri_3.jpg](https://i.imgur.com/uT7uuK1.jpg)
+<!-- ![lagelangri_3.jpg](https://i.imgur.com/uT7uuK1.jpg)-->
 
-交换以后的新问题是原始问题的对偶问题，这个新问题的最优值用d<sup>*</sup>来表示，在满足某些条件的情况下，这两者相等，这个时候就可以通过求解对偶问题来间接的求解原始问题。
-
-#### 09.02 上述目标函数转换的证明
+<!-- 交换以后的新问题是原始问题的对偶问题，这个新问题的最优值用d<sup>*</sup>来表示，在满足某些条件的情况下，这两者相等，这个时候就可以通过求解对偶问题来间接的求解原始问题。-->
+#### 09.02 目标函数转换的证明
 定理1：对于任意α,β和x有：
 
 ![lagelangri_4.png](https://i.imgur.com/NMb7MZX.png)
@@ -461,6 +469,15 @@ LR和不带核函数的SVM比较类似。
 
 ![standard_eq_1.jpg](https://i.imgur.com/XRJbQ61.jpg)
 
+#### 14.02 KKT
+![kkt_1.png](https://i.imgur.com/NDXvOVd.png)
+
+1. 拉格朗日乘子>=0
+2. 约束条件切线的正交线，它们的向量和为0
+3. 在最优解处，拉格朗日乘子和约束条件数值和为0
+
+![约束条件下，最优值](https://pic2.zhimg.com/v2-7d8461db6ca62803145bc716851bcca3_r.jpg)
+
 ### 15.0 Q&A
 #### 15.1 怎么样理解SVM中的hinge-loss？
 1.  实现了软间隔分类（这个Loss函数都可以做到）
@@ -496,3 +513,6 @@ L2正则项就能代表模型的复杂度，根据奥卡姆，如果同样效果
 [怎么样理解SVM中的hinge-loss？](https://www.zhihu.com/question/47746939/answer/154058298)
 
 [刘建平:支持向量机原理(一) 线性支持向量机](http://www.cnblogs.com/pinard/p/6097604.html)
+
+[如何通俗地讲解对偶问题？尤其是拉格朗日对偶lagrangian duality？](https://www.zhihu.com/question/58584814)
+
