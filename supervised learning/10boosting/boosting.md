@@ -1,4 +1,4 @@
-### 01 集成学习的简单规则 
+﻿### 01 集成学习的简单规则 
 先通过某个数据子集进行学习，形成某个规则，然后通过另一个数据子集进行学习，形成不同的规则，接着通过另一个数据子集进行学习，形成第三个规则，接着更多；最后收集所有这些规则，并将他们合并成为复杂的规则。
 
 #### 为什么考虑子集，而不考虑所有数据？
@@ -13,6 +13,27 @@ AdaBoost算法提高那些被前一轮弱分类器错误分类的样本的权重
 
 - 如何将弱分类器组合为一个强分类器？
 AdaBoost采用加权多数表决的方法。具体说来，即加大分类误差率小的弱分类器的权重，使其在表决中起较大作用，减小分类误差率较大的弱分类器的权重，使其在表决中起较小的作用。
+
+#### Boosting 工作机制
+先从初始训练集训练出一个基学习器，再根据基学习器的表现对训练样本分布进行调整，使得先前基学习器做错的训练样本在后续受到更多关注，然后基于调整后的样本分布训练下一个基学习器；如此重复进行，直到基学习器达到事先指定的值T，最终将这T个基学习器进行加权结合。
+
+#### 02.02.01 uniform blending
+![uniform_blending_1.png](https://i.imgur.com/1qeRH0x.png)
+
+![uniform_blending_2.png](https://i.imgur.com/lbhWIQV.png)
+
+1. 略；
+2. 通过投票的形式使得多数类修正少数类；
+3. 选择得票最多的一类；
+
+#### 02.02.02 uniform blending for regression
+![uniform_blending_3.png](https://i.imgur.com/7699buV.png)
+
+平均比单一模型更准度。
+
+#### 02.03 Linear and Any Blending
+![linear_blending_1.png](https://i.imgur.com/DJgV1yo.png)
+
 
 ```
 # classEst 此轮预测的最优结果
@@ -100,19 +121,19 @@ adaBoostTrainDS # 返回弱分类器集合 分类结果
 ### 04 AdaBoost总结
 #### 04.01 AdaBoost的优缺点：
 
-- 优点
+- 优点</br>
 1. Adaboost作为分类器时，分类精度很高
 1. 泛化错误率低，不容易发生过拟合；
 1. 易编码，可以应用在大部分分类器上，无参数调整；
-3. 在Adaboost的框架下，可以使用各种回归分类模型来构建弱学习器，非常灵活。
+1. 在Adaboost的框架下，可以使用各种回归分类模型来构建弱学习器，非常灵活。
 
-- 缺点
+- 缺点</br>
 对异常样本敏感，异常样本在迭代中可能会获得较高的权重，影响最终的强学习器的预测准确性
 
 #### 04.02 算法组合
-Bagging + 决策树 = 随机森林
-AdaBoost + 决策树 = 提升树
-Gradient Boosting + 决策树 = GBDT
+Bagging + 决策树 = 随机森林</br>
+AdaBoost + 决策树 = 提升树</br>
+Gradient Boosting + 决策树 = GBDT</br>
 
 #### 05.01 Bagging、Boosting二者之间的区别
 1.样本选择上
@@ -176,9 +197,16 @@ L(y,f(x)) = exp(-y * f(x))
 L(y, f<sub>n-1</sub>(x) + a*f(x))，这里f<sub>n-1</sub>(x)是前n-1步得到的子模型的和。因此boosting是在sequential的最小化损失函数，其bias自然逐步下降。但由于是采取这种sequential、adaptive的策略，各子模型之间是强相关的，于是子模型之和并不能显著降低variance。所以说boosting主要还是靠降低bias来提升预测精度。
 
 #### 05.06 Boost采用不同的损失函数
-
 ![loss_1.jpg](https://i.imgur.com/N8pJ4Ck.jpg)
 
+#### 05.07 为什么Aggregation效果很好？
+![aggregation_1.png](https://i.imgur.com/wThHte6.png)
+
+上图左侧，灰色的分类器分类效果并不好，但是将不同的弱分类器结合在一起就能成为分类能力强的模型，起到(feature transform)的效果。
+
+上图右侧，所有灰色的分类器都能正确分类，如果将所有的分类器结合以投票的方式进行组合选择，最终得到中庸的、最合适的分类器，即黑色的分割线，这里Agrregation起到了正则化(regularization)的效果。
+
+单一的模型通常只能在feature transform、regularization选择其一，但Agrregation能将两则结合起来。
 参考：
 
 1. [集成学习之Adaboost算法原理小结](https://www.cnblogs.com/pinard/p/6133937.html)
