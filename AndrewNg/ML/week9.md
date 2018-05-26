@@ -8,6 +8,10 @@
 ### 1.3 Algotithm
 ![Anomaly_detection_algorithm_1](https://i.imgur.com/iSIF265.png)
 
+将特征的每一维看成是相互独立的高斯分布，其实这样的近似并不是最好的，但是它的计算量较小，因此也常被使用。
+
+更好的方法应该是将特征拟合成多维高斯分布，这时有特征之间的相关性，但随之计算量会变复杂，且样本的协方差矩阵还可能出现不可逆的情况（主要在样本数比特征数小，或者样本特征维数之间有线性关系时）。
+
 ## 2.0 Building an Anomaly Detection System
 ### 2.1 Developing and Evaluating an Anomaly Detection System
 
@@ -20,6 +24,9 @@
 ###### 算法评估
 ![algorithm_evaluation_1](https://i.imgur.com/HgjlJGh.png)
 
+1. 推荐使用TP TN FN FP
+2. 精确度和召回率
+3. F1得分
 ### 2.2 Anomaly Detection vs. Supervised Learning
 ![Anomaly_detection_vs_Supervised_learning_1](https://i.imgur.com/R58mjCu.png)
 
