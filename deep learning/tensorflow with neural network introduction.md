@@ -167,6 +167,15 @@ InvalidArgumentError (see above for traceback): Assign requires shapes of both t
 ![L2_Regularization_1.png](https://i.imgur.com/xXNVrok.png)
 
 ### 12.0 Dropout
+Dropout是一个正则化技术，它减少了模型的有效容量。为了抵消这种影响，必须增大模型规模。不出意外的话，使用Dropout时最佳验证集的误差会低很多，但这是以**更大的模型和更多训练算法的迭代次数**为代价换来的。
+1. 对于非常大的数据集，正则化带来的泛化误差减少得很小。在这些情况下，使用Dropout和更大模型的计算代价可能超过正则化带来的好处。
+2. 只有极少的训练样本可用时， Dropout不会很有效。
+
+优点
+1. 计算方便
+2. 不怎么限制适用的模型或训练过程。几乎在所有使用分布式表示且可以用随机梯度下降训练的模型上都表现很好。
+
+#### 12.1 Dropout简介
 从一层到下一层的值通常称为激活。
 
 ![dropout_1.png](https://i.imgur.com/PqFTpOb.png)
@@ -195,7 +204,7 @@ keep_prob：任何一个给定单元的留存率（没有被丢弃的单元）
 
 在验证或测试时，把 `keep_prob` 值设为1.0 ，这样**保留所有的单元，最大化模型的能力**。
 
-##### `dropout`实例
+#### 12.2 `dropout`实例
 ```
 # Solution is available in the other "solution.py" tab
 import tensorflow as tf
@@ -233,3 +242,32 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     print(sess.run(logits, feed_dict={keep_prob: 0.5}))
 ```
+
+#### 12.3 Dropout Bagging
+一个关于Dropout的重要见解是，通过随机行为训练网络并平均多个随机决定进行预测，实现了一种参数共享的Bagging形式。
+
+更进一步的Dropout观点，Dropout不仅仅是训练一个Bagging的集成模型，并且是共享隐藏单元的集成模型。这意味着无论其他隐藏单元是否在模型中，每个隐藏单元必须都能够表现良好。 隐藏单元必须准备好进行模型之间的交换和互换。
+##### 12.3.1 相同点
+每个子网络中遇到的训练集确实是有放回采样的原始训练集的一个子集。
+
+##### 12.3.2 区别
+Bagging的情况下，所有模型都是独立的。</br>
+Dropout的情况下，所有模型共享参数，其中每个模型继承父神经网络参数的不同子集。在单个步骤中训练一小部分的子网络，参数共享会使得剩余的子网络也能有好的参数设定。
+
+#### 12.4 权重比例推断规则(weight scaling inference rule)
+通过集合平均直接定义非标准化概率分布由下式给出
+
+![dropout_1.png](https://i.imgur.com/6LCgqCk.png)
+
+其中d是可被丢弃的单元数。考虑到非均匀的情况，重新标准化集成：
+
+![dropout_2.png](https://i.imgur.com/aQqxzyf.png)
+
+通过将评估模型中p(y|x)来近似p<sub>ensemble</sub>：该模型具有所有单元，但将单元i输出的权重乘以单元i的被包含的概率。这种方法称为权重比例推断规则(weight scaling inference rule)。
+权重比例推断规则对具有非线性的深度模型仅仅是一个近似。
+
+#### 12.5 快速Dropout
+减小梯度计算中的随机性而获得更快的收敛速度。这种方法也可以在测试时应用，能够比权重比例推断规则更合理地（但计算也更昂贵）近似所有子网络的平均。 快速Dropout在小神经网络上的性能几乎与标准的Dropout相当，但在大问题上尚未产生显著改善或尚未应用。随机性对实现Dropout的正则化效果不是必要的，同时也不是充分的。
+
+#### 12.6 Dropout强大的原因
+Dropout强大的大部分原因来自施加到隐藏单元的掩码噪声。破环提取的特征而不是原始值，让破环过程充分利用该模型迄今获得的关于输入分布的所有知识。

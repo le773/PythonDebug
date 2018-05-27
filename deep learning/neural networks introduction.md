@@ -1,4 +1,4 @@
-##　神经网络入门
+## 神经网络入门
 ### 1.0 neural networks
 ![neuralnetwords_1.png](https://i.imgur.com/VWldwr3.png)
 
@@ -398,6 +398,9 @@ print(delta_w_i_h)
 ![Coarse_to_fine_1.png](https://i.imgur.com/I1btnGp.png)
 
 先在整个区域随机的选取参数，找到较优的区间，然后在这个区间更密集的取点。通过实验超参数的不同取值，可以选择对于训练目标而言的最优值。
+
+#### 各种超参数对模型容量的影响
+![hyper_parameters_1.png](https://i.imgur.com/xbRuNSX.png)
 
 ### 9.4 Appropriate scale for hyperparameters
 ![Appropriate_scale_for_hyperparameters_1.png](https://i.imgur.com/BnPCqFI.png)
