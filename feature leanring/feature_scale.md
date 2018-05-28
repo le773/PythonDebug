@@ -87,9 +87,12 @@ log_data = np.log(data)
 
 
 ### 1.7 哪些机器学习算法会受到特征缩放的影响？
+概率模型不需要归一化，因为它们不关心变量的值，而是关心变量的分布和变量之间的条件概率。
+比如：决策树。
+
 - SVM(rbf)计算最大距离时就是这种情况。如果我们把某一点增大至其他点的两倍，那么它的数值也会扩大一倍
 - K-均值聚类也是。计算各数据点到集群中心的距离
-
+- 线性回归之类
 ----------
 
 ### 2.0 为什么 feature scaling 会使 gradient descent 的收敛更好?
@@ -112,3 +115,4 @@ log_data = np.log(data)
 [为什么 feature scaling 会使 gradient descent 的收敛更好?](https://www.zhihu.com/question/37129350 "为什么 feature scaling 会使 gradient descent 的收敛更好?")
 
 [CNN 入门讲解：什么是标准化(Normalization)？](https://zhuanlan.zhihu.com/p/35597976)
+

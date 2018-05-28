@@ -1,4 +1,4 @@
-### 01 Standard Large-Margin Problem
+﻿### 01 Standard Large-Margin Problem
 ![standard_large-Margin_1.png](https://i.imgur.com/W4XaVnO.png)
 
 因为点`x'`和`x''`在超平面![超平面公式](http://img.blog.csdn.net/20131107201104906)上，则有：
@@ -499,20 +499,44 @@ log回归优势主要在于其输出具有自然的概率意义，即在给出�
 L2正则项就能代表模型的复杂度，根据奥卡姆，如果同样效果那么越简单的模型泛化效果越好。所以最优化过程中尽量追求小的L2的值就会提高泛化能力，也就抑制了过拟合的问题。
 
 2. 其次，会通过松弛变量的方法处理掉噪音。
+事物都有两面性，对异常点太容忍会导致任意超平面都可以是“最优”超平面，SVM就失去意义了。因此SVM公示中的目标函数也需要相应修改，加上松弛变量的平方和，并求最小值。这样就达到一个平衡：既希望松弛变量存在以解决异常点问题，又不希望松弛变量太大导致分类解决太差。
+
+#### 15.4 支持向量机(SVM)是否适合大规模数据？
+1. 支持向量机之所以成为目前最常用，效果最好的分类器之一，在于其优秀的泛化能力，这是是因为其本身的优化目标是结构化风险最小，而不是经验风险最小，因此，通过margin的概念，得到对数据分布的结构化描述，因此减低了对数据规模和数据分布的要求。
+
+2. SVM是非线性方法，a.在样本量比较少的时候，容易抓住数据和特征之间的非线性关系（相比线性分类方法如logistic regression，或者linear SVM）。但是，在样本量比较多的时候，线性分类方法的劣势就要小了很多。b.计算复杂度高。主流的算法是O(n^2)。其中rbf的γ和惩罚项C无法通过概率方法进行计算，只能通过穷举试验来求出。
+
+#### 15.5 如何选择核函数？
+使用libsvm，默认参数，RBF核比Linear核效果稍差。通过进行大量参数(C和γ)的尝试，一般能找到比linear核更好的效果。
+
+1. 如果特征维数很高，往往线性可分（SVM解决非线性分类问题的思路就是将样本映射到更高维的特征空间中），可以采用LR或者线性核的SVM；
+
+2. 如果样本数量很多，由于求解最优化问题的时候，目标函数涉及两两样本计算内积，使用高斯核明显计算量会大于线性核，所以手动添加一些特征，使得线性可分，然后可以用LR或者线性核的SVM；
+
+3. 如果不满足上述两点，即特征维数少，样本数量正常，可以使用高斯核的SVM。
+
+#### 15.6 为什么SVM训练的时候耗内存，而预测的时候占内存少？
+因为SVM训练过程中需要存储核矩阵。而预测的时候只需要存储支持向量和相关参数。
+
+#### 15.7 样本失衡会对SVM的结果产生影响吗？
 
 参考：
+1. [零基础学SVM-Support Vector Machine(一)](https://zhuanlan.zhihu.com/p/24638007)
 
-[零基础学SVM-Support Vector Machine(一)](https://zhuanlan.zhihu.com/p/24638007 "零基础学SVM-Support Vector Machine(一)")
+1. [零基础学SVM-Support Vector Machine(二)](https://zhuanlan.zhihu.com/p/29865057)
 
-[零基础学SVM-Support Vector Machine(二)](https://zhuanlan.zhihu.com/p/29865057 "零基础学SVM-Support Vector Machine(二)")
+1. [支持向量机通俗导论（理解SVM的三层境界）](https://blog.csdn.net/v_july_v/article/details/7624837 "支持向量机通俗导论（理解SVM的三层境界）")
 
-[支持向量机通俗导论（理解SVM的三层境界）](https://blog.csdn.net/v_july_v/article/details/7624837 "支持向量机通俗导论（理解SVM的三层境界）")
+1. [机器学习技法（林轩田）](https://www.bilibili.com/video/av12469267/?p=3 "机器学习技法（林轩田）")
 
-[机器学习技法（林轩田）](https://www.bilibili.com/video/av12469267/?p=3 "机器学习技法（林轩田）")
+1. [怎么样理解SVM中的hinge-loss？](https://www.zhihu.com/question/47746939/answer/154058298)
 
-[怎么样理解SVM中的hinge-loss？](https://www.zhihu.com/question/47746939/answer/154058298)
+1. [刘建平:支持向量机原理(一) 线性支持向量机](http://www.cnblogs.com/pinard/p/6097604.html)
 
-[刘建平:支持向量机原理(一) 线性支持向量机](http://www.cnblogs.com/pinard/p/6097604.html)
+1. [如何通俗地讲解对偶问题？尤其是拉格朗日对偶lagrangian duality？](https://www.zhihu.com/question/58584814)
 
-[如何通俗地讲解对偶问题？尤其是拉格朗日对偶lagrangian duality？](https://www.zhihu.com/question/58584814)
+1. [支持向量机(SVM)是否适合大规模数据？](https://www.zhihu.com/question/19591450)
 
+1. [SVM的核函数如何选取？](https://www.zhihu.com/question/21883548)
+
+1. [Improvements to Platt’s SMO Algorithm](http://www.cnblogs.com/vivounicorn/archive/2011/08/25/2152824.html)

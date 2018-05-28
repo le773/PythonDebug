@@ -1,4 +1,4 @@
-### 决策树应用算法
+﻿### 0.0 决策树应用算法
 
 ![dt_1.png](https://i.imgur.com/P0LSN3z.png)
 
@@ -47,8 +47,8 @@
 
 另外，二元切分法也节省了树的构建时间，但这点意义也不是特别大，因为这些树构建一般是离线完成，时间并非需要重点关注的因素。
 
-### 1.2 C4.5 信息增益率
-#### 1.2.1 C4.5 信息增益率
+### 1.3 C4.5 信息增益率
+#### 1.3.1 C4.5 信息增益率
 信息增益值的大小是相对于训练数据集而言的，并没有绝对意义。
 
 在分类问题困难时，也就是说在训练数据集的经验熵大的时候，信息增益值会偏大。
@@ -59,7 +59,12 @@
 
 ![dt_c4.5_1.png](https://i.imgur.com/QuQHs3k.png)
 
-#### 1.2.2 优缺点
+#### 1.3.2 连续值处理
+采用二分法对连续属性离散化:
+
+![c4-5.png](https://i.imgur.com/6MTHzix.jpg)
+
+#### 1.3.3 优缺点
 ##### 优点
 1.用信息增益率来选择属性，克服用信息增益选择属性时偏向选择特征属性值多的不足。
 
@@ -74,7 +79,7 @@
 
 2.只适合于能够驻留于内存的数据集，当训练集大得无法在内存容纳时程序无法运行。
 
-### 1.3 CART
+### 1.4 CART
 背景：ID3 C4.5都是基于信息熵，Gini系数能够简化模型(不用计算log等等)且不失去熵模型的特点。
 
 CART是一棵二叉树，采用二元切分法，每次把数据切成两份，分别进入左子树、右子树。而且每个非叶子节点都有两个孩子，所以CART的叶子节点比非叶子多1。
@@ -85,7 +90,7 @@ CART分类时，使用基尼指数（Gini）来选择最好的数据分割的特
 
 回归时，使用均方差作为loss function。
 
-#### 1.3.1 Gini系数 分类误差率
+#### 1.4.1 Gini系数 分类误差率
 ![dt_gini_1.png](https://i.imgur.com/v7rgrMa.jpg)
 
 从上图可以看出，基尼系数和熵之半的曲线非常接近，仅仅在45度角附近误差稍大。因此，基尼系数可以做为熵模型的一个近似替代。而CART分类树算法就是使用的基尼系数来选择决策树的特征。
@@ -94,7 +99,7 @@ CART分类时，使用基尼指数（Gini）来选择最好的数据分割的特
 
 这样一可以进一步简化基尼系数的计算，二可以建立一个更加优雅的二叉树模型。
 
-#### 1.3.2 CART原理
+#### 1.4.2 CART原理
 在分类问题中，假设有K个类别，第k个类别的概率为pk, 则基尼系数的表达式为：
 
 ![gini_1.png](https://i.imgur.com/LEjAZbq.png)
@@ -113,7 +118,7 @@ CART分类时，使用基尼指数（Gini）来选择最好的数据分割的特
 
 CART选择Gini(D,A)最小的特征作为划分特征。
 
-#### 1.3.3 CART优缺点
+#### 1.4.3 CART优缺点
 1.能够处理大量特征的分类，并且不用做特征选择。
 
 2.在训练完成后能给出那些feature比较重要
@@ -124,7 +129,7 @@ CART选择Gini(D,A)最小的特征作为划分特征。
 
 5.实现相对来说比较简单
 
-### 1.4 gini系数
+### 1.5 gini系数
 基尼系数是量度贫富悬殊程度的标量。它的定义如下：我们首先收集社会上每一个人的总财富额，把它从少至大排序，计算它的累积函数（cumulative function），然后便可绘出图中的洛仑兹曲线（Lorenz curve）。图中横轴是人口比例的累积分布，竖轴是财富比例的累积分佈
 
 ![cumulative share of people from lowest to highest incomes](https://pic3.zhimg.com/de0f5d4c743a22f8918106236a98c32c_r.jpg)
@@ -133,7 +138,7 @@ A和B是图中两面积，基尼系数便是![gini计算](https://www.zhihu.com/
 
 gini用来度量分布的不均匀性，总体类别越杂乱，gini指数就越大。
 
-#### 1.4.1 代码实现
+#### 1.5.1 代码实现
 ```
 import numpy as np
 
@@ -147,7 +152,6 @@ def gini_coef(wealths):
     return A / (A+B)
 ```
 
-
 ### 2.0 划分分支方式
 - ID3 是信息增益分支
 - C4.5 是信息增益率分支
@@ -160,16 +164,79 @@ def gini_coef(wealths):
 **工程上总的来说**:
 CART 和 C4.5 之间主要差异在于分类结果上，CART 可以回归分析也可以分类，C4.5 只能做分类；C4.5 子节点是可以多分的，而 CART 是无数个二叉子节点；
 
+### 2.1 缺失值处理
+给定训练集D和属性α，令D~表示D中在属性α上没有确实值的样本子集。
+### 2.1.1 如何在属性值缺失的情况下进行划分属性的选择？
+对问题(2.1.1)，可以根据D~(即在该属性上没有缺失的样本集)来计算属性α的信息增益或者其它指标。只要再根据D~计算出来的值一个权重，就可以表示训练集D中属性α的优劣。具体来讲，假定属性α有V个可取值{α<sup>1</sup>,α<sup>2</sup>,...,α<sup>V</sup>},令D<sup>V</sup>~表示D~中在属性α上取值为α<sup>V</sup>的样本子集，D<sup>k</sup>~表示D~中第k类(k=1,2,3,..,|y)的样本子集，则显然有：
+
+![decistion_tree_1.png](https://i.imgur.com/Ubfpwhn.png)
+
+假定为每个样本x赋予一个权重w<sub>x</sub>(在决策树学习的初始阶段，根节点中各样本的权重初始化为1)，并定义：
+
+![decistion_tree_2.png](https://i.imgur.com/vusfAcI.png)
+
+其中，ρ表示无缺失值样本所占的比例，p<sub>k</sub>~表示无缺失值样本中第k类所占的比例，r<sub>v</sub>~表示无缺失值样本中在属性α上取值α<sup>v</sup>的样本所占的比例。则：
+
+![decistion_tree_3.png](https://i.imgur.com/pZliwKs.png)
+
+基于上述定义，将信息增益的计算推广为：
+
+![decistion_tree_4.png](https://i.imgur.com/bcdgKE2.png)
+
+### 2.1.2 给定划分属性，若样本在该属性上的值是缺失的，那么该如何对这个样本进行划分？
+若样本x在划分属性α上的取值未知，则将x同时划入所有子节点，此时要调整该样本x的权重值为：r<sub>v</sub>~ \* w<sub>x</sub>；直观的看，是让同一个样本以不同的概率划入到不同的子节点中去。
+
+### 2.1.3 训练完成，给测试集样本分类，有缺失值怎么办？
+不能按比例分配了，因为你必须给该样本一个确定的label。可以根据投票来确定，或者填充缺失值。
+
+[分类示例](https://blog.csdn.net/u012328159/article/details/79413610)
+
+### 2.2 决策树损失函数
+设树T的叶子结点个数为|T|，t是树T的叶节点，该叶结点有N<sub>t</sub>个样本点，其中k类的样本点有N<sub>tk</sub>个，k=1,2,..,K，H<sub>t</sub>(T)为叶结点t上的经验熵，α>=0为参数，则决策树学习的损失函数可以定义为：
+
+![decistion_tree_5.png](https://i.imgur.com/BFmi4pd.png)
+
+其中经验熵为：
+
+![decistion_tree_6.png](https://i.imgur.com/F3sztqC.png)
+
+在损失函数中，令
+
+![decistion_tree_7.png](https://i.imgur.com/c6JFdj8.png)
+
+有：
+
+![decistion_tree_8.png](https://i.imgur.com/3SSLMyG.png)
+
+C(T)：表示模型对训练数据的预测误差，即模型与训练数据的拟合程度，|T|：表示模型复杂度，参数α>=0控制两则的影响。α=0意味着只考虑模型与训练数据的拟合程度，不考虑模型的复杂度。
+
+### 2.3 树的剪枝算法
+输入：生成算法产生的整棵树T，参数α</br>
+输出：修剪后的子树T<sub>α</sub></br>
+1.计算每个结点的经验熵</br>
+2.递归地从叶节点向上回缩:设叶节点回缩到其父节点之前与之后的整体树分别为T<sub>B</sub>和T<sub>A</sub>，如果其对应的损失函数有：</br>
+C<sub>α</sub>(T<sub>A</sub>)≤C<sub>α</sub>(T<sub>B</sub>)</br>
+则进行剪枝，即将父节点变为新的叶结点。</br>
+3.返回(2)直至不能继续，得到损失函数最小的子树T<sub>α</sub>。
+
 参考：
 
-[为什么说c45克服了ID3偏向选择取值较多的属性的这一问题？](https://www.zhihu.com/question/27109632 "为什么说c45克服了ID3偏向选择取值较多的属性的这一问题？")
+1. [为什么说c45克服了ID3偏向选择取值较多的属性的这一问题？](https://www.zhihu.com/question/27109632 "为什么说c45克服了ID3偏向选择取值较多的属性的这一问题？")
 
-[C45为什么使用信息增益比来选择特征？](https://www.zhihu.com/question/22928442 "C45为什么使用信息增益比来选择特征？")
+1. [C45为什么使用信息增益比来选择特征？](https://www.zhihu.com/question/22928442 "C45为什么使用信息增益比来选择特征？")
 
-[决策树算法原理(上)](http://www.cnblogs.com/pinard/p/6050306.html)
+1. [决策树算法原理(上)](http://www.cnblogs.com/pinard/p/6050306.html)
 
-[决策树算法原理(下)](https://www.cnblogs.com/pinard/p/6053344.html "决策树算法原理(下)")
+1. [决策树算法原理(下)](https://www.cnblogs.com/pinard/p/6053344.html "决策树算法原理(下)")
 
-[C4.5 算法对于连续性属性的处理方法介绍](https://blog.csdn.net/shenxiaoming77/article/details/51602976)
+1. [C4.5 算法对于连续性属性的处理方法介绍](https://blog.csdn.net/shenxiaoming77/article/details/51602976)
 
-[cart算法为什么选用gini指数？](https://www.zhihu.com/question/36659925)
+1. [cart算法为什么选用gini指数？](https://www.zhihu.com/question/36659925)
+
+1. [决策树是如何处理不完整数据的？](https://www.zhihu.com/question/34867991?sort=created)
+
+1. [决策树三:连续值处理](https://blog.csdn.net/u012328159/article/details/79396893)
+
+1. [决策树四:缺失值处理](https://blog.csdn.net/u012328159/article/details/79413610)
+
+1. 周志华：机器学习P86
