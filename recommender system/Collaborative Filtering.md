@@ -86,6 +86,30 @@ def recommend(user_items, iteSimilarity, user, k=3, N=10):
 
 其实，归一化的好处不仅仅在于增加推荐的准确度，它还可以提高推荐的覆盖率和多样性。
 
+#### 2.3 UserCP和ItemCF的综合比较
+原始ItemCF算法的覆盖率和新颖度都不高。
+
+物品相似度公式改进：
+
+![user_based_cf_4.png](https://i.imgur.com/PqJljXx.png)
+
+其中α属于[0.5,1]。通过提高α，可以惩罚热门的j。</br>
+通过这种方法可以在适当牺牲准确率和召回率的情况下显著提升结果的覆盖率和新颖性。
+
+### 2.5 隐语义模型
+隐含语义分析技术从诞生到今天产生了很多著名的模型和方法，其中和该技术相关且耳熟能详的名词有pLSA、 LDA、隐含类别模型（latent class model）、隐含主题模型（latent topic model）、矩阵分解（matrix factorization）。
+
+LFM通过如下公式计算用户u对物品i的兴趣：
+
+![lfm_1.png](https://i.imgur.com/I9kpvef.png)
+
+p<sub>u,k</sub>度量了用户u的兴趣和第k个隐类的关系，q<sub>i,k</sub>度量了第k个隐类和物品i之间的关系。
+
+采样时应该遵循以下原则：</br>
+1. 对每个用户，要保证正负样本的平衡（数目相似）。
+2. 对每个用户采样负样本时，要选取那些很热门，而用户却没有行为的物品。
+
+
 1. [CollaborativeFilter](https://github.com/ScofieldShen/MLRep/tree/ce0ccdfb9939e70c183504ee4be59ccba235cb47/ML/CollaborativeFilter)
 2. [推荐引擎初探](https://www.ibm.com/developerworks/cn/web/1103_zhaoct_recommstudy1/index.html)
 3. [深入推荐引擎相关算法 - 协同过滤](https://www.ibm.com/developerworks/cn/web/1103_zhaoct_recommstudy2/index.html)
