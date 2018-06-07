@@ -89,6 +89,11 @@ CNN 的第一步是把图片分成小块。我们通过选取一个给定宽度�
 #### 4.3 卷积续
 全链接层是一个标准的，非卷积层。它的输入与所有的输出神经相连，也被称为 dense 层
 
+#### 4.4 卷积的导数
+![cnn的导数.png](https://i.imgur.com/DWhvlaW.png)
+
+和深度神经网络没有什么差别，除了求导对象变为卷积核。
+
 ### 5.0 参数
 #### 5.1 参数共享
 ![cov_neural_net_share_param_1.png](https://i.imgur.com/Jw7lNgU.png)
@@ -200,6 +205,12 @@ pool = tf.nn.avg_pool(
     padding)
 print(pool)
 ```
+#### 7.3 池化函数的导数
+![pool的导数.png](https://i.imgur.com/sgvGxzK.png)
+
+通过每一层的函数对函数的求导，可求得参数的梯度。
+有了计算梯度的方法，在通过基于梯度的最优化，就能寻得最优值，完成训练过程。
+
 ### 8.0 TensofFlow 最大池化
 ![max_pooling_1.png](https://i.imgur.com/eKB41R5.png)
 
