@@ -58,12 +58,19 @@ u,v<sup>T</sup>是两个向量的点积，|u|<sub>2</sub>是向量u的范数，�
 ![cosine_similarity_2.png](https://i.imgur.com/P4aWjoh.png)
 
 ### 2.4 嵌入矩阵(Embedding Matrix)
+### 2.4.1 嵌入矩阵
 ![embedding_matrix_1.png](https://i.imgur.com/XqKlQfa.png)
 
 将字典中位置为i的词以one-hot形式表示为o<sub>i</sub>，嵌入矩阵用E表示，词嵌入后生成的词向量用e<sub>i</sub>表示。
 
 E * o<sub>i</sub> = e<sub>i</sub>
 
+#### 2.4.2 使用Word Embedding
+![word_embedding_2.png](https://i.imgur.com/7V8QHXC.png)
+
+```
+tf.nn.embedding_lookup(params, ids, partition_strategy=’mod’, name=None, validate_indices=True)
+```
 ### 2.5 学习词嵌入(learning word embeddings)
 ![learn_word_embedding_1.png](https://i.imgur.com/jVtu0dh.png)
 
@@ -103,7 +110,7 @@ e<sub>c</sub>=E \* O<sub>c</sub>
 y是只有一个1其他都是0的one-hot向量
 
 #### 2.6.2 Softmax分类器
-实际上使用这个算法会遇到一些问题，首要的问题就是计算速度。改进方法是使用分级Softmax分类器(Hierarchical Softmax Classifier)，采用霍夫曼树（Huffman Tree）来代替隐藏层到输出Softmax层的映射。
+实际上使用这个算法会遇到一些问题，首要的问题就是计算速度。改进方法是使用分级Softmax分类器(Hierarchical Softmax Classifier)，采用霍夫曼树（Huffman Tree）(2.6.7 通过Huffman树来构造Loss)来代替隐藏层到输出Softmax层的映射。
 
 ![word2vec_4.png](https://i.imgur.com/gyxnA3I.png)
 
@@ -117,24 +124,34 @@ y是只有一个1其他都是0的one-hot向量
 一种选择是你可以就对语料库均匀且随机地采样，但是像the、of、a、and、to诸如此类是出现得相当频繁的。实际上词p(c)的分布并不是单纯的在训练集语料库上均匀且随机的采样得到的，而是采用了不同的分级来平衡更常见的词和不那么常见的词。
 
 #### 2.6.4 Skip-Gram CBOW
-CBOW，它获得中间词两边的的上下文，然后用周围的词去预测中间的词。
+CBOW(Continuous bag-of-word model)，它获得中间词两边的的上下文，然后用周围的词去预测中间的词。
 
 总结下：CBOW是从原始语句推测目标字词；而Skip-Gram正好相反，是从目标字词推测出原始语句。CBOW对小型数据库比较合适，而Skip-Gram在大型语料中表现更好。 （下图左边为CBOW，右边为Skip-Gram）
 
 ![word2vec_6](https://i.imgur.com/oPjLhwn.png)
+
+损失函数
+
+![RNN_cost_3.png](https://i.imgur.com/d3vcIjs.png)
+
+#### 2.6.7 通过Huffman树来构造Loss
+1. 树中的每一个叶子节点就是一个单词；
+2. 树中每一个非叶子节点，都可以看作是一个2分类问题；
+3. 对于每一个单词，在树中都有唯一一条路径来表示；
+4. 算法的目标是构造这样一个Huffman树。
 
 ### 2.7 负采样(Negative Sampling)
 使用霍夫曼树来代替传统的神经网络，可以提高模型训练的效率。但是如果我们的训练样本里的中心词w是一个很生僻的词，那么就得在霍夫曼树中辛苦的向下走很久了。能不能不用搞这么复杂的一颗霍夫曼树，将模型变的更加简单呢？
 #### 2.7.1 负采样(Negative Sampling)步骤
 ![word2vec_8.png](https://i.imgur.com/MpD1Fxj.jpg)
 
-生成一个正样本，先抽取一个上下文词，在一定词距内比如说正负10个词距内选一个目标词，标签设为1，这就是生成这个表的第一行；</br>
-然后为了生成一个负样本，使用相同的上下文词，再在字典中随机选一个词，标签设置为0；
+1. 生成一个正样本，先抽取一个上下文词，在一定词距内比如说正负10个词距内选一个目标词，标签设为1，这就是生成这个表的第一行；</br>
+2. 然后为了生成一个负样本，使用相同的上下文词，再在字典中随机选一个词，标签设置为0；
 
-#### 那么如何选取K？
+#### 2.7.2 那么如何选取K?
 Mikolov等人推荐小数据集的话，K从5到20比较好。如果数据集很大，K就选的小一点。对于更大的数据集K就等于2到5，数据集越小就越大。
 
-#### 负采样(Negative Sampling)
+#### 2.7.3 负采样(Negative Sampling)
 接下来构造监督学习问题。原网络中的Softmax变成多个Sigmoid单元，给定输入的c,t对的条件下，y=1(正样本)的概率，即：
 
 ![word2vec_10.png](https://i.imgur.com/Qo9t29j.png)
@@ -148,6 +165,10 @@ Mikolov等人推荐小数据集的话，K从5到20比较好。如果数据集很
 
 其中f(w<sub>i</sub>)代表语料库中单词w<sub>i</sub>出现的频率。
 
+#### 2.7.4 如何负采样?
+采样的方式选取比较随意，一种方法是根据样本中的单词分布进行带权采样。
+
+#### 2.7.5 总结
 总结：在softmax分类器能够学到词向量，但是计算成本很高。通过负采样将其转化为一系列二分类问题，因为不用计算所有单词的出现的概率，所以可以非常有效的学习词向量。
 
 [刘建平：word2vec原理(三) 基于Negative Sampling的模型](https://www.cnblogs.com/pinard/p/7249903.html)
