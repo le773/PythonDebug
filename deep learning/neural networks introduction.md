@@ -262,8 +262,20 @@ print("Prediction accuracy: {:.3f}".format(accuracy))
 ![neural network init 1](https://i.imgur.com/WYDxurh.png)
 
 - 对于`ReLU`激活函数选择 1
+![weightinit_relu.png](https://i.imgur.com/o1VXcN3.png)
+```
+W = np.random.randn(fan_in, fan_out) / np.sqrt(fan_in/2)
+```
 - 对于`Tanh`激活函数选择 2
-
+![weightinit_tanh.png](https://i.imgur.com/L0fMJDf.png)
+```
+W = np.random.randn(fan_in, fan_out) / np.sqrt(fan_in)
+```
+- 其它
+![weightinit_other.png](https://i.imgur.com/4OQoLAY.png)
+```
+W = np.random.randn(fan_in, fan_out) / np.sqrt((fan_in + fan_out)/2)
+```
 #### 5.5 梯度的数值逼近
 单边误差
 
@@ -412,3 +424,6 @@ print(delta_w_i_h)
 若隐层节点数太少，网络可能根本不能训练或网络性能很差；若隐层节点数太多，虽然可使网络的系统误差减小，但一方面使网络训练时间延长；</br>
 另一方面，训练容易陷入局部极小点而得不到最优点，也是训练时出现“过拟合”的内在原因。</br>
 因此，合理隐层节点数应在综合考虑网络结构复杂程度和误差大小的情况下用节点删除法和扩张法确定。
+
+参考：
+1.[神经网络权重初始化问题](https://blog.csdn.net/marsggbo/article/details/77771497)
