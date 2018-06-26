@@ -98,6 +98,9 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 
 参考：[深度机器学习中的batch的大小对学习效果有何影响？](https://www.zhihu.com/question/32673260 "深度机器学习中的batch的大小对学习效果有何影响？")
 
+##### 4.4.3 不同学习率导致不同的梯度下降
+![learningrates.jpeg](https://i.imgur.com/fdoiZkr.jpg)
+
 #### 4.5 Gradient descent with momentum动量梯度下降法
 **基本思想**：计算梯度的指数加权平均数，并利用该梯度更新权重
 
@@ -111,6 +114,36 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 
 **关于偏差修正**：因为10次迭代后，移动平均已经过了初始阶段，不再是一个具有偏差的预测，所以`dw`、`db`不在受到偏差修正的困扰
 
+```python
+def sgd_momentum(w, dw, config=None):
+  """
+  Performs stochastic gradient descent with momentum.
+
+  config format:
+  - learning_rate: Scalar learning rate.
+  - momentum: Scalar between 0 and 1 giving the momentum value.
+    Setting momentum = 0 reduces to sgd.
+  - velocity: A numpy array of the same shape as w and dw used to store a moving
+    average of the gradients.
+  """
+  if config is None: config = {}
+  config.setdefault('learning_rate', 1e-2)
+  config.setdefault('momentum', 0.9)
+  v = config.get('velocity', np.zeros_like(w))
+
+  next_w = None
+  #############################################################################
+  # TODO: Implement the momentum update formula. Store the updated value in   #
+  # the next_w variable. You should also use and update the velocity v.       #
+  #############################################################################
+  v = config['momentum'] * v - config['learning_rate'] * dw
+  next_w = w + v
+  #############################################################################
+  config['velocity'] = v
+
+  return next_w, config
+```
+
 #### 4.6 RMSprop 加快梯度下降
 ![RMSprop_1.png](https://i.imgur.com/NEIRrP9.png)
 
@@ -120,11 +153,79 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 
 ![RMSprop_core.png](https://i.imgur.com/QKLvWsE.png)
 
+```python
+def rmsprop(x, dx, config=None):
+  """
+  Uses the RMSProp update rule, which uses a moving average of squared gradient
+  values to set adaptive per-parameter learning rates.
+
+  config format:
+  - learning_rate: Scalar learning rate.
+  - decay_rate: Scalar between 0 and 1 giving the decay rate for the squared
+    gradient cache.
+  - epsilon: Small scalar used for smoothing to avoid dividing by zero.
+  - cache: Moving average of second moments of gradients.
+  """
+  if config is None: config = {}
+  config.setdefault('learning_rate', 1e-2)
+  config.setdefault('decay_rate', 0.99)
+  config.setdefault('epsilon', 1e-8)
+  config.setdefault('cache', np.zeros_like(x))
+
+  next_x = None
+  #############################################################################
+  # TODO: Implement the RMSprop update formula, storing the next value of x   #
+  # in the next_x variable. Don't forget to update cache value stored in      #
+  # config['cache'].                                                          #
+  #############################################################################
+  config['cache'] = config['decay_rate'] * config['cache'] + (1 - config['decay_rate']) * dx ** 2
+  next_x = x - config['learning_rate'] * dx / (np.sqrt(config['cache']) + config['epsilon'])
+  #############################################################################
+
+  return next_x, config
+```
 #### 4.7 Adam(Adaptive Moment Estimation) 自适应矩估计
 ![Adam_1.png](https://i.imgur.com/Nxq1wvA.png)
 
 `Adam`是`momentum`和`RMSpro`p的结合，`β1`是第一阶矩，一般`0.9`，`β2`是第二阶矩，一般`0.999`，`ϵ`一般`10−8`。
 
+```python
+def adam(x, dx, config=None):
+  """
+  Uses the Adam update rule, which incorporates moving averages of both the
+  gradient and its square and a bias correction term.
+
+  config format:
+  - learning_rate: Scalar learning rate.
+  - beta1: Decay rate for moving average of first moment of gradient.
+  - beta2: Decay rate for moving average of second moment of gradient.
+  - epsilon: Small scalar used for smoothing to avoid dividing by zero.
+  - m: Moving average of gradient.
+  - v: Moving average of squared gradient.
+  - t: Iteration number.
+  """
+  if config is None: config = {}
+  config.setdefault('learning_rate', 1e-3)
+  config.setdefault('beta1', 0.9)
+  config.setdefault('beta2', 0.999)
+  config.setdefault('epsilon', 1e-8)
+  config.setdefault('m', np.zeros_like(x))
+  config.setdefault('v', np.zeros_like(x))
+  config.setdefault('t', 0)
+
+  next_x = None
+  #############################################################################
+  # TODO: Implement the Adam update formula, storing the next value of x in   #
+  # the next_x variable. Don't forget to update the m, v, and t variables     #
+  # stored in config.                                                         #
+  #############################################################################
+  config['m'] = config['beta1'] * config['m'] + (1 - config['beta1']) * dx
+  config['v'] = config['beta2'] * config['v'] + (1 - config['beta2']) * (dx ** 2)
+  next_x = x - config['learning_rate'] * config['m'] / (np.sqrt(config['v']) + config['epsilon'])
+  #############################################################################
+
+  return next_x, config
+```
 #### 4.8 学习衰减率
 学习衰减率的计算方法：
 
