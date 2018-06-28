@@ -82,7 +82,92 @@ maxout函数：
 缺点：
 1. 每个神经元的参数数量增加了一倍，这就导致整体参数的数量激增。
 
-### 2.6 激活函数总结
+##### 2.2.2 带泄露ReLU
+![Leaky_ReLU_1.png](https://i.imgur.com/czJEYs4.png)
+
+当`z<0`时，导数不为`0`，有一个很平缓的斜率
+
+`ReLU`的优点，对很多`z`空间，激活函数的导数和`0`差很远(没有像`sigmoid`和`tanh`那样接近于`0`)，所以神经网络的学习速度通常会快很多。
+### 2.7 Softmax
+`softmax`函数的数学表达式如下所示，其中`z`是输出层的输入向量（如果你有`10`个输出单元，则`z`中有`10`个元素）。同样，`j`表示输出单元的索引。
+
+![softmax_1.png](https://i.imgur.com/540fjVy.png)
+
+![softmax](https://pic1.zhimg.com/v2-998ddf16795db98b980443db952731c2_r.jpg)
+
+适用于二分类问题(不然绝不使用)，其它情况选择双曲正切函数(`tanh<ReLU`)更合适
+
+##### 2.7.1 tensorflow实现
+```
+import tensorflow as tf
+
+def run():
+    output = None
+    logit_data = [2.0, 1.0, 0.1]
+    logits = tf.placeholder(tf.float32)
+
+    # TODO: Calculate the softmax of the logits
+    softmax =  tf.nn.softmax(logits)
+
+    with tf.Session() as sess:
+        # TODO: Feed in the logit data
+        output = sess.run(softmax, feed_dict={logits:logit_data})
+
+    return output
+```
+##### 2.7.2 Softmax损失函数
+```
+def softmax_loss(z, y):
+    """
+    Computes the loss and gradient for softmax classification.
+    Inputs:
+    - z: Input data, of shape (N, C) where z[i, j] is the score for the jth class
+      for the ith input.
+    - y: Vector of labels, of shape (N,) where y[i] is the label for x[i] and
+      0 <= y[i] < C
+    Returns a tuple of:
+    - loss: Scalar giving the loss
+    - dz: Gradient of the loss with respect to z
+    """
+    probs = np.exp(z - np.max(z, axis=1, keepdims=True))     # 1
+    probs /= np.sum(probs, axis=1, keepdims=True)            # 2
+    N = z.shape[0]                                            # 3
+    loss = -np.sum(np.log(probs[np.arange(N), y])) / N        # 4
+    dz = probs.copy()
+    dz[np.arange(N), y] -= 1
+    dz /= N
+    return loss, dz
+```
+##### 2.7.3 Softmax损失函数代码详解
+- softmax_loss(z, y) 函数的输入数据是shape为(N, C)的矩阵z和shape为(N, )的一维array行向量y。由于损失函数的输入数据来自神经网络的输出层，所以这里的矩阵z中的N代表是数据集样本图片的个数，C代表的是数据集的标签个数，对应于CIFAR-10的训练集来说，z矩阵的shape应该为(50000, 10)，其中矩阵元素数值就是CIFAR-10的训练集数据经过整个神经网络层到达输出层，对每一张样本图片(每行)打分，给出对应各个标签(每列)的得分分数。一维array行向量y内的元素数值储存的是训练样本图片数据源的正确标签，数值范围是 0⩽yi<C=10，亦即 yi=0,1,…,9。
+
+- 前2行代码定义了probs变量。
+1. 首先，np.max(z, axis=1, keepdims=True) 是对输入矩阵x在横向方向挑出一个最大值，并要求保持横向的维度输出一个矩阵，即输出为一个shape为(N, 1)的矩阵，其每行的数值表示每张样本图片得分最高的标签对应得分；</br>
+1. 然后，再 np.exp(z - ..) 的操作表示的是对输入矩阵z的每张样本图片的所有标签得分都被减去该样本图片的最高得分，换句话说，将每行中的数值进行平移，使得最大值为0；</br>
+1. 再接下来对所有得分取exp函数，然后在每个样本图片中除以该样本图片中各标签的总和(np.sum)，最终得到一个与矩阵z同shape的(N, C)矩阵probs。</br>
+上述得到矩阵probs中元素数值的过程对应的就是softmax函数：</br>
+
+![softmax_1.png](https://i.imgur.com/p7VAnY6.png)
+
+其中，我们已经取定了C的值：logC=−maxx<sub>i</sub>z<sub>ij</sub>，且z<sub>ij</sub>(z;W,B)对应于代码中的输出数据矩阵x的第i行、第j列的得分z[i, j]，其取值仅依赖于从输出层输入来的数据矩阵z和参数(W,B)，同理，S<sub>ij</sub> 表示矩阵probs的第i行、第j列的新得分。
+
+举一个简单3个图像样本，4个标签的输入数据矩阵x的栗子来说明得分有着怎样的变化：
+
+![softmax_2.png](https://i.imgur.com/4IbLyfB.png)
+
+##### 2.7.4 定义损失函数
+![softmax_3.png](https://i.imgur.com/gtbgoRM.png)
+
+##### 2.7.5 定义损失函数例子
+![softmax_4.png](https://i.imgur.com/VGmaECe.png)
+
+##### 2.7.6 sotfmax得分矩阵的梯度
+![softmax_5.png](https://i.imgur.com/wMjzjLL.png)
+
+##### 2.7.7 sotfmax得分矩阵的梯度例子
+![softmax_6.png](https://i.imgur.com/htRtyft.png)
+
+### 2.8 激活函数总结
 1. use ReLU. Be careful with your learning rates
 2. try out Leaky ReLU/MaxOut/ELU
 3. try out tanh but don't expect much
@@ -145,12 +230,6 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     print(sess.run(output))
 ```
-
-
-
-
-
-
 参考：
 1. [如何理解ReLU activation function?](https://www.zhihu.com/question/59031444/answer/177786603 "如何理解ReLU activation function?")
 1. [为什么在生成对抗网络(GAN)中，隐藏层中使用leaky relu比relu要好？](https://www.zhihu.com/question/68514413/answer/268088852)
