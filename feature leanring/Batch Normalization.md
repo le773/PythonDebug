@@ -115,7 +115,7 @@ def batchnorm_forward(x, gamma, beta, bn_param):
 ```
 
 ### 1.2 Batch Normalization back propagation
-![batch normalization bp.jpg](https://i.imgur.com/iVeq17j.jpg)
+![bpbn2.png](https://i.imgur.com/qkC4VT4.png)
 
 ### 1.3 反向传播代码实现
 ```python
