@@ -76,8 +76,113 @@ CNN 的第一步是把图片分成小块。我们通过选取一个给定宽度�
 ##### 4.2.2 卷积的计算
 ![conv_1.png](https://i.imgur.com/HTXXAbr.png)
 
-##### 4.2.3 每个 patch 连接多少神经元？
+输入x(N, C, H, W)，卷积核f(F, C, HH, WW)，1a.对每一个卷积核，将卷积核f[0,1,:,:]与x[0,0,:,:]做矩阵的点积，1b.然后计算所有通道上点积的和加偏置项，即为out[0,0,0]。然后在x[0,:,:,:]上移动步长stride计算重复1a，1b得到out[0,0,1]。
 
+##### 4.2.3 卷积的计算代码实现
+```python
+def conv_forward_naive(x, w, b, conv_param):
+  """
+  A naive implementation of the forward pass for a convolutional layer.
+
+  The input consists of N data points, each with C channels, height H and width
+  W. We convolve each input with F different filters, where each filter spans
+  all C channels and has height HH and width HH.
+
+  Input:
+  - x: Input data of shape (N, C, H, W)
+  - w: Filter weights of shape (F, C, HH, WW)
+  - b: Biases, of shape (F,)
+  - conv_param: A dictionary with the following keys:
+    - 'stride': The number of pixels between adjacent receptive fields in the
+      horizontal and vertical directions.
+    - 'pad': The number of pixels that will be used to zero-pad the input.
+
+  Returns a tuple of:
+  - out: Output data, of shape (N, F, H', W') where H' and W' are given by
+    H' = 1 + (H + 2 * pad - HH) / stride
+    W' = 1 + (W + 2 * pad - WW) / stride
+  - cache: (x, w, b, conv_param)
+  """
+  out = None
+  #############################################################################
+  # TODO: Implement the convolutional forward pass.                           #
+  # Hint: you can use the function np.pad for padding.                        #
+  #############################################################################
+  pass
+  pad, stride = conv_param['pad'], conv_param['stride']
+  # 对第三、四维做0值填充
+  x_padded = np.pad(x, ((0,), (0,), (pad,), (pad,)), 'constant') # pad alongside four dimensions
+  N, C, H, W = x.shape
+  F, C, HH, WW = w.shape
+  output_height = 1 + (H + 2 * pad - HH) // stride
+  output_width = 1 + (W + 2 * pad - WW) // stride
+  out = np.zeros((N, F, output_height, output_width))
+
+  for i in range(output_height):
+      for j in range(output_width):
+          # 截取需要卷积的区域
+          x_padded_mask = x_padded[:, :, i*stride:i*stride+HH, j*stride:j*stride+WW]
+          for k in range(F):#遍历权重
+              out[:, k, i, j] = np.sum(x_padded_mask * w[k, :, :, :], axis=(1,2,3)) # 对所有通道上的点积求和
+  out = out + (b)[None, :, None, None]
+  #############################################################################
+  cache = (x, w, b, conv_param)
+  return out, cache
+```
+##### 4.2.4 卷积的反向传播
+
+![covnbp.jpg](https://i.imgur.com/fNLCOEn.jpg)
+
+##### 4.2.5 卷积的反向传播代码实现
+```python
+def conv_backward_naive(dout, cache):
+  """
+  A naive implementation of the backward pass for a convolutional layer.
+
+  Inputs:
+  - dout: Upstream derivatives.
+  - cache: A tuple of (x, w, b, conv_param) as in conv_forward_naive
+
+  Returns a tuple of:
+  - dx: Gradient with respect to x
+  - dw: Gradient with respect to w
+  - db: Gradient with respect to b
+  """
+  dx, dw, db = None, None, None
+  #############################################################################
+  # TODO: Implement the convolutional backward pass.                          #
+  #############################################################################
+  x, w, b, conv_param = cache
+
+  N, C, H, W = x.shape
+  F, _, HH, WW = w.shape
+  stride, pad = conv_param['stride'], conv_param['pad']
+  H_out = 1 + (H + 2 * pad - HH) / stride
+  W_out = 1 + (W + 2 * pad - WW) / stride
+
+  x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)), mode='constant', constant_values=0)
+  dx = np.zeros_like(x)
+  dx_pad = np.zeros_like(x_pad)
+  dw = np.zeros_like(w)
+  db = np.zeros_like(b)
+
+  db = np.sum(dout, axis = (0,2,3))
+
+  x_pad = np.pad(x, ((0,), (0,), (pad,), (pad,)), mode='constant', constant_values=0)
+  for i in range(int(H_out)):
+      for j in range(int(W_out)):
+          x_pad_masked = x_pad[:, :, i*stride:i*stride+HH, j*stride:j*stride+WW]
+          for k in range(F): #compute dw
+              dw[k ,: ,: ,:] += np.sum(x_pad_masked * (dout[:, k, i, j])[:, None, None, None], axis=0)
+          for n in range(N): #compute dx_pad
+              dx_pad[n, :, i*stride:i*stride+HH, j*stride:j*stride+WW] += np.sum((w[:, :, :, :] *
+                                                 (dout[n, :, i, j])[:,None ,None, None]), axis=0)
+  dx = dx_pad[:,:,pad:-pad,pad:-pad]
+  pass
+############################################################################
+  return dx, dw, db
+```
+##### 4.2.6 每个 patch 连接多少神经元？
 这取决于滤波器的深度，如果深度是 `k`，我们把每个 `patch` 与下一层的 `k` 个神经元相连。这样下一层的高度就是 `k`，如下图所示。实际操作中，`k`是一个我们可以调节的超参数，大多数的 `CNNs` 倾向于选择相同的起始值。
 
 ![cov_neural_net_5.png](https://i.imgur.com/0TXnm1f.png)
@@ -85,7 +190,7 @@ CNN 的第一步是把图片分成小块。我们通过选取一个给定宽度�
 一个 `patch` 连接有**多个神经元**可以保证我们的 `CNNs` 学会**提取任何它觉得重要的特征**。
 记住，`CNN` 并没有被规定寻找特定特征。与之相反，它自我学习什么特征值得注意。
 
-##### 4.2.4 为什么我们把一个 patch 与下一层的多个神经元相连呢？一个神经元不够好吗？
+##### 4.2.7 为什么我们把一个 patch 与下一层的多个神经元相连呢？一个神经元不够好吗？
 多个神经元的作用在于，一个 patch 可以有多个有意义的，可供提取的特点。
 例如，一个 patch 可能包括白牙，金色的须，红舌头的一部分。在这种情况下，我们需要一个深度至少为3的滤波器，一个识别牙，一个识别须，一个识别舌头。
 
@@ -192,7 +297,79 @@ padding 大小为1 (P)
 
 一种典型的卷积神经网络结构为卷积层和最大池化层，相互交替，然后在最末端连接几层全连接层。
 
-#### 7.2 平均池化
+#### 7.2 最大池化代码实现
+```python
+def max_pool_forward_naive(x, pool_param):
+  """
+  A naive implementation of the forward pass for a max pooling layer.
+
+  Inputs:
+  - x: Input data, of shape (N, C, H, W)
+  - pool_param: dictionary with the following keys:
+    - 'pool_height': The height of each pooling region
+    - 'pool_width': The width of each pooling region
+    - 'stride': The distance between adjacent pooling regions
+
+  Returns a tuple of:
+  - out: Output data
+  - cache: (x, pool_param)
+  """
+  out = None
+  #############################################################################
+  # TODO: Implement the max pooling forward pass                              #
+  #############################################################################
+  pass
+  N, C, H, W = x.shape
+  pool_height, pool_width = pool_param['pool_height'], pool_param['pool_width']
+  stride = pool_param['stride']
+  out_height = H // pool_height
+  out_width = W // pool_width
+  out = np.zeros((N, C, out_height, out_width))
+  for i in range(out_height):
+      for j in range(out_width):
+          mask = x[:, :, i*stride:i*stride+pool_height, j*stride:j*stride+pool_width]
+          out[:, :, i, j] = np.max(mask, axis=(2, 3))
+  ############################################################################
+  cache = (x, pool_param)
+  return out, cache
+```
+#### 7.3 最大池化反向求导代码实现
+```python
+def max_pool_backward_naive(dout, cache):
+  """
+  A naive implementation of the backward pass for a max pooling layer.
+
+  Inputs:
+  - dout: Upstream derivatives
+  - cache: A tuple of (x, pool_param) as in the forward pass.
+
+  Returns:
+  - dx: Gradient with respect to x
+  """
+  dx = None
+  #############################################################################
+  # TODO: Implement the max pooling backward pass                             #
+  #############################################################################
+  x, pool_param = cache
+  N, C, H, W = x.shape
+  pool_height, pool_width = pool_param['pool_height'], pool_param['pool_width']
+  stride = pool_param['stride']
+  dx = np.zeros_like(x)
+  out_height = H // pool_height
+  out_width = W // pool_width
+  for i in range(out_height):
+      for j in range(out_width):
+          # x, dx has the same dimension, so does x_mask and dx_mask
+          x_mask = x[:, :, i*stride:i*stride+pool_height, j*stride:j*stride+pool_width]
+          dx_mask = dx[:, :, i*stride:i*stride+pool_height, j*stride:j*stride+pool_width]
+          # flags: only the max value is True, others are False
+          flags = np.max(x_mask, axis=(2, 3), keepdims=True) == x_mask
+############################################################################
+  return dx
+```
+最大池化的代码实现和反向求导实现的原理和dropout的实现与反向传播思想异曲同工。
+
+#### 7.4 平均池化
 使用特定位置周围的像素的平均值，它有点像提供了下层特征图的一个低分辨率的视图。
 
 ##### 例子
@@ -208,7 +385,7 @@ pool = tf.nn.avg_pool(
     padding)
 print(pool)
 ```
-#### 7.3 池化函数的导数
+#### 7.5 池化函数的导数
 ![pool的导数.png](https://i.imgur.com/sgvGxzK.png)
 
 通过每一层的函数对函数的求导，可求得参数的梯度。
