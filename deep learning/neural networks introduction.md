@@ -1,4 +1,4 @@
-## 神经网络入门
+﻿## 神经网络入门
 ### 1.0 neural networks
 ![neuralnetwords_1.png](https://i.imgur.com/VWldwr3.png)
 
@@ -98,11 +98,53 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 
 参考：[深度机器学习中的batch的大小对学习效果有何影响？](https://www.zhihu.com/question/32673260 "深度机器学习中的batch的大小对学习效果有何影响？")
 
-##### 4.4.3 不同学习率导致不同的梯度下降
+##### 4.4.3 stochastic gradient descent的缺陷
+![stochastic gradient descent1.jpg](https://i.imgur.com/UWshhfy.jpg)
+
+上图中的曲线是损失函数的关于模型参数的”等高线”，每一条曲线上的点都有着相同的损失函数值，圆心处对应于损失函数的局部最小值。途中的a和b都是神经网络在面对每一批不同的样本图片时所进行的参数更新路线，a很顺利的一步步走向”盆地“的最低点，而b的出发点位于一个细窄的”峡谷“处，于是负梯度方向就很可能并不是一直指向着盆地最低点，而是会先顺着更”陡峭”峡谷走到谷底，再一点一点震荡着靠近盆地最低点。
+
+显然，运气要是不好，传统的梯度下降方法的收敛速度会很糟糕。于是，就有了随机梯度下降的动量更新方法（stochastic gradient descent with momentum）。
+
+![momentum.png](https://i.imgur.com/NVlURu8.jpg)
+##### 4.4.4 不同学习率导致不同的梯度下降
 ![learningrates.jpeg](https://i.imgur.com/fdoiZkr.jpg)
 
 #### 4.5 Gradient descent with momentum动量梯度下降法
-**基本思想**：计算梯度的指数加权平均数，并利用该梯度更新权重
+SGD方法的一个缺点是，其更新方向完全依赖于当前的batch，因而其更新十分不稳定。解决这一问题的一个简单的做法便是引入momentum。</br>
+
+momentum即动量，它模拟的是物体运动时的惯性，即更新的时候在一定程度上保留之前更新的方向，同时利用当前batch的梯度微调最终的更新方向。这样一来，可以在一定程度上增加稳定性，从而学习地更快，并且还有一定摆脱局部最优的能力：</br>
+
+```python
+def sgd_momentum(w, dw, config=None):
+  """
+  Performs stochastic gradient descent with momentum.
+
+  config format:
+  - learning_rate: Scalar learning rate.
+  - momentum: Scalar between 0 and 1 giving the momentum value.
+    Setting momentum = 0 reduces to sgd.
+  - velocity: A numpy array of the same shape as w and dw used to store a moving
+    average of the gradients.
+  """
+  if config is None: config = {}
+  config.setdefault('learning_rate', 1e-2)
+  config.setdefault('momentum', 0.9)
+  v = config.get('velocity', np.zeros_like(w))
+
+  next_w = None
+#############################################################################
+  # TODO: Implement the momentum update formula. Store the updated value in
+  # the next_w variable. You should also use and update the velocity v. 
+  v = config['momentum'] * v - config['learning_rate'] * dw
+  next_w = w + v
+############################################################################
+  config['velocity'] = v
+  return next_w, config
+```
+
+其中， 即momentum，表示要在多大程度上保留原来的更新方向，这个值在0-1之间，在训练开始时，由于梯度可能会很大，所以初始值一般选为0.5；当梯度不那么大时，改为0.9。 是学习率，即当前batch的梯度多大程度上影响最终更新方向，跟普通的SGD含义相同。 与  之和不一定为1。
+
+使用动量更新的轨迹：
 
 ![gd_exponentially_weighted_average_1.png](https://i.imgur.com/ZdLcIUk.png)
 
@@ -114,8 +156,30 @@ mini-batch梯度下降：在每次更新时用b个样本,其实批量的梯度�
 
 **关于偏差修正**：因为10次迭代后，移动平均已经过了初始阶段，不再是一个具有偏差的预测，所以`dw`、`db`不在受到偏差修正的困扰
 
+#### 4.6 Nesterov Momentum
+这是对传统momentum方法的一项改进，其基本思路如下图：
+
+![Nesterov Momentum](https://i.imgur.com/3uwWFxY.png)
+
+首先，按照原来的更新方向更新一步（棕色线），然后在该位置计算梯度值（红色线），然后用这个梯度值修正最终的更新方向（绿色线）。上图中描述了两步的更新示意图，其中蓝色线是标准momentum更新路径。
+
+与传统momentum方法对比：
+
+![Nesterov Momentum2.png](https://i.imgur.com/v3dWT4G.png)
+
+![Nesterov Momentum3.png](https://i.imgur.com/JEIBjTI.png)
+
+其中，
+
+![Nesterov Momentum4.png](https://i.imgur.com/gVfGLVg.png)
+
+可以推出：
+
+![Nesterov Momentum5.png](https://i.imgur.com/wOumXlR.png)
+
+代码实现
 ```python
-def sgd_momentum(w, dw, config=None):
+def nesterov_momentum(w, dw, config=None):
   """
   Performs stochastic gradient descent with momentum.
 
@@ -136,15 +200,15 @@ def sgd_momentum(w, dw, config=None):
   # TODO: Implement the momentum update formula. Store the updated value in   #
   # the next_w variable. You should also use and update the velocity v.       #
   #############################################################################
+  v_prev = v
   v = config['momentum'] * v - config['learning_rate'] * dw
-  next_w = w + v
-  #############################################################################
+  next_w = w - config['momentum'] * v_prev + (1+config['momentum']) * v
+  ############################################################################
   config['velocity'] = v
-
   return next_w, config
 ```
 
-#### 4.6 RMSprop 加快梯度下降
+#### 4.7 RMSprop 加快梯度下降
 ![RMSprop_1.png](https://i.imgur.com/NEIRrP9.png)
 
 `db`较大，`dw`较小，所以纵轴消除摆动，横轴加快速度。更大的`α`可以加快此速率。
@@ -184,7 +248,7 @@ def rmsprop(x, dx, config=None):
 
   return next_x, config
 ```
-#### 4.7 Adam(Adaptive Moment Estimation) 自适应矩估计
+#### 4.8 Adam(Adaptive Moment Estimation) 自适应矩估计
 ![Adam_1.png](https://i.imgur.com/Nxq1wvA.png)
 
 `Adam`是`momentum`和`RMSpro`p的结合，`β1`是第一阶矩，一般`0.9`，`β2`是第二阶矩，一般`0.999`，`ϵ`一般`10−8`。
@@ -226,7 +290,7 @@ def adam(x, dx, config=None):
 
   return next_x, config
 ```
-#### 4.8 学习衰减率
+#### 4.9 学习衰减率
 学习衰减率的计算方法：
 
 ![learning_attenuation_1.png](https://i.imgur.com/oOvVIYt.png)
@@ -234,7 +298,11 @@ def adam(x, dx, config=None):
 `decay_rate`:衰减率
 `epoch_num`:所有的训练样本完整训练一遍的次数。
 
-#### 4.9 几种优化方式的区别
+exponential decay:
+
+α = α<sub>0</sub> \* e<sup>-epoch_num * decay_rate</sup>
+
+#### 4.10 几种优化方式的区别
 ![opt2.gif](https://i.imgur.com/yKXIthQ.gif)
 
 ### 5.0 梯度下降：数学

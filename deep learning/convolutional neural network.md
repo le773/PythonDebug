@@ -1,4 +1,4 @@
-### 1.0 概念
+﻿### 1.0 概念
 池化:把很多数据用最大值或者平均值代替。目的是降低数据量。
 
 卷积:把数据通过一个卷积核变化成特征，便于后面的分离。计算方式与信号系统中的相同。
@@ -74,7 +74,8 @@ CNN 的第一步是把图片分成小块。我们通过选取一个给定宽度�
 ![neural_net_7.png](https://i.imgur.com/DVATKCm.gif)
 
 ##### 4.2.2 卷积的计算
-![conv_1.png](https://i.imgur.com/HTXXAbr.png)
+
+![cnn0.gif](https://i.imgur.com/z07Xpto.gif)
 
 输入x(N, C, H, W)，卷积核f(F, C, HH, WW)，1a.对每一个卷积核，将卷积核f[0,1,:,:]与x[0,0,:,:]做矩阵的点积，1b.然后计算所有通道上点积的和加偏置项，即为out[0,0,0]。然后在x[0,:,:,:]上移动步长stride计算重复1a，1b得到out[0,0,1]。
 
@@ -252,6 +253,7 @@ out_width = ceil(float(in_width) / float(strides[2]))
 out_height = ceil(float(in_height - filter_height + 1) / float(strides1))
 out_width = ceil(float(in_width - filter_width + 1) / float(strides[2]))
 ```
+![cnn1.png](https://i.imgur.com/r5KsYSR.png)
 
 ##### 5.3.3 代码实例
 ```
@@ -391,6 +393,9 @@ print(pool)
 通过每一层的函数对函数的求导，可求得参数的梯度。
 有了计算梯度的方法，在通过基于梯度的最优化，就能寻得最优值，完成训练过程。
 
+#### 7.6 池化的大小计算
+![pool1.png](https://i.imgur.com/M0A13id.png)
+
 ### 8.0 TensofFlow 最大池化
 ![max_pooling_1.png](https://i.imgur.com/eKB41R5.png)
 
@@ -446,6 +451,45 @@ conv_layer = tf.nn.max_pool(
 
 #### 10.2 Inception 网络
 ![nn_inception_2.png](https://i.imgur.com/l5srf2w.png)
+
+#### 10.3 AlexNet 结构
+![AlexNet.png](https://i.imgur.com/apqO6p8.png)
+
+#### 10.4 ZFNet 结构
+ZFNet结构是基于AlexNet结构的改进
+
+![ZFNet.png](https://i.imgur.com/mW9Fhvo.png)
+
+改动：</br>
+CONV1: change from (11x11 stride 4) to (7x7 stride 2)</br>
+CONV3,4,5: instead of 384, 384, 256 filters use 512, 1024, 512
+#### 10.5 VGGNET 结构
+![VGGNet.png](https://i.imgur.com/neKQbFD.png)
+
+缺陷，第一个全连接层需要7x7x512x1x1x4096+偏置项共(2亿+)个参数。
+
+#### 10.6 ResNET 结构
+![ResNets.png](https://i.imgur.com/20L0NFA.png)
+
+对于plain net并不是隐藏层越多，训练错误越低。
+
+![ResNets2.png](https://i.imgur.com/KIlsMHq.png)
+
+在ResNet中，在这些有趣的跳跃连接中，除了这种严格将一个容量转移到下一个容量的传递外，还有跳层的传递。
+
+![ResNets3.png](https://i.imgur.com/rtgpFax.png)
+
+ResNet原理要点：
+- Batch Normalization after every CONV layer
+- Xavier/2 initialization from He et al.
+- SGD + Momentum (0.9)
+- Learning rate: 0.1, divided by 10 when validation error plateaus
+- Mini-batch size 256
+- Weight decay of 1e-5
+- No dropout used
+
+plain net工作方式：选取一个224x224的图片，用一层去过滤然后提取，会把图片通过大的因子用一层压缩到56x56的空间，剩下的所有150+层，都只作用在56x56的数组空间里。
+
 
 ### 11.1 卷积神经网络优缺点
 ##### 优点
