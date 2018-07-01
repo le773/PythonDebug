@@ -49,6 +49,9 @@ tanh将实数值压缩到[-1,1]之间。和sigmoid神经元一样，它也存在
 缺点：</br>
 梯度消失没完全解决(Leaky ReLU，在坐标轴左侧的函数导数很小，解决了这个问题)</br>
 
+##### 2.2.1 ReLU的反向传播
+![relubp_1.png](https://i.imgur.com/qAiMmet.png)
+
 ### 2.3 Leaky ReLU
 ![LeakyReLU.png](https://i.imgur.com/676Ah6I.png)
 
