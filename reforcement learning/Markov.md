@@ -7,6 +7,8 @@
 - 强化学习：与监督学习相似，给定多组(x,y)(x,y),同时一个抉择向量 zz。强化学习可以称之为监督学习的扩展，扩展了一套决策方案而并非单一的 GD
 
 ### 增强学习
+![reinforcement learning_1.png](https://i.imgur.com/DeUdbI4.png)
+
 - states:决策时可能经历的状态集
 - model:正在进行的博弈的原则
 p(s'|s,a):在状态s中采取动作A后最终落入s'的概率
