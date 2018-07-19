@@ -68,3 +68,5 @@ census.csv
 ./*.zip
 ./report.html
 ./visuals.pyc
+logs/
+model.h5
