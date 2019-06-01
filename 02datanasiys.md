@@ -651,6 +651,17 @@ SQL 不区分大小写
 ```
 SeLeCt AcCoUnt_id FrOm oRdErS
 ```
+##### 05.00 查询创建表的SQL语句
+查看表结构
+```
+desc 表名;
+show columns from 表名;
+describe 表名;
+```
+查询创建表的SQL语句
+```
+show create table 表名;
+```
 
 ##### 05.01 limit 加快查询速度
 ```
